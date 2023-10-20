@@ -1,0 +1,24 @@
+{%extends 'adminindex.html'%}
+{%block content%}
+{%load static%}
+<div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="col-md-4 offset-md-2"> <!-- Use offset-md-4 to move the form to the right -->
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-center">Form Title</h2>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="inputField">Enter New Category</label>
+                        <input type="text" class="form-control" id="inputField" name="addcategoryfield" placeholder="Enter Category here">
+                    </div>
+                    <!-- Add more form fields as needed -->
+                    <div class="text-center"> <!-- Add this div to center-align the button -->
+                        <button type="submit" class="btn btn-success mt-2">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{%endblock%}

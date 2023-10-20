@@ -1,0 +1,67 @@
+{%extends 'womensproducts.html'%}
+{%block content%} 
+<h2>Accessories</h2>
+</div>
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col text-center">
+<div class="new_arrivals_sorting">
+<ul class="arrivals_grid_sorting clearfix button-group filters-button-group">
+    <li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center active is-checked" data-filter="*">all</li>
+    <li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".women">Men</li>
+    <li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".accessories">Women</li>
+
+</ul>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col">
+<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
+
+    
+{%for i in womens%}
+
+
+<div class="product-item accessories">
+    <div class="product discount product_filter">
+        <div class="product_image">
+            <img src="{{i.img.url}}" alt="">
+        </div>
+        <div class="favorite favorite_left"></div>
+        <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+        <div class="product_info">
+            <h6 class="product_name"><a href="#single.html">{{i.name}}</a></h6>
+            <div class="product_price">${{i.price}}<span>${{i.disc_price}}</span></div>
+        </div>
+    </div>
+    <div class="red_button add_to_cart_button"><a href="{% url 'product_details' i.id%}">View Product</a></div>
+</div>
+{%endfor%}
+
+
+
+
+{%for i in mens%}
+<div class="product-item women">
+    <div class="product discount product_filter">
+        <div class="product_image">
+            <img src="{{i.img.url}}" alt="">
+        </div>
+        <div class="favorite favorite_left"></div>
+        <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+        <div class="product_info">
+            <h6 class="product_name"><a href="#single.html">{{i.name}}</a></h6>
+            <div class="product_price">${{i.price}}<span>${{i.disc_price}}</span></div>
+        </div>
+    </div>
+    <div class="red_button add_to_cart_button"><a href="{% url 'product_details' i.id%}">View Product</a></div>
+</div>
+{%endfor%}
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{%extends 'adminindex.html'%}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <style>
+                .product-details {
+                    text-align: center;
+                    padding: 20px;
+                    margin-left:55px;
+                }
+
+                .product-image {
+                    max-width: 70%;
+                    border: 2px solid #ccc;
+                    border-radius: 5px;
+                    margin-bottom: 10px;
+                }
+
+                .product-name {
+                    font-size: 24px;
+                    color: #333;
+                }
+
+                .product-brand, .product-category {
+                    font-size: 18px;
+                    color: #888;
+                }
+                .edit-form {
+                    margin-top: 20px;
+                }
+
+                .form-group {
+                    margin-bottom: 15px;
+                }
+
+                .form-control {
+                    width: 50%; /* Expand the input field to full width */
+                    padding: 5px;
+                    font-size: 14px; /* Reduce font size */
+                    margin-left:400px;
+                }
+              
+            </style>
+
+            <div class="product-details">
+                <img src="{{ data.img.url }}" class="product-image" alt="{{ data.name }}">
+                <h2 class="product-name">{{ data.name }}</h2>
+                <p class="product-brand"><strong>Brand:</strong> {{ data.brand }}</p>
+                <p class="product-category"><strong>Category:</strong> {{ data.category }}</p>
+                <p class="product-category"><strong>Price:</strong> {{ data.price }}</p>
+                <p class="product-category"><strong>Discount Price:</strong> {{ data.disc_price }}</p>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="product-details">
+    <form class="edit-form" method="post" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="image">Image</label>
+            <input type="file" class="form-control" id="image" required name="image" size="20"> <!-- Adjust the size attribute -->
+        </div>
+        
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name"  required name="name" value="{{ data.name }}" size="20"> <!-- Adjust the size attribute -->
+        </div>
+
+        <div class="form-group">
+            <label for="name">Price</label>
+            <input type="text" class="form-control" id="name"  required name="name" value="{{ data.price }}" size="20"> <!-- Adjust the size attribute -->
+        </div>
+
+       
+         <div class="form-group ">
+            <label for="brand">Brand</label>
+            <div class="col-5 offset-md-4 border p-3">
+                <div class="horizontal-radio-buttons row">
+                    {% for i in brand %}
+                        <div class="col-3">
+                            <div class="border  p-3">
+                                <input type="radio" name="brand" value="{{ i.id }}" id="brand_{{ i.id }}">
+                                <label for="brand_{{ i.id }}" class="form-check-label">{{ i.name }}</label>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div> 
+
+
+        <div class="form-group ">
+            <label for="brand">Category</label>
+            <div class="col-6 offset-md-4 border-2 p-3">
+                <div class="horizontal-radio-buttons row">
+                    {% for i in category %}
+                        <div class="col-5">
+                            <div class="border  p-3">
+                                <input type="radio" name="category"  required  value="{{ i.id }}" id="category_{{ i.id }}">
+                                <label for="category_{{ i.id }}" class="form-check-label">{{ i.wear }}</label>
+                            </div>
+                        </div>
+                     
+
+                    {% endfor %}
+                </div>
+            </div>
+        </div> 
+     <button type="submit" class="btn btn-primary ">Update</button>
+    </form>
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
