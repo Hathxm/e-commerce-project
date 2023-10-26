@@ -5,6 +5,9 @@ from django.views.decorators.cache import cache_control
 from app.models import category,product,brand,customuser,gender
 from django.db.models import Q
 from django.contrib import messages
+from checkout.models import Order,order_status
+from django.http import HttpResponse
+from user.models import item_status
 
 
 # Create your views here.
@@ -109,7 +112,7 @@ def edit_product(request,id):
      return render (request,'edit_product.html',{'data':data,'brand':product_brand,'category':product_category})
     return redirect(admin_login)
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delete_product(request,id):
     if request.user.is_superuser:
         data=product.objects.get(id=id)
@@ -118,7 +121,7 @@ def delete_product(request,id):
         return redirect(admin_products)
     return redirect(admin_login)
     
-    
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def undelete_product(request,id):
     if request.user.is_superuser:
         data=product.objects.get(id=id)
@@ -129,7 +132,7 @@ def undelete_product(request,id):
     
     
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delete_category(request,id):
     if request.user.is_superuser:
         data=category.objects.get(id=id)
@@ -138,7 +141,7 @@ def delete_category(request,id):
         return redirect(admin_category)
     return redirect(admin_login)
     
-    
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def undelete_category(request,id):
     if request.user.is_superuser:
         data=category.objects.get(id=id)
@@ -147,7 +150,7 @@ def undelete_category(request,id):
         return redirect(admin_category)
     return redirect(admin_login)
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def delete_user(request,id):
     if request.user.is_superuser:
         data=customuser.objects.get(id=id)
@@ -156,7 +159,7 @@ def delete_user(request,id):
         return redirect(user_handling)
     return redirect(admin_login)
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def undelete_user(request,id):
     if request.user.is_superuser:
         data=customuser.objects.get(id=id)
@@ -164,20 +167,42 @@ def undelete_user(request,id):
         data.save()
         return redirect(user_handling)
     return redirect(admin_login)
-    
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)   
 def user_handling(request):
     if request.user.is_superuser:
         data=customuser.objects.all()
         return render(request,'admin-user.html',{'data':data})
     return redirect(admin_login)
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def admin_logout(request):
     if request.user.is_superuser:
         logout(request)
         return redirect(admin_login)
     return redirect(admin_login)
 
+def user_orders(request,id):
+    if Order.objects.filter(user=id).exists():
+        order=Order.objects.get(user=id)
+        items=order.items.filter(Q(status=3)|Q(status=5))
+        cancelled_items=order.items.filter(Q(status=4)|Q(status=1))
+    else:
+        return HttpResponse('cart does not exist')
+    return render(request,'adminorder.html',{'data':items,'order':order,'cancelleditems':cancelled_items})
 
+def delivered(request,id):
+    order=Order.objects.get(id=id)
+    items=order.items.filter(status=3)
+    delivered=order_status.objects.get(id=7)
+    order.order_status=delivered
+    order.save()
+    itemstatus=item_status.objects.get(id=5)
+    for i in items:
+        i.status=itemstatus
+        i.save()
+    user=order.user.id
+    return redirect(user_orders,id=user)
 
 
    

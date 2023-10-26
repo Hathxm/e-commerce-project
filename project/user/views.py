@@ -10,9 +10,9 @@ from .models import cart,cartitem
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
 from django.db.models import Sum
-# from checkout.views import checkout
-
-
+from django.core.mail import send_mail
+from random import randint
+from django.contrib.auth.hashers import make_password
 
 
 # Create your views here.
@@ -52,7 +52,7 @@ def user_signup(request):
 def details(request,id):
     data=product.objects.get(id=id)
     size=Size.objects.all()
-    similar_products=product.objects.filter(Q(category=data.category) & ~Q(id=data.id) )
+    similar_products=product.objects.filter(Q(category=data.category) & ~Q(id=data.id))
 
     return render(request,'details.html',{'data':data,'size':size,'similarproducts':similar_products})
 
@@ -148,10 +148,10 @@ def viewcart(request):
     user=request.user
     user_cart,created=cart.objects.get_or_create(user=user)
     data=user_cart.items.all()
-    total_price=cartitem.objects.aggregate(total=Sum('price'))['total']
+    total_price=data.aggregate(total=Sum('price'))['total']
          
 
-    return render(request, 'viewcart.html',{'data':data,'totalprice':total_price})
+    return render(request, 'viewcart.html',{'data':data,'totalprice':total_price,'user':user})
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -167,6 +167,48 @@ def delete_from_orders(request,id):
         cartitem.objects.get(id=id).delete()
 
         return redirect(viewcart)
+
+def forgot_password(request):
+     if request.method=='POST':
+          email=request.POST.get('email')
+
+          if customuser.objects.filter(email=email).exists():
+               user=customuser.objects.get(email=email)
+               otp=randint(1000,9999)
+               user.otp=otp
+               user.save()
+               send_mail(
+                'Password Reset OTP',
+                f'Your OTP for password reset is: {otp}',
+                'streetrends@gmail.com',
+                [email],
+                fail_silently=False,
+            )
+               return redirect(verify_otp)
+          else:
+               messages.info(request,'user with email doesnt exist')
+               
+     return render(request,'forgot_pass.html')
+
+
+def verify_otp(request):
+     if request.method=='POST':
+          otp=request.POST.get('otp')
+          password=request.POST.get('password')
+          confirm_pass=request.POST.get('confirm_pass')
+          if customuser.objects.filter(otp=otp).exists():
+               if password==confirm_pass:
+                    user=customuser.objects.get(otp=otp)
+                    user.password=make_password(password)
+                    user.save()
+                    return redirect(shop)
+               else:
+                    messages.info(request,'password doesnt match')
+          else:
+                    messages.info(request,'invalid otp')
+                    
+     return render(request,'verifyotp.html')
+
 
 
      

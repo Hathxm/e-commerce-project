@@ -17,15 +17,21 @@
               <!-- Your content goes here -->
               {% for item in data %}
               <div class="d-flex justify-content-between align-items-center">
-                <h5 class="card-title fw-semibold">{{ item }}</h5>
+                <h5 class="card-title fw-semibold">{{ item.username }}</h5>
+                <h5 class="card-title fw-semibold">{{ item.email}}</h5>
+                <h5 class="card-title fw-semibold">{{ item.first_name}}</h5>
+
                 <div>
+                  <a href="{%url 'userorders' item.id%}">
+                  <button class="btn btn-primary btn-sm">Orders</button>
+                  </a>
                   {% if item.is_deleted %}
                   <a href="{% url 'undlt_user' item.id %}">
-                  <button class="btn btn-warning btn-sm">Deleted</button>
+                  <button class="btn btn-danger btn-sm">Blocked</button>
                   </a>
                   {% else %}
                   <a href="{% url 'dlt_user' item.id %}">
-                  <button class="btn btn-danger btn-sm">Delete</button>
+                  <button class="btn btn-warning btn-sm">Block</button>
                   </a>
               {% endif %}
                 </div>

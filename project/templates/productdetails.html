@@ -14,6 +14,7 @@
 <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "styles/main_styles.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "styles/responsive.css" %}">
+<script src="path-to-lightbox/lightbox.js"></script>
 <style>
     .icon-hover:hover {
         border-color: #3b71ca !important;
@@ -116,27 +117,28 @@
     <div class="row gx-5">
       <aside class="col-lg-6">
         <div class="border rounded-4 mb-3 d-flex justify-content-center">
-          <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp">
-            <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit" src="{{data.img.url}}" />
-          </a>
+          <a data-lightbox="mygallery" href="#">
+            <img style="max-width: 100%; max-height: 100vh; margin: auto;" class="rounded-4 fit" src="{{ data.img.url }}" />
+        </a>
         </div>
         <div class="d-flex justify-content-center mb-3">
-          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big1.webp" class="item-thumb">
-            <img width="60" height="60" class="rounded-2" src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big1.webp" />
-          </a>
-          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big2.webp" class="item-thumb">
-            <img width="60" height="60" class="rounded-2" src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big2.webp" />
-          </a>
-          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big3.webp" class="item-thumb">
-            <img width="60" height="60" class="rounded-2" src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big3.webp" />
-          </a>
-          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big4.webp" class="item-thumb">
-            <img width="60" height="60" class="rounded-2" src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big4.webp" />
-          </a>
-          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image" href="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp" class="item-thumb">
-            <img width="60" height="60" class="rounded-2" src="https://bootstrap-ecommerce.com/bootstrap5-ecommerce/images/items/detail1/big.webp" />
-          </a>
-        </div>
+         
+          
+         <div class="d-flex justify-content-center mb-3">
+            <a data-lightbox="mygallery" class="border mx-1 rounded-2" target="_blank" href="{{ data.rearimg.url }}" class="item-thumb">
+              <img width="60" height="60" class="rounded-2" src="{{ data.frontimg.url }}" />
+            </a>
+            <a data-lightbox="mygallery" class="border mx-1 rounded-2" target="_blank" href="{{ data.rearimg.url }}" class="item-thumb">
+              <img width="60" height="60" class="rounded-2" src="{{ data.rearimg.url }}" />
+            </a>
+          </div>
+        
+          
+          
+          
+          
+          
+        
         <!-- thumbs-wrap.// -->
         <!-- gallery-wrap .end// -->
       </aside>
@@ -157,8 +159,7 @@
           </div>
 
           <p>
-            Modern look and quality demo item is a streetwear-inspired collection that continues to break away from the conventions of mainstream fashion. Made in Italy, these black and brown clothing low-top shirts for
-            men.
+           {{data.discription}}
           </p>
 
           <div class="row">
@@ -188,7 +189,7 @@
               <td> <div class="input-group" style="width: 170px;">
                 <input type="number" class="form-control mb-5" name="quantity" value="1" min="1" style="margin-top: 5px;">
               </div></td>
-              <td> <button type ="submit"class="btn btn-success"><i class="me-1 btn btn-primary fa fa-shopping-basket"></i> View cart</button>
+              <td> <button type ="submit"class="btn btn-success"><i class="me-1 btn btn-success fa fa-shopping-basket"></i> Add To Cart</button>
               </td> 
             </form>
            
@@ -205,35 +206,7 @@
 </section>
 <!-- content -->
 
-{% comment %}  
-       <div class="col-lg-4 ml-5 ">
-        <div class="px-0 border rounded-2 shadow-0">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Similar items</h5>
-              {%for i in similarproducts%} 
-              <div class="d-flex mb-3">
-                <a href="#" class="me-3">
-                  <img src="{{i.img.url}}" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
-                </a>
-                 
-                <div class="info">
-                  <a href="#" class="nav-link mb-1">
-    
-                    {{i.name}}
-                  </a>
-                  <strong class="text-dark ml-3">${{i.price}}</strong>
-                </div>
-              </div>
-              {%endfor%}  
 
-             
-
-              
-              </div>
-            </div>
-          </div>
-        </div>  {% endcomment %}
         <div class="container">
           <div class="row justify-content-end ml-3">
               <div class="col-lg-4 ">
@@ -274,5 +247,12 @@
               {% endfor %}
           </ul>
       </div> {% endcomment %}
-
+      <script>
+        lightbox.option({
+          'resizeDuration': 200,
+          'wrapAround': true
+        });
+      </script>
+    </body>
+    </html>
 

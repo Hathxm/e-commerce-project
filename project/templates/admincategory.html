@@ -22,11 +22,11 @@
                 <div>
                   {% if item.is_deleted %}
                   <a href="{% url 'undlt_category' item.id %}">
-                  <button class="btn btn-warning btn-sm">Deleted</button>
+                  <button class="btn btn-danger btn-sm">Unavailable</button>
                   </a>
                   {% else %}
                   <a href="{% url 'dlt_category' item.id %}">
-                  <button class="btn btn-danger btn-sm">Delete</button>
+                  <button class="btn btn-warning btn-sm">Available</button>
                   </a>
               {% endif %}
                 </div>

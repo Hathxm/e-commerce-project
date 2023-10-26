@@ -9,6 +9,8 @@ urlpatterns = [
     path('signup',views.user_signup,name='usersignup'),
     path('details/<int:id>',views.details,name='details'),
     path('login',views.user_login,name='userlogin'),
+    path('forgotpass',views.forgot_password,name='forgotpass'),
+    path('otp',views.verify_otp,name='otp'),
     path('shop',views.shop,name='shop'),
     path('profile',views.user_profile,name='userprofile'),
     path('logout',views.user_logout,name='userlogout'),
@@ -18,6 +20,7 @@ urlpatterns = [
     path('product_details/<int:id>',views.product_details,name='product_details'),
     path('viewcart',views.viewcart,name='viewcart'),
     path('dltfrmordr<int:id>',views.delete_from_orders,name='dltfrmordr'),
+
     
 
 

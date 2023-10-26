@@ -18,6 +18,11 @@ urlpatterns = [
     path('undelete_user/<int:id>',views.undelete_user,name='undlt_user'),
     path('user',views.user_handling,name='userhandling'),
     path('logout',views.admin_logout,name='logout'),
+    path('user_order/<int:id>',views.user_orders,name='userorders'),
+    path('delivered/<int:id>',views.delivered,name='delivered'),
+    
+
+
 
 
 

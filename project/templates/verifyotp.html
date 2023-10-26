@@ -1,0 +1,31 @@
+{%extends 'usersignup.html'%}
+{%block forgotpass%}
+                         
+                         {%for i in messages%}
+                         <p class="text-center">{{i}}</p>
+                         {%endfor%}
+                         
+
+                         <form method="post">
+                             {%csrf_token%}
+                             <div class="mb-3">
+                                 <label for="exampleInputtext1" class="form-label">OTP</label>
+                                 <input type="text" class="form-control" required id="exampleInputtext1"
+                                        aria-describedby="textHelp" name="otp">
+                             </div>
+                             <div class="mb-3">
+                                <label for="exampleInputtext1" class="form-label">Password</label>
+                                <input type="text" class="form-control" required id="exampleInputtext1"
+                                       aria-describedby="textHelp" name="password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="exampleInputtext1" class="form-label">Confirm Password</label>
+                                <input type="text" class="form-control" required id="exampleInputtext1"
+                                       aria-describedby="textHelp" name="confirm_pass">
+                            </div>
+                            
+                             <button class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Submit</button>
+                             
+                         </form>
+                        
+                         {%endblock%}

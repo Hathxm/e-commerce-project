@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 class customuser(AbstractUser):
     is_deleted=models.BooleanField(default=False)
+    otp=models.IntegerField(null=True,blank=True)
 
 
     
@@ -48,7 +49,10 @@ class brand(models.Model):
      
 class product(models.Model):
     img=models.ImageField( upload_to='pics', height_field=None, width_field=None, max_length=None,null=True)
+    rearimg=models.ImageField( upload_to='pics', height_field=None, width_field=None, max_length=None,null=True)
+    frontimg=models.ImageField( upload_to='pics', height_field=None, width_field=None, max_length=None,null=True)
     name=models.CharField( max_length=50)
+    discription=models.TextField()
     category=models.ForeignKey(category, on_delete=models.CASCADE)
     size=models.ManyToManyField(Size)
     brand=models.ForeignKey(brand, on_delete=models.CASCADE)
@@ -57,8 +61,8 @@ class product(models.Model):
     disc_price=models.IntegerField(("discount price"),null=True)
     is_deleted=models.BooleanField(default=False)
     
-    # insertion_time=models.DateTimeField(_(""), auto_now=False, auto_now_add=False)
-    
 
     def __str__(self) -> str:
         return self.name
+    
+    

@@ -22,7 +22,7 @@
 
 	<!-- Header -->
 
-	<header class="header trans_300">
+	
 
 		<!-- Top Navigation -->
 
@@ -99,4 +99,99 @@
 			</div>
 		</div>
 
-	</header>
+
+
+		
+				{% comment %} <div class="container">
+					<h2 class="fw-semibold text-center">Checkout</h2>
+					<div class="row">
+						<div class="col-lg-12">
+							<table class="table table-bordered">
+								<div class="row">
+									<div class="col-lg-12">
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th>Image</th>
+													<th>Name</th>
+													<th>Price</th>
+													<th>Size</th>
+													<th>Quantity</th>
+													
+												</tr>
+											</thead>
+											<tbody>
+												{% for item in data %}
+												<tr>
+													<td><img src="{{ item.product.img.url }}" alt="{{ item.name }}" class="img-thumbnail" style="max-width: 100px;"></td>
+													<td>{{ item.product }}</td>
+													<td>{{ item.price }}</td>
+													<td>{{ item.size }}</td>
+													<td>{{ item.quantity }}</td>
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+							</table>
+							<div class="d-flex justify-content-between"> <!-- Flex container for buttons and total -->
+								<div class="col-auto">
+									<a href="{% url 'viewcart' %}">
+										<button class="btn btn-danger">Back to Cart</button>
+									</a>
+								</div>
+								<div class="col-auto text-center"> <!-- Center the total amount -->
+									<p>Total Amount is</p>
+									<h3>{{ total }}</h3>
+								</div>
+								<div class="col-auto text-center"> <!-- Center the Proceed To Shipment button -->
+									<a href="{% url 'confirmation' %}">
+									<button class="btn btn-success">Proceed To Shipment</button>
+								</div>
+							</div> {% endcomment %}
+
+							<div class="container">
+								<h2 class="fw-semibold text-center">Checkout</h2>
+								<div class="row">
+									<div class="col-lg-12">
+										<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th>Image</th>
+													<th>Name</th>
+													<th>Price</th>
+													<th>Size</th>
+													<th>Quantity</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for item in data %}
+												<tr>
+													<td><img src="{{ item.product.img.url }}" alt="{{ item.name }}" class="img-thumbnail" style="max-width: 100px;"></td>
+													<td>{{ item.product }}</td>
+													<td>{{ item.price }}</td>
+													<td>{{ item.size }}</td>
+													<td>{{ item.quantity }}</td>
+												</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							
+								<div class="d-flex justify-content-between"> <!-- Flex container for buttons and total -->
+									<div class="col-auto">
+										<a href="{% url 'viewcart' %}">
+											<button class="btn btn-danger">Back to Cart</button>
+										</a>
+									</div>
+									<div class="col-auto text-center"> <!-- Center the total amount -->
+										<p>Total Amount is</p>
+										<h3>{{ total }}</h3>
+									</div>
+									<div class="col-auto text-end"> <!-- Align the Proceed To Shipment button to the right -->
+										<a href="{% url 'confirmation' %}">
+											<button class="btn btn-success">Proceed To Shipment</button>
+										</a>
+									</div>
+								</div>
+							</div>
