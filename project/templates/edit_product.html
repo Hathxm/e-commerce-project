@@ -1,119 +1,592 @@
 {%extends 'adminindex.html'%}
 {% block content %}
-<div class="container">
+{%load static%}
+<link rel="stylesheet" type="text/css" href="{% static "styles/editproduct.css" %}">
+{% comment %} <style>
+    .image-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .image-details label {
+        font-weight: bold;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
+    .product-details {
+        text-align: center;
+        padding: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .product-image {
+        max-width: 70%;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+    }
+
+    .product-name {
+        font-size: 24px;
+        color: #333;
+    }
+
+    .product-brand,
+    .product-category {
+        font-size: 18px;
+        color: #888;
+    }
+
+ 
+     input[type=text],select,input[type=textarea] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        resize: vertical;
+      }
+      
+      /* Style the label to display next to the inputs */
+      label {
+        padding: 12px 12px 12px 0;
+        display: inline-block;
+      }
+      
+      /* Style the submit button */
+      input[type=submit] {
+        background-color: #04AA6D;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: right;
+      }
+
+
+      
+      /* Style the container */
+      .container {
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        margin-top:50px;
+        
+      }
+      
+      /* Floating column for labels: 25% width */
+      .col-25 {
+        float: left;
+        width: 25%;
+        margin-top: 6px;
+      }
+      
+      /* Floating column for inputs: 75% width */
+      .col-75 {
+        float: left;
+        width: 75%;
+        margin-top: 6px;
+      }
+      
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      .custom-radio-container {
+        border: 2px solid #333; /* Dark border */
+        padding: 10px;
+    }
+
+    .custom-radio {
+        border: 1px solid #333; /* Dark border for individual radio options */
+        padding: 5px;
+        margin: 5px;
+    }
+
+    /* Adjust the size of radio buttons and labels if needed */
+    .custom-radio input[type="radio"] {
+        transform: scale(1.5); /* Increase the radio button size */
+        margin-right: 5px; /* Adjust the spacing between radio button and label */
+    }
+
+    /* Ensure labels are aligned properly */
+    .custom-radio label {
+        vertical-align: middle; /* Align labels vertically with radio buttons */
+    }
+    .wholecontainer{
+        padding-left:42vh; 
+
+
+    }
+</style> 
+
+
+{% comment %} <div class="body-wrapper">
+<div class="container ">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <style>
-                .product-details {
-                    text-align: center;
-                    padding: 20px;
-                    margin-left:55px;
-                }
-
-                .product-image {
-                    max-width: 70%;
-                    border: 2px solid #ccc;
-                    border-radius: 5px;
-                    margin-bottom: 10px;
-                }
-
-                .product-name {
-                    font-size: 24px;
-                    color: #333;
-                }
-
-                .product-brand, .product-category {
-                    font-size: 18px;
-                    color: #888;
-                }
-                .edit-form {
-                    margin-top: 20px;
-                }
-
-                .form-group {
-                    margin-bottom: 15px;
-                }
-
-                .form-control {
-                    width: 50%; /* Expand the input field to full width */
-                    padding: 5px;
-                    font-size: 14px; /* Reduce font size */
-                    margin-left:400px;
-                }
-              
-            </style>
-
+        <div class="col-md-5 ">
+            
             <div class="product-details">
-                <img src="{{ data.img.url }}" class="product-image" alt="{{ data.name }}">
+                <div class="image-details">
+                    <label>Product Image</label>
+                    <img src="{{ data.img.url }}" class="product-image" alt="{{ data.name }}">
+                </div>
+                <div class="image-details">
+                    <label>Front Image</label>
+                    <img src="{{ data.frontimg.url }}" class="product-image" alt="{{ data.name }}">
+                </div>
+                <div class="image-details">
+                    <label>Rear Image</label>
+                    <img src="{{ data.rearimg.url }}" class="product-image" alt="{{ data.name }}">
+                </div>
                 <h2 class="product-name">{{ data.name }}</h2>
                 <p class="product-brand"><strong>Brand:</strong> {{ data.brand }}</p>
                 <p class="product-category"><strong>Category:</strong> {{ data.category }}</p>
                 <p class="product-category"><strong>Price:</strong> {{ data.price }}</p>
                 <p class="product-category"><strong>Discount Price:</strong> {{ data.disc_price }}</p>
-
+                <p class="product-category"><strong>In Stock:</strong> {{ data.in_stock}}</p>
             </div>
+        </div>
+    </div>
+</div> {% endcomment %}
+{%for i in messages%}
+{{i}}
+{%endfor%}
+
+
+
+{% comment %} <div class="container">
+  <h2 style="text-align: center; color: black; font-weight: bold; font-size: 24px;">Edit Product</h2>
+ <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+      <div class="row">
+        <div class="col-25">
+          <label for="fname">Image</label>
+        </div>
+        <div class="col-75">
+          <input type="file" class="form-control" id="image"  name="image">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="lname">Front Image</label>
+        </div>
+        <div class="col-75">
+          <input type="file" class="form-control" id="frontimage"  name="frontimage">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="country">Rear Image</label>
+        </div>
+        <div class="col-75">
+          <input type="file" class="form-control" id="rearimage"  name="rearimage">
+        </div>
+      </div>
+
+      <!-- Make the following fields similar to the image upload fields -->
+      <div class="row">
+        <div class="col-25">
+          <label for="name">Product Name</label>
+        </div>
+        <div class="col-75">
+          <input type="text" class="form-control" id="name" required name="name" value="{{ data.name }}" placeholder="Product Name">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="price">Product Price</label>
+        </div>
+        <div class="col-75">
+          <input type="text" class="form-control" id="price" required name="price" value="{{ data.price }}" placeholder="Product Price">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="disc_price">Product Discount Price</label>
+        </div>
+        <div class="col-75">
+          <input type="text" class="form-control" id="disc_price" name="disc_price" value="{{ data.disc_price }}" placeholder="Product Discount Price">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="stock">Stock</label>
+        </div>
+        <div class="col-75">
+          <input type="number" class="form-control" required id="stock" name="stock" value="{{data.in_stock}}" min="0">
+        </div>
+      </div>
+
+   
+      <!-- End of similar fields -->
+
+      <!-- The rest of the form -->
+    <div class="form-group">
+        <label for="brand">Brand</label>
+        <div class="border-2 p-3 custom-radio-container">
+            <div class="horizontal-radio-buttons row">
+                {% for i in brand %}
+                    <div class="col-3">
+                        <div class="border p-3 custom-radio">
+                            <input type="radio" name="brand" required value="{{ i.id }}" id="brand_{{ i.id }}"{% if data.brand.id == i.id %}checked{% endif %}>
+                            <label for="brand_{{ i.id }}" class="form-check-label">{{ i.name }}</label>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="size">Size</label>
+        <div class="border-2 p-3 custom-radio-container">
+            <div class="horizontal-checkboxes row">
+                {% for i in size %}
+                    <div class="col-3">
+                        <div class="border p-3 custom-checkbox">
+                            <input type="checkbox" name="size" value="{{ i.id }}" id="size_{{ i.id }}"
+                                   {% if i in data.size.all %}checked{% endif %}>
+                            <label for="size_{{ i.id }}" class="form-check-label">{{ i.size }}</label>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+   
+    
+
+
+<div class="form-group">
+    <label for="gender">Gender</label>
+    <div class="border-2 p-3 custom-radio-container">
+        <div class="horizontal-radio-buttons row">
+            {% for i in sex %}
+                <div class="col-3">
+                    <div class="border p-3 custom-radio">
+                        <input type="radio" name="gender" required  value="{{ i.id }}" id="sex_{{ i.id }}" {% if data.gender.id == i.id %}checked{% endif %}>
+                        <label for="sex_{{ i.id }}" class="form-check-label">{{ i.gender }}</label>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="category">Category</label>
+    <div class="border-2 p-3 custom-radio-container">
+        <div class="horizontal-radio-buttons row">
+            {% for i in category %}
+                <div class="col-5">
+                    <div class="border p-3 custom-radio">
+                        <input type="radio" name="category" required value="{{ i.id }}" id="category_{{ i.id }}" {% if data.category.id == i.id %}checked{% endif %}>
+                        <label for="category_{{ i.id }}" class="form-check-label">{{ i.wear }}</label>
+                    </div>
+                </div>
+            {% endfor %}  
+        </div>
+    </div>
+</div>
+      
+      <div class="row">
+        <div class="col-25">
+          <label for="subject">Description</label>
+        </div>
+        <div class="col-75">
+          <input class="textarea" type="textarea" id="subject" name="discription" required value="{{data.discription}}" style="height:200px"></input>
+        </div>
+      </div>
+      <div class="row">
+        <button type="submit" class="btn btn-success mt-1" >Edit Product</button>
+      </div>
+    </form> 
+</div> {% endcomment %}
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static "styles/salesreport.css" %}">
+ 
+    
+
+    <h2 class="text-align: center; color: black; font-weight: bold; font-size: 24px;">{{data.name}}</h2>
+
+    <div class="table-wrapper">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+
+                <div class="product-details">
+                    <div class="image-details">
+                        <label style="color: black;">Product Image</label>
+                        <img src="{{ data.img.url }}" class="product-image" alt="{{ data.name }}">
+                    </div>
+                    <div class="image-details">
+                        <label style="color: black;">Front Image</label>
+                        <img src="{{ data.frontimg.url }}" class="product-image" alt="{{ data.name }}">
+                    </div>
+                    <div class="image-details">
+                        <label style="color: black;">Rear Image</label>
+                        <img src="{{ data.rearimg.url }}" class="product-image" alt="{{ data.name }}">
+                    </div>
+                    <h2 class="product-name">{{ data.name }}</h2>
+                    <p class="product-brand"style="color: black;"><strong style="color: black;">Brand:</strong> {{ data.brand }}</p>
+                    <p class="product-category"style="color: black;"><strong style="color: black;">Category:</strong> {{ data.category }}</p>
+                    <p class="product-category"style="color: black;"><strong style="color: black;">Price:</strong> {{ data.price }}</p>
+                    <p class="product-category"style="color: black;"><strong style="color: black;">Discount Price:</strong> {{ data.disc_price }}</p>
+                    <p class="product-category"style="color: black;"><strong style="color: black;">In Stock:</strong> {{ data.in_stock}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+ <div class="container ml-4" >
+  <h2 style="text-align: center; color: black; font-weight: bold; font-size: 24px;">Edit Product</h2>
+  <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+  <div class="row">
+    <div class="col-25">
+      <label for="fname">Image</label>
+    </div>
+    <div class="col-75">
+      <input type="file" class="form-control" id="image"  name="image">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-25">
+      <label for="lname">Front Image</label>
+    </div>
+    <div class="col-75">
+      <input type="file" class="form-control" id="frontimage"  name="frontimage">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-25">
+      <label for="country">Rear Image</label>
+    </div>
+    <div class="col-75">
+      <input type="file" class="form-control" id="rearimage"  name="rearimage">
+    </div>
+  </div>
+
+  <!-- Make the following fields similar to the image upload fields -->
+  <div class="row">
+    <div class="col-25">
+      <label for="name">Product Name</label>
+    </div>
+    <div class="col-75">
+      <input type="text" class="form-control" id="name" required name="name" value="{{ data.name }}" placeholder="Product Name">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-25">
+      <label for="price">Product Price</label>
+    </div>
+    <div class="col-75">
+      <input type="text" class="form-control" id="price" required name="price" value="{{ data.price }}" placeholder="Product Price">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-25">
+      <label for="disc_price">Product Discount Price</label>
+    </div>
+    <div class="col-75">
+      <input type="text" class="form-control" id="disc_price" name="disc_price" value="{{ data.disc_price }}" placeholder="Product Discount Price">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-25">
+      <label for="stock">Stock</label>
+    </div>
+    <div class="col-75">
+      <input type="number" class="form-control" required id="stock" name="stock" value="{{data.in_stock}}" min="0">
+    </div>
+  </div>
+
+
+  <!-- End of similar fields -->
+
+  <!-- The rest of the form -->
+<div class="form-group">
+    <label for="brand">Brand</label>
+    <div class="border-2 p-3 custom-radio-container">
+        <div class="horizontal-radio-buttons row">
+            {% for i in brand %}
+                <div class="col-3">
+                    <div class="border p-3 custom-radio">
+                        <input type="radio" name="brand" required value="{{ i.id }}" id="brand_{{ i.id }}"{% if data.brand.id == i.id %}checked{% endif %}>
+                        <label for="brand_{{ i.id }}" class="form-check-label">{{ i.name }}</label>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    <label for="size">Size</label>
+    <div class="border-2 p-3 custom-radio-container">
+        <div class="horizontal-checkboxes row">
+            {% for i in size %}
+                <div class="col-3">
+                    <div class="border p-3 custom-checkbox">
+                        <input type="checkbox" name="size" value="{{ i.id }}" id="size_{{ i.id }}"
+                               {% if i in data.size.all %}checked{% endif %}>
+                        <label for="size_{{ i.id }}" class="form-check-label">{{ i.size }}</label>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </div>
 
 
-<div class="product-details">
-    <form class="edit-form" method="post" action="" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="image">Image</label>
-            <input type="file" class="form-control" id="image" required name="image" size="20"> <!-- Adjust the size attribute -->
-        </div>
+
+
+<div class="form-group">
+<label for="gender">Gender</label>
+<div class="border-2 p-3 custom-radio-container">
+    <div class="horizontal-radio-buttons row">
+        {% for i in sex %}
+            <div class="col-3">
+                <div class="border p-3 custom-radio">
+                    <input type="radio" name="gender" required  value="{{ i.id }}" id="sex_{{ i.id }}" {% if data.gender.id == i.id %}checked{% endif %}>
+                    <label for="sex_{{ i.id }}" class="form-check-label">{{ i.gender }}</label>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</div>
+
+<div class="form-group">
+<label for="category">Category</label>
+<div class="border-2 p-3 custom-radio-container">
+    <div class="horizontal-radio-buttons row">
+        {% for i in category %}
+            <div class="col-5">
+                <div class="border p-3 custom-radio">
+                    <input type="radio" name="category" required value="{{ i.id }}" id="category_{{ i.id }}" {% if data.category.id == i.id %}checked{% endif %}>
+                    <label for="category_{{ i.id }}" class="form-check-label">{{ i.wear }}</label>
+                </div>
+            </div>
+        {% endfor %}  
+    </div>
+</div>
+</div>
+  
+  <div class="row">
+    <div class="col-25">
+      <label for="subject">Description</label>
+    </div>
+    <div class="col-75">
+      <input class="textarea" type="textarea" id="subject" name="discription" required value="{{data.discription}}" style="height:200px"></input>
+    </div>
+  </div>
+  <div class="row">
+    <button type="submit" class="btn btn-success mt-1" >Edit Product</button>
+  </div>
+</form> 
+</div>
+
+<style>
+     input[type=text],select,input[type=textarea] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        resize: vertical;
+      }
+      
+      /* Style the label to display next to the inputs */
+      label {
+        padding: 12px 12px 12px 0;
+        display: inline-block;
+      }
+      
+      /* Style the submit button */
+      input[type=submit] {
+        background-color: #04AA6D;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: right;
+      }
+      
+      /* Style the container */
+      .container {
         
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name"  required name="name" value="{{ data.name }}" size="20"> <!-- Adjust the size attribute -->
-        </div>
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        margin-top:50px;
+        margin-left:10px;
+     
+      }
+      
+      /* Floating column for labels: 25% width */
+      .col-25 {
+        float: left;
+        width: 25%;
+        margin-top: 6px;
+      }
+      
+      /* Floating column for inputs: 75% width */
+      .col-75 {
+        float: left;
+        width: 75%;
+        margin-top: 6px;
+      }
+      
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      .custom-radio-container {
+        border: 2px solid #333; /* Dark border */
+        padding: 10px;
+    }
 
-        <div class="form-group">
-            <label for="name">Price</label>
-            <input type="text" class="form-control" id="name"  required name="name" value="{{ data.price }}" size="20"> <!-- Adjust the size attribute -->
-        </div>
+    .custom-radio {
+        border: 1px solid #333; /* Dark border for individual radio options */
+        padding: 5px;
+        margin: 5px;
+    }
 
-       
-         <div class="form-group ">
-            <label for="brand">Brand</label>
-            <div class="col-5 offset-md-4 border p-3">
-                <div class="horizontal-radio-buttons row">
-                    {% for i in brand %}
-                        <div class="col-3">
-                            <div class="border  p-3">
-                                <input type="radio" name="brand" value="{{ i.id }}" id="brand_{{ i.id }}">
-                                <label for="brand_{{ i.id }}" class="form-check-label">{{ i.name }}</label>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div> 
+    /* Adjust the size of radio buttons and labels if needed */
+    .custom-radio input[type="radio"] {
+        transform: scale(1.5); /* Increase the radio button size */
+        margin-right: 5px; /* Adjust the spacing between radio button and label */
+    }
 
+    /* Ensure labels are aligned properly */
+    .custom-radio label {
+        vertical-align: middle; /* Align labels vertically with radio buttons */
+    }
+     .table-wrapper {
+      overflow-x: auto; /* Add horizontal scroll if needed */
+    } 
+    
 
-        <div class="form-group ">
-            <label for="brand">Category</label>
-            <div class="col-6 offset-md-4 border-2 p-3">
-                <div class="horizontal-radio-buttons row">
-                    {% for i in category %}
-                        <div class="col-5">
-                            <div class="border  p-3">
-                                <input type="radio" name="category"  required  value="{{ i.id }}" id="category_{{ i.id }}">
-                                <label for="category_{{ i.id }}" class="form-check-label">{{ i.wear }}</label>
-                            </div>
-                        </div>
-                     
+  /* Style for product images */
+  .product-image {
+      width: 100%; /* Make all images take the full width of their container */
+      height: auto; /* Maintain the aspect ratio */
+      display: block; /* Remove any extra spacing */
+      margin-bottom: 10px; /* Add spacing between images */
+  }
+  
+    
 
-                    {% endfor %}
-                </div>
-            </div>
-        </div> 
-     <button type="submit" class="btn btn-primary ">Update</button>
-    </form>
-</div>
-</div>
-</div>
-</div>
+</style>
 {% endblock %}

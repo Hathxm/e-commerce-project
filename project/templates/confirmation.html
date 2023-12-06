@@ -119,7 +119,7 @@
 
 <body>
 
-<div class="super_container">
+
 
 	<!-- Header -->
 
@@ -183,12 +183,7 @@
 							
 							  <ul class="navbar_user">
 								<li><a href="{%url 'userprofile'%}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-								 <li class="checkout">
-									<a href="{%url 'viewcart'%}">
-										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-										
-									</a>
-								</li> 
+								
 							</ul> 
 							
 							 <div class="hamburger_container">
@@ -198,13 +193,11 @@
 					</div>
 				</div>
 			</div>
-		</div>
-
+		</div> 
 		
 
-
-	
-	<div class="container">
+{% comment %} 
+ <div class="container">
 		<div class="row">
 			<div class="col-lg-6">
 				<div class="form-box mt-4">
@@ -214,12 +207,12 @@
 						<!-- Existing form fields for the new address -->
 						<div class="form-group">
 							<label for="fullname">Full Name</label>
-							<input type="text" id="field1" name="fullname" placeholder="Enter Your Full Name">
+							<input type="text" id="field1" name="fullname" placeholder="Enter Your Full Name" required>
 						</div>
 	
 						<div class="form-group">
 							<label for="district">District</label>
-							<select id="district" name="district">
+							<select id="district" name="district" required>
 								<option value="">Select a district</option>
 								{% for district in districts %}
 								<option value="{{ district.id }}">{{ district.district }}</option>
@@ -229,17 +222,17 @@
 	
 						<div class="form-group">
 							<label for="streetaddress">Street Address</label>
-							<input type="text" id="field4" name="streetaddress" placeholder="Enter Street Address">
+							<input type="text" id="field4" name="streetaddress" placeholder="Enter Street Address" required>
 						</div>
 	
 						<div class="form-group">
 							<label for="phone_number">Phone Number</label>
-							<input type="text" id="phone" name="phone_number" placeholder="Enter phone number">
+							<input type="text" id="phone" name="phone_number" placeholder="Enter phone number" required>
 						</div>
 	
 						<div class="form-group">
 							<label for="pin">PIN</label>
-							<input type="text" id="pin" name="pin" placeholder="Enter PIN">
+							<input type="text" id="pin" name="pin" placeholder="Enter PIN" required>
 						</div>
 	
 						<button type="submit" class="btn btn-primary">Add Address</button>
@@ -274,11 +267,11 @@
  	
 				 <div class="address-selection-box order-box ">
 					<h2>Previous Addresses</h2>
-					<form method="POST">
+					<form method="POST"> 
 						{% csrf_token %}
 						{% for address in prev_address %}
 						<div class="form-check ml-2">
-							<input class="form-check-input" type="radio" name="previous_address" id="prevAddress{{ address.id }}" value="{{ address.id }}">
+							<input class="form-check-input" type="radio" name="previous_address" id="prevAddress{{ address.id }}" value="{{ address.id }}" required>
 							<label class="form-check-label" for="prevAddress{{ address.id }}">
 								{{ address.full_name }},{{ address.street_address }},{{address.pin}}
 							</label>
@@ -291,10 +284,70 @@
 				</div>
 			</div>
 		</div>
-	</div> 
-		 
-		
-		</body>
-		</html>
+	</div>    {% endcomment %}
+	
+	
+	
+	
+	
+	
+	
+			
+	
+	  
+	
+	  
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	  
+	
+	
+	  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
 	

@@ -1,141 +1,94 @@
-<!DOCTYPE html>
- <html lang="en">
- <head>
+ {%extends 'checkout.html'%} 
+
      {% load static %}
- <title>Colo Shop</title>
- <meta charset="utf-8">
- <meta http-equiv="X-UA-Compatible" content="IE=edge">
- <meta name="description" content="Colo Shop Template">
- <meta name="viewport" content="width=device-width, initial-scale=1">
- <link rel="stylesheet" type="text/css" href="{% static "styles/bootstrap4/bootstrap.min.css" %}">
- <link href="{% static "plugins/font-awesome-4.7.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
- <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.css" %}">
- <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.theme.default.css" %}">
- <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}">
- <link rel="stylesheet" type="text/css" href="{% static "styles/main_styles.css" %}">
- <link rel="stylesheet" type="text/css" href="{% static "styles/responsive.css" %}">
-
- <style>
-  
-<style>
-    /* Center the container horizontally and vertically */
-    .center-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh; /* Adjust the height as needed */
-    }
-
-    /* Center the "Cancel Order" button within its cell */
-    .orders-table .btn {
-        display: flex;
-        justify-content: center;
-    }
 
 
-</style>
- </head>
- 
- <body>
-     <div class="super_container">
- 
-         <!-- Header -->
-     
-         
-     
-             <!-- Top Navigation -->
-     
-             <div class="top_nav">
-                 <div class="container">
-                     <div class="row">
-                         <div class="col-md-6">
-                             <div class="top_nav_left">free shipping on all U.S orders over $50</div>
-                         </div>
-                         <div class="col-md-6 text-right">
-                             <div class="top_nav_right">
-                                 <ul class="top_nav_menu">
-                                     <!-- Currency / Language / My Account -->
-                                     <li class="account">
-                                         <a href="#">
-                                             My Account
-                                             <i class="fa fa-angle-down"></i>
-                                         </a>
-                                         <ul class="account_selection">
-                                             <li><a href="{% url 'userlogout' %}"><i class="fa fa-sign-in" aria-hidden="true"></i>Log Out</a></li>
-                                         </ul>
-                                     </li>
-                                 </ul>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-     
-             <!-- Main Navigation -->
-             <div class="main_nav_container">
-                 <div class="container">
-                     <div class="row">
-                         <div class="col-lg-12 text-right">
-                             <div class="logo_container">
-                                 <div class="col-md-4 gradient-custom text-center text-white"
-                                      style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem; display: flex; align-items: center; margin-top: 90px;">
-                                     <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-                                          alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
-                                     <a href="#" style="margin-left: 10px;">Stree<span>Trends</span></a>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                 </div>
-             </div>
-             <nav class="navbar">
-                 <ul class="navbar_menu">
-                     <li><a href="{% url 'landing-pg' %}">home</a></li>
-                     <li><a href="#">About</a></li>
-                     <li><a href="{% url 'usersignup' %}">Sign up</a></li>
-                     <li><a href="{% url 'contact' %}">contact</a></li>
-                 </ul>
-                 <ul class="navbar_user">
-                     <li><a href="{% url 'userprofile' %}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-                 </ul>
-             </nav>
-            </div> 
-            
-            <!-- Orders Table -->
-            <div class="center-container">
-                <div class="orders-table">
-                    <h3>Your Orders is {{order.order_status}}</h3>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Order Number</th>
-                                <th>Product</th>
-                                <th>Total Amount</th>
-                                <th>Status</th>
-                                <th>Cancel</th>
-                                <th>Return</th>
 
-                                
-                                <!-- Added a column for actions -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for user_order in order.items.all %}
-                            <tr>
-                                <td>{{ user_order.id }}</td>
-                                <td>{{ user_order.product.name }}</td>
-                                <td>${{ user_order.price }}</td>
-                                <td>{{ user_order.status }}</td>
-                                <td> <a href="{%url 'cancel_item' user_order.id%}"><button class="btn btn-primary">Cancel item</button></td>
-                                <td> <a href="{%url 'return_item' user_order.id%}"><button class="btn btn-primary">Return item</button></td>
+              {%block order_status%}		
+<link rel="stylesheet" type="text/css" href="{% static "styles/order_status.css" %}">
+<div class="main_slider" style="margin-top:200px;">
+               <div class="container">
+                <h1>{{user}}'s orders</h1>
+                  <table class="rwd-table">
+                    <tbody>
+                      <tr>
+                        <th>Order number</th>
+                        <th>Address</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Download invoice</th>
+                        <th>Details</th>
+                        <th>Return/Cancel</th>
 
-                                </a>
-                              
-                            </tr>
-                            {% endfor %}
+                      </tr>
+                      <tr>
+                        {% for item in data %}
                         
-                        </tbody>
-                    </table>
-                     <a href="{% url 'cancel_order' order.id %}" class="btn btn-danger">Cancel Order</a> 
+                        <td data-th="Supplier Code">
+                            {{item.id}}
+                        </td>
+                        <td data-th="Supplier Name">
+                            {{item.address.district}}
+                        </td>
+                        <td data-th="Invoice Number">
+                          {{item.order_status}}
+                        </td>
+                        <td data-th="Net Amount">
+                           {{item.total}}
+                          </td>
+                          <td data-th="Invoice Date">
+                            <a href="{%url 'orderinvoice' item.id%}"><button class="btn btn-primary btn-sm">Print Invoice</button></a>
+                            
+                        </td>
+                        <td data-th="Invoice Date">
+                            <a href="{%url 'order_items' item.id%}"><button class="btn btn-primary btn-sm">View details</button></a>
+                            
+                        </td>
+                        <td data-th="Due Date">
+                            {%if item.order_status_id == 1 %}
+                            <a href="{%url 'return_order' item.id%}"class="delete-link"><button class="btn btn-primary btn-sm">Return Order</button></a>
+                            <a href="{%url 'cancel_order' item.id%}"class="cancel-link"><button class="btn btn-primary btn-sm">Cancel Order</button></a>
+                            {%endif%}
+                        </td>
+                        
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
                 </div>
-            </div>
+              </div>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteLinks = document.querySelectorAll('.delete-link,.cancel-link');
+        deleteLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                swal.fire({
+                    title: "Are you sure?",
+                    text: " you want to cancel this order!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!',
+                    allowOutsideClick: false  // Add this line to prevent clicking outside the modal
+                })
+                .then((result) => {
+                    if(result.isConfirmed){
+                        // Perform the redirection without reloading the page
+                        window.location.href = link.getAttribute('href');
+                     
+                    } else {
+                        // Do nothing if the user cancels
+                       
+                    }
+                });
+            });
+        });
+    });
+</script>
+              {% endblock %}
+     

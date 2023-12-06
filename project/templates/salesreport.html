@@ -1,0 +1,71 @@
+{% extends "adminindex.html" %}
+{%block content%}
+{%load static%}
+<link rel="stylesheet" type="text/css" href="{% static "styles/salesreport.css" %}">
+
+
+    <h2>Sales Report</h2>
+    
+
+    <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Order Made</th>
+                <th>Order Status</th>
+                <th>Payment Status</th>
+                <th>Total</th>
+                <th>Customer</th>
+                <th>View items</th>
+            </tr>
+            </thead>
+            <tbody>
+                {%for i in orders%}
+            <tr>
+                <td>{{i.id}}</td>
+                <td>{{i.created_at}}</td>
+                <td>{{i.order_status}}</td>
+                <td>{{i.payment}}</td>
+                <td>{{i.total}}</td>
+                <td>{{i.user.username}}</td>
+                <td><a href="{%url 'orderdetails' i.id%}" class="btn btn-primary btn-sm">view details</a></td>
+                <td></td>
+                
+            </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+        <div class="filter-inputs">
+            <form method="post">
+                {% csrf_token %}
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start-date">
+    
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end-date">
+
+             <label for="file_format">Select Format:</label>
+            <select id="file_format" name="file_format">
+                <option value="view">View</option>
+                <option value="pdf">PDF</option>
+                <option value="excel">Excel</option>
+
+            </select> 
+        
+            <button type="submit">Download/View Report</button>
+        </form>    
+        </div>
+  
+    
+   
+
+<script src="{% static "../assets/libs/jquery/dist/jquery.min.js" %}"></script>
+<script src="{%static "../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"%}"></script>
+<script src="{% static "../assets/js/sidebarmenu.js" %}"></script>
+<script src="{% static "../assets/js/app.min.js" %}"></script>
+<script src="{% static "../assets/libs/apexcharts/dist/apexcharts.min.js" %}"></script>
+<script src="{% static "../assets/libs/simplebar/dist/simplebar.js" %}"></script>
+<script src="{% static "../assets/js/dashboard.js" %}"></script>
+</body>
+{% endblock %}

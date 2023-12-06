@@ -1,6 +1,6 @@
 {%extends 'adminindex.html'%}
 {% block content %}
-<div class="body-wrapper">
+
    
     <!-- Removed comment for header section -->
     <!-- Header Start -->
@@ -26,11 +26,11 @@
                   <button class="btn btn-primary btn-sm">Orders</button>
                   </a>
                   {% if item.is_deleted %}
-                  <a href="{% url 'undlt_user' item.id %}">
+                  <a href="{% url 'undlt_user' item.id %}" class="undelete-link">
                   <button class="btn btn-danger btn-sm">Blocked</button>
                   </a>
                   {% else %}
-                  <a href="{% url 'dlt_user' item.id %}">
+                  <a href="{% url 'dlt_user' item.id %}" class="delete-link">
                   <button class="btn btn-warning btn-sm">Block</button>
                   </a>
               {% endif %}
@@ -46,5 +46,70 @@
    
     <!-- End of Row 1 -->
   </div>
-</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var deleteLinks = document.querySelectorAll('.delete-link');
+      deleteLinks.forEach(function(link) {
+          link.addEventListener('click', function(event) {
+              event.preventDefault();
+
+              swal.fire({
+                  title: "Are you sure?",
+                  text: "you want to restrict this user!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: '#d33',
+                  cancelButtonColor: '#3085d6',
+                  confirmButtonText: 'Yes, restrict!',
+                  allowOutsideClick: false  // Add this line to prevent clicking outside the modal
+              })
+              .then((result) => {
+                  if(result.isConfirmed){
+                      // Perform the redirection without reloading the page
+                       window.location.href = link.getAttribute('href'); 
+                   
+                  } else {
+                      // Do nothing if the user cancels
+                     
+                  }
+              });
+          });
+      });
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var deleteLinks = document.querySelectorAll('.undelete-link');
+      deleteLinks.forEach(function(link) {
+          link.addEventListener('click', function(event) {
+              event.preventDefault();
+
+              swal.fire({
+                  title: "Are you sure?",
+                  text: "you want to unblock this user!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: '#d33',
+                  cancelButtonColor: '#3085d6',
+                  confirmButtonText: 'Yes, unblock !',
+                  allowOutsideClick: false  // Add this line to prevent clicking outside the modal
+              })
+              .then((result) => {
+                  if(result.isConfirmed){
+                      // Perform the redirection without reloading the page
+                       window.location.href = link.getAttribute('href'); 
+                   
+                  } else {
+                      // Do nothing if the user cancels
+                     
+                  }
+              });
+          });
+      });
+  });
+</script>
+
 {%endblock%}

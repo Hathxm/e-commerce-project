@@ -1,3 +1,198 @@
+
+{% load static %}
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>Colo Shop</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="description" content="Colo Shop Template">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="{% static "styles/bootstrap4/bootstrap.min.css" %}">
+    <link href="{% static "plugins/font-awesome-4.7.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.theme.default.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "styles/main_styles.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "styles/responsive.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "styles/payment.css" %}">
+    
+    <script src="path-to-lightbox/lightbox.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+     <style>
+        .payment_options_box {
+            text-align: center;
+            background-color: #f0f0f0;
+            margin-top: 100px;
+        }
+
+        .order-box {
+            background-color: #f0f0f0;
+        }
+        
+    </style>
+</head>
+
+<body>
+  
+<div class="super_container">
+
+	<!-- Header -->
+
+	<header class="header trans_300">
+
+		<!-- Top Navigation -->
+
+		<div class="top_nav">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-6">
+						<div class="top_nav_left">free shipping on all u.s orders over $50</div>
+					</div>
+					<div class="col-md-6 text-right">
+						<div class="top_nav_right">
+							<ul class="top_nav_menu">
+
+								<!-- Currency / Language / My Account -->
+ 
+								<li class="account">
+									<a href="#">
+										My Account
+										<i class="fa fa-angle-down"></i>
+									</a>
+									<ul class="account_selection">
+										<li><a href="{%url 'userlogout'%}"><i class="fa fa-sign-in" aria-hidden="true"></i>Log out</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Main Navigation -->
+
+		
+		<div class="main_nav_container">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-12 text-right">
+						<div class="logo_container">
+							<div class="col-md-4 gradient-custom text-center text-white"
+								 style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem; display: flex; align-items: center; margin-top: 90px;">
+								<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+									 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+								<a href="#" style="margin-left: 10px;">Stree<span>Trends</span></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+						<nav class="navbar">
+							<ul class="navbar_menu">
+								<li><a href="{%url 'landing-pg'%}">home</a></li>								
+								<li><a href="#">About</a></li>			
+								<li><a href="{%url 'contact'%}">contact</a></li>
+							</ul>
+							
+							  <ul class="navbar_user">
+								<li>
+									<a href="{%url 'userprofile'%}"><i class="fa fa-user" aria-hidden="true"></i>
+									</a>
+								</li>
+								 <li >
+									<a href="{%url 'wishlist'%}">
+										<i class="fa fa-heart"></i>
+									</a>
+								</li> 
+							
+								<li >
+									<a href="{%url 'viewcart'%}">
+										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+									</a>
+								</li>
+								<li >
+									<a href="{%url 'order_status'%}">
+										<i class="fa fa-shopping-bag"></i>
+									</a>
+								</li>
+								
+							</ul> 
+							
+							 <div class="hamburger_container">
+								<i class="fa fa-bars" aria-hidden="true"></i>
+							</div> 
+						</nav>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</header>
+
+                       
+    <div class="containerr rounded bg-white">
+        <div class="row d-flex justify-content-center pb-5">
+            <div class="col-sm-5 col-md-5 ml-1">
+                <div class="py-4 d-flex flex-row">
+                    <h5><span class="fa fa-check-square-o"></span><b>ELIGIBLE</b> | </h5><span class="pl-2">Pay</span>
+                </div>
+                {% for item in items %}
+                    <h4 class="green">${{ item.price }}</h4>
+                    <div class="d-flex pt-2">
+                        <div><p><b>{{ item.product.name }}</b><span class="green">*{{ item.quantity }}</span></p></div>
+                        <div class="ml-auto"><img src="{{ item.product.img.url }}" style="max-width: 100px;"></div>
+                    </div>
+                    <p>{{ item.product.discription }}</p>
+                    <hr>
+                {% endfor %}
+            </div>
+    
+            <div class="bg-light rounded d-flex flex-column order-recap ml-3">
+                <div class="p-2"><h4>Order Recap</h4></div>
+                {% for item in items %}
+                    <div class="p-2 d-flex">
+                        <div class="col-8">{{ item.product.name }}</div>
+                        <div class="ml-auto">${{ item.price }}</div>
+                    </div>
+                {% endfor %}
+                <div class="p-2 d-flex">
+                    <div class="col-8"><b>Total</b></div>
+                    <div class="ml-auto"><b class="green">${{ total }}</b></div>
+                </div>
+                <form id="payment_form" method="post">
+                    {% csrf_token %}
+                    <button type="button" id="rzp-button1" class="btn btn-primary align-self-end mt-auto">Pay with Razorpay</button>
+                </form>
+                <div class="mt-2">
+                    {% if wallet_option %}
+                        <a href="{% url 'walletpayment' ordereditems.id %}">
+                            <button type="button" class="btn btn-primary align-self-end">Pay with wallet</button>
+                        </a>
+                    {% else %}
+                        <a>
+                            <button type="button" class="btn btn-danger align-self-end">Insufficient fund in wallet</button>
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'cod' ordereditems.id %}">
+                        <button type="button" class="btn btn-primary align-self-end">COD</button>
+                    </a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+  
+    
+    
+     {% endcomment %}
+{% comment %} {% block content %} {% endcomment %}
+{% comment %} <link rel="stylesheet" type="text/css" href="{% static "styles/payment.css" %}">  {% endcomment %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,131 +203,264 @@
 <meta name="description" content="Colo Shop Template">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="{% static "styles/bootstrap4/bootstrap.min.css" %}">
-<link href="{% static "plugins/font-awesome-4.7.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.theme.default.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "styles/main_styles.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "styles/responsive.css" %}">
-<script src="path-to-lightbox/lightbox.js"></script>
-<style>
-   
-      .payment_options_box {
-        text-align: center;
-        background-color: #f0f0f0;
-        margin-top:100px;
-        
-    }
-    .order-box {
-    background-color: #f0f0f0;
-    }
-</style>
+{% comment %} <link href="{% static "plugins/font-awesome-4.7.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css {% endcomment %}
+{% comment %} <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.css" %}"> {% endcomment %}
+{% comment %} <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.theme.default.css" %}"> {% endcomment %}
+{% comment %} <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}"> {% endcomment %}
+{% comment %} <link rel="stylesheet" type="text/css" href="{% static "styles/main_styles.css" %}"> {% endcomment %}
+{% comment %} <link rel="stylesheet" type="text/css" href="{% static "styles/responsive.css" %}">  {% endcomment %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 
 <body>
-    <div class="super_container">
 
-        <!-- Header -->
-    
-        
-    
-            <!-- Top Navigation -->
-    
-            <div class="top_nav">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="top_nav_left">free shipping on all U.S orders over $50</div>
-                        </div>
-                        <div class="col-md-6 text-right">
-                            <div class="top_nav_right">
-                                <ul class="top_nav_menu">
-                                    <!-- Currency / Language / My Account -->
-                                    <li class="account">
-                                        <a href="#">
-                                            My Account
-                                            <i class="fa fa-angle-down"></i>
-                                        </a>
-                                        <ul class="account_selection">
-                                            <li><a href="{% url 'userlogout' %}"><i class="fa fa-sign-in" aria-hidden="true"></i>Log Out</a></li>
-                                        </ul>
-                                    </li>
-                                </ul>
+
+	<!-- Slider -->
+	
+	
+		
+<div class="container mt-4 p-0">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white pt-3 px-md-4 px-2">
+        <div class="container-fluid"> 
+            <div >
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                         alt="Avatar" class="img-fluid my-5" style="width: 80px;">
+                    <a style="margin-left:25px; color:black; font-size:40px;"   >STREE<span style=" color:red">TRENDS</span></a>
+                </div>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 ml-4">
+                    {% comment %} <li class="nav-item"> <a class="nav-link active" href="#"><b>New</b></a> </li> {% endcomment %}
+                    <li class="nav-item"> <a class="nav-link" href="#"><b>Men</b></a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="#"><b>Women</b></a> </li>
+                    <li class="nav-item"> <a class="nav-link" href="#"><b>Accessories</b></a> </li>
+                    {% comment %} <li class="nav-item"> <a class="nav-link" href="#">Special Offers</a> </li> {% endcomment %}
+                </ul>
+                <ul class="d-flex mb-0 ml-5">
+                    <li class="nav-item pe-3">
+                        <div class="d-flex align-items-center">
+                            <div class="icon me-3"> <span class="fa fa-shopping-cart"></span> </div>
+                            <div class="cart">
+                                <small class="">3 items</small>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-    
-            <!-- Main Navigation -->
-            <div class="main_nav_container">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12 text-right">
-                            <div class="logo_container">
-                                <div class="col-md-4 gradient-custom text-center text-white"
-                                     style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem; display: flex; align-items: center; margin-top: 90px;">
-                                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-                                         alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
-                                    <a href="#" style="margin-left: 10px;">Stree<span>Trends</span></a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <nav class="navbar">
-                <ul class="navbar_menu">
-                    <li><a href="{% url 'landing-pg' %}">home</a></li>
-                    <li><a href="#">About</a></li>
-                    <li><a href="{% url 'usersignup' %}">Sign up</a></li>
-                    <li><a href="{% url 'contact' %}">contact</a></li>
+                    </li>
+                  
                 </ul>
-                <ul class="navbar_user">
-                    <li><a href="{% url 'userprofile' %}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-                </ul>
-            </nav>
-      
-    
-                    
-    
-            <div class="content_container">
-                <div class="centered_container">
-                    <div class="payment_options_box">
-                        <h2 class="payment_header">Payment Options</h2>
-                        <form id="payment_form" method='post'>
-                            {% csrf_token %}
-                            {% for i in data %}
-                            <label>
-                                <input type="radio" name="payment_option" value="{{i.id}}"> {{ i }}
-                            </label><br>
-                            {% endfor %}
-                            <button type="submit" class="btn btn-primary">Proceed to Payment</button>
-                        </form>
-                       
-                    </div>
-        
-                    <div class="order-box text-center mt-4">
-                        <div class="order-details">
-                            <h2>Your Orders</h2>
-                            <div class="order-list centered-list" style="max-height: 200px; overflow-y: auto;">
-                                <ul>
-                                    {% for item in items %}
-                                    <li>
-                                        <img src="{{ item.product.img.url }}" alt="Product Image" class="img-thumbnail" style="max-width: 80px;">
-                                        <div class="product-details">
-                                            <span class="product-name">{{ item.product.name }}</span>
-                                            <span class="product-quantity">x {{ item.quantity }}</span>
+            </div>
+        </div>
+    </nav>
+    <div class="row px-md-4 px-2 pt-4">
+        <div class="col-lg-8">
+            <p class="pb-2 fw-bold">Order</p>
+            <div class="card">
+                <div class="ribbon ribbon-top-right"><span>SALE TIME!</span></div>
+                <div>
+                    <div class="table-responsive px-md-4 px-2 pt-3">
+                        <table class="table table-borderless">
+                            <tbody>
+
+                                {% for item in items %}
+                                <tr class="border-bottom">
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div> <img class="pic" src="{{item.product.img.url}}" alt=""> </div>
+                                            <div class="ps-3 d-flex flex-column justify-content">
+                                                <p class="fw-bold"><b>{{item.product.name}}</p> <small class=" d-flex"> <span class=" text-muted"><b>Brand:</b></span> <span class=" fw-bold">{{item.product.brand}}</span> </small> <small class=""> <span class=" text-muted"><b>Size:</b></span> <span class=" fw-bold">{{item.size}}</span></b></small>
+                                            </div>
                                         </div>
-                                        <span class="product-price">{{ item.price }}</span>
-                                    </li>
-                                    {% endfor %}
-                                    <!-- Add more items as needed -->
-                                </ul>
-                            </div>
-                            <p>Total: {{ total }}</p>
-                        </div>
+                                    </td>
+                                    <td>
+                                        Price
+                                        <div class="d-flex mt-4">
+                                            <p class="pe-3"><span class="red">{{item.price}}</span></p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                      
+                                        Quantity<div class="round mt-3"> <span class="">{{item.quantity}}</span> </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {%endfor%}
+
+
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-lg-4 payment-summary">
+            <p class="fw-bold pt-lg-0 pt-4 pb-2">Payment Summary</p>
+            <div class="card px-md-3 px-2 pt-4">
+                <div class="unregistered mb-4"> <span class="py-1">unregistered account</span> </div>
+                <div class="d-flex justify-content-between pb-3"> <small class="text-muted">Transaction code</small>
+                    <p class="">VC115665</p>
+                </div>
+                <div class="d-flex justify-content-between b-bottom"> <input type="text" class="ps-2" id="coupon" placeholder="COUPON CODE">
+                    <div class="btn btn-primary red_button">Apply</div>
+                </div>
+                <div class="d-flex flex-column b-bottom">
+                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">Order Summary</small>
+                        <p>$122</p>
+                    </div>
+                    <div class="d-flex justify-content-between pb-3"> <small class="text-muted">Additional Service</small>
+                        <p>$22</p>
+                    </div>
+                    <div class="d-flex justify-content-between"> <small class="text-muted">Total Amount</small>
+                        <p id="total">{{total}}</p>
+                    </div>
+                </div>
+                <div class="sale my-3"> <span>sale<span class="px-1">expiring</span><span>in</span>:</span><span class="red">21<span class="ps-1">hours</span>,31<span class="ps-1 ">minutes</span></span> </div>
+            </div>
+        </div>
+        <div class="col-lg-8 delivery px-md-3 px-1">
+           
+        </div>
+        <div class="col-lg-4">
+            <p class="pt-4 fw-bold pb-3">Payment Service</p>
+            <div class="card p-3 mb-2">
+                <div class="d-flex align-items-center justify-content-center">
+                    <form id="payment_form" method="post">
+                        {% csrf_token %}
+                        <button type="button" id="rzp-button1" class="btn btn-primary align-self-end mt-auto">Pay with Razorpay</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card p-3 mb-2">
+                <div class="d-flex align-items-center justify-content-center">
+                    {% if wallet_option %}
+                    <a href="{% url 'walletpayment' ordereditems.id %}">
+                        <button type="button" class="btn btn-primary align-self-end">Pay with wallet</button>
+                    </a>
+                {% else %}
+                    <a>
+                        <button type="button" class="btn btn-danger align-self-end">Insufficient fund in wallet</button>
+                    </a>
+                {% endif %}
+                </div>
+            </div>
+            <div class="card p-3 mb-2">
+                <div class="d-flex align-items-center justify-content-center">
+                    <a href="{% url 'cod' ordereditems.id %}">
+                        <button type="button" class="btn btn-primary align-self-end">Cash On Delivery</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+							
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+    $(document).ready(function () {
+        $(".red_button").click(function () {
+            var giftCode = $('#coupon').val();
+            var orderid = "{{ ordereditems.id }}";
+
+            $.ajax({
+                url: "{% url 'checkcoupon' %}",
+                type: "POST",
+                data: {
+                    gift_code: giftCode,
+                    order_id: orderid,
+                    csrfmiddlewaretoken: "{{ csrf_token }}"
+                },
+                success: function (data) {
+                    console.log("success", data.success);
+                    if (data.success) {
+                        $("#total").text(data.updated_total);
+                        $("#totall").text(data.updated_total);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'success',
+                            text: data.message
+                        });
+                    } else {
+                        // Use SweetAlert for displaying error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message
+                        });
+                    }
+                },
+                error: function (error) {
+                    console.log("Error:", error);
+                    // Use SweetAlert for displaying error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Coupon code did not match or an error occurred.'
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+
+
+                    
+
+<script>
+    var options = {
+        "key": "rzp_test_2Ppy65nLGqi9SS", // Enter the Key ID generated from the Dashboard
+        "amount": "50000",
+        "currency": "INR",
+        "name": "sneakerstreet",
+        "description": "Purchases",
+        "image": "https://example.com/your_logo",
+        "order_id": "{{payment.id}}", // This is a sample Order ID. Pass the id obtained in the response of Step 1
+        "handler": function(response) {
+            //alert(response.razorpay_payment_id);
+            //alert(response.razorpay_order_id);
+            //alert(response.razorpay_signature)
+            console.log(response);
+            window.location.href = "{{success_url}}?order_id={{order.order_number}}&method=RAZORPAY&payment_id=" + response.razorpay_payment_id + "&payment_order_id=" + response.razorpay_order_id + "&payment_sign=" + response.razorpay_signature;
+        },
+
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    
+    var rzp1 = new Razorpay(options);
+    
+    rzp1.on('payment.failed', function(response) {
+        alert(response.error.code);
+        alert(response.error.description);
+        alert(response.error.source);
+        alert(response.error.step);
+        alert(response.error.reason);
+        alert(response.error.metadata.order_id);
+        alert(response.error.metadata.payment_id);
+    });
+
+    document.getElementById('rzp-button1').onclick = function(e) {
+        rzp1.open();
+        e.preventDefault();
+    };
+</script>
+
+<script src="path-to-lightbox/lightbox.js"></script>
+<script src="{% static "js/jquery-3.2.1.min.js" %}"></script>
+<script src="{% static "styles/bootstrap4/popper.js" %}"></script>
+<script src="{% static "styles/bootstrap4/bootstrap.min.js" %}"></script>
+<script src="{% static "plugins/Isotope/isotope.pkgd.min.js" %}"></script>
+<script src="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.js" %}"></script>
+<script src="{% static "plugins/easing/easing.js" %}"></script>
+<script src="{% static "js/custom.js" %}"></script>
+                        <style>
+         
+
+
+                            @import url('https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap');*{margin: 0;padding: 0;box-sizing: border-box;list-style: none;font-family: 'Montserrat', sans-serif}body{background-color: #b064f7;line-height: 1rem;font-size: 14px;padding: 10px}.container{border-top-left-radius: 25px;border-top-right-radius: 25px;border-bottom-left-radius: 25px;border-bottom-right-radius: 25px;background-color: #eee}.navbar-brand{text-transform: uppercase;font-size: 14px;font-weight: 800}nav{border-top-left-radius: 25px;border-top-right-radius: 25px;background-color: white}.order .card{position: relative;background: #fff;box-shadow: 0 0 15px rgba(0, 0, 0, .1)}.ribbon{width: 150px;height: 150px;overflow: hidden;position: absolute}.ribbon::before, .ribbon::after{position: absolute;content: '';display: block;border: 5px solid red}.ribbon span{position: absolute;display: block;width: 225px;padding: 15px 0;background-color: red;box-shadow: 0 5px 10px rgba(0, 0, 0, .1);color: #fff;font: 700 18px/1 'Lato', sans-serif;text-shadow: 0 1px 1px rgba(0, 0, 0, .2);text-transform: uppercase;text-align: center}.ribbon-top-right{top: -12px;right: -12px}.ribbon-top-right::before, .ribbon-top-right::after{border-top-color: transparent;border-right-color: transparent}.ribbon-top-right::before{top: 0;left: 0}.ribbon-top-right::after{bottom: 0;right: 0}.ribbon-top-right span{left: -25px;top: 30px;transform: rotate(45deg)}small{font-size: 12px}.cart{line-height: 1}.icon{width: 40px;height: 40px;display: flex;justify-content: center;align-items: center;border-radius: 50%}.pic{width: 70px;height: 90px;border-radius: 5px}td{vertical-align: middle}.red{color: #fd1c1c;font-weight: 600}.b-bottom{border-bottom: 2px dotted black;padding-bottom: 20px}p{margin: 0px}table input{width: 40px;border: 1px solid #eee}input:focus{border: 1px solid #eee;outline: none}.round{background-color: #eee;height: 40px;width: 40px;border-radius: 50%;display: flex;align-items: center;justify-content: center}.payment-summary .unregistered{width: 100%;display: flex;align-items: center;justify-content: center;background-color: #eee;text-transform: uppercase;font-size: 14px}.payment-summary input{width: 100%;margin-right: 20px}.payment-summary .sale{width: 100%;background-color: #e9b3b3;text-transform: uppercase;font-size: 12px;display: flex;justify-content: center;align-items: center;padding: 5PX 0}.red{color: #fd1c1c}.del{width: 35px;height: 35px;object-fit: cover}.delivery .card{padding: 10px 5px}.option{position: relative;top: 50%;display: block;cursor: pointer;color: #888}.option input{display: none}.checkmark{position: absolute;top: 40%;left: -25px;height: 20px;width: 20px;background-color: #fff;border: 1px solid #ccc;border-radius: 50%}.option input:checked~.checkmark:after{display: block}.option .checkmark:after{content: "\2713";width: 10px;height: 10px;display: block;position: absolute;top: 30%;left: 50%;transform: translate(-50%, -50%) scale(0);transition: 200ms ease-in-out 0s}.option:hover input[type="radio"]~.checkmark{background-color: #f4f4f4}.option input[type="radio"]:checked~.checkmark{background: #ac1f32;color: #fff;transition: 300ms ease-in-out 0s}.option input[type="radio"]:checked~.checkmark:after{transform: translate(-50%, -50%) scale(1);color: #fff}
+                        </style>
+                    </body>   
+</html>
+{% comment %} {% endblock content %} {% endcomment %}
+     

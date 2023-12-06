@@ -1,67 +1,177 @@
-{%extends 'womensproducts.html'%}
-{%block content%} 
-<h2>Accessories</h2>
-</div>
-</div>
-</div>
-<div class="row align-items-center">
-<div class="col text-center">
-<div class="new_arrivals_sorting">
-<ul class="arrivals_grid_sorting clearfix button-group filters-button-group">
-    <li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center active is-checked" data-filter="*">all</li>
-    <li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".women">Men</li>
-    <li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".accessories">Women</li>
+{% extends "womensproducts.html"%}
+{%block accessories%}
+	<div class="new_arrivals">
+		<div class="container">
+			<div class="row">
+				<div class="col text-center">
+					<div class="section_title new_arrivals_title">
+						<h2>Accessories</h2>
+					</div>
+				</div>
+			</div>
 
-</ul>
-</div>
-</div>
-</div>
-<div class="row">
-<div class="col">
-<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
-
-    
-{%for i in womens%}
-
-
-<div class="product-item accessories">
-    <div class="product discount product_filter">
-        <div class="product_image">
-            <img src="{{i.img.url}}" alt="">
-        </div>
-        <div class="favorite favorite_left"></div>
-        <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-        <div class="product_info">
-            <h6 class="product_name"><a href="#single.html">{{i.name}}</a></h6>
-            <div class="product_price">${{i.price}}<span>${{i.disc_price}}</span></div>
-        </div>
-    </div>
-    <div class="red_button add_to_cart_button"><a href="{% url 'product_details' i.id%}">View Product</a></div>
-</div>
-{%endfor%}
+            <div class="col-12 text-right mt-2">
+                <form method = "post">
+                {% csrf_token %}
+                <label for="sortSelect">Price</label>
+                <select name="sortSelect">
+                    <option value="default">Default</option>
+                    <option value="high_to_low"> High to Low</option>
+                    <option value="low_to_high">Low to High</option>
+                </select>
+                <button class="btn btn-sm red_button " style="height:22px; margin-bottom:3px;">Apply</button>
+            </form>
+            </div>
 
 
+			<div class="row align-items-center">
+				<div class="col text-center">
+					<div class="new_arrivals_sorting">
+						<ul class="arrivals_grid_sorting clearfix button-group filters-button-group">
+							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center active is-checked" data-filter="*">all</li>
+							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".women">men's</li>
+							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".accessories">women's</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
+
+					
+						{% comment %} {%for i in mens%} 
+
+						<div class="product-item men ">
+							<div class="product discount product_filter">
+								<div class="product_image">
+									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
+										{%if i in wish%} 
+										<a  class="wishlist-action-dlt"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart"></i>
+										</a>
+										{%else%}
+										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart-o"></i>
+										</a>
+									{%endif%}
+									</div>
+									<img src="{{i.img.url}}" style="width:222px; height:300px;" alt="">
+								</div>
+								{%if i.disc_price != 0 %}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
+								{%else%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
+								{%endif%}
+								<div class="product_info">
+									<h6 class="product_name"><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
+									<div class="product_price">
+										{% if i.disc_price != 0 %}
+											${{ i.disc_price }} <span>${{ i.price }}</span>
+											{% elif i.cat_off < i.price and i.category.valid_to > now %}
+											${{ i.cat_off }} <span></span>
+										{% else %}
+											${{ i.price }} <span></span>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
+						</div>
+						{% endfor %}
+					 {% endcomment %}
+
+						{%for i in womens%}
+						<div class="product-item accessories ">
+							<div class="product discount product_filter">
+								<div class="product_image">
+									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
+										{%if i in wish%} 
+									   <a onclick="fetchFunction('{%url 'dltfrmwishlist' i.id%}',{{i.id}})"  >
+										   
+										   <i class="fa fa-heart" id="DeletefetchFunction{{i.id}}"></i>
+									   </a>
+										{%else%}
+									   <a onclick="AddfetchFunction('{%url 'addtowishlist' i.id%}',{{i.id}})" >
+										   
+										   <i id="AddfetchFunction{{i.id}}" class="fa fa-heart-o"></i>
+
+									   </a>
+									   {%endif%}
+								   </div>
+									<img src="{{i.img.url}}"  style="width:222px; height:300px;" alt="">
+								</div>
+								{%if i.disc_price != 0 %}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
+								{%else%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
+								{%endif%}
+								<div class="product_info">
+									<h6 class="product_name"><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
+									<div class="product_price">
+										{% if i.disc_price != 0 %}
+											${{ i.disc_price }} <span>${{ i.price }}</span>
+											{% elif i.cat_off < i.price and i.category.valid_to > now %}
+											${{ i.cat_off }} <span></span>
+										{% else %}
+											${{ i.price }} <span></span>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
+						</div>
+						{%endfor%}
 
 
-{%for i in mens%}
-<div class="product-item women">
-    <div class="product discount product_filter">
-        <div class="product_image">
-            <img src="{{i.img.url}}" alt="">
-        </div>
-        <div class="favorite favorite_left"></div>
-        <div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-        <div class="product_info">
-            <h6 class="product_name"><a href="#single.html">{{i.name}}</a></h6>
-            <div class="product_price">${{i.price}}<span>${{i.disc_price}}</span></div>
-        </div>
-    </div>
-    <div class="red_button add_to_cart_button"><a href="{% url 'product_details' i.id%}">View Product</a></div>
-</div>
-{%endfor%}
-</div>
-</div>
-</div>
-</div>
-</div>
-{% endblock %}
+						<!-- Product 7 -->
+						{%for i in mens%}
+						<div class="product-item women">
+							<div class="product discount product_filter">
+								<div class="product_image">
+									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
+										{%if i in wish%} 
+									   <a onclick="fetchFunction('{%url 'dltfrmwishlist' i.id%}',{{i.id}})"  >
+										   
+										   <i class="fa fa-heart" id="DeletefetchFunction{{i.id}}"></i>
+									   </a>
+										{%else%}
+									   <a onclick="AddfetchFunction('{%url 'addtowishlist' i.id%}',{{i.id}})" >
+										   
+										   <i id="AddfetchFunction{{i.id}}" class="fa fa-heart-o"></i>
+
+									   </a>
+									   {%endif%}
+								   </div>
+									<img src="{{i.img.url}}"  style="width:222px; height:300px;" alt="">
+								</div>
+								{%if i.disc_price != 0 %}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
+								{%else%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
+								{%endif%}
+								<div class="product_info">
+									<h6 class="product_name"><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
+									<div class="product_price">
+										{% if i.disc_price != 0 %}
+											${{ i.disc_price }} <span>${{ i.price }}</span>
+											{% elif i.cat_off < i.price and i.category.valid_to > now %}
+											${{ i.cat_off }} <span></span>
+										{% else %}
+											${{ i.price }} <span></span>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
+						</div>
+						{%endfor%}
+
+
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    {%endblock%}

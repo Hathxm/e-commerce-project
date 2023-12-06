@@ -1,0 +1,42 @@
+{% extends "forgot_pass.html" %}
+
+{% block signupotp %}
+<style>
+    .button-container {
+        text-align: center;
+    }
+</style>
+
+<div class="container">
+ 
+        <form method="post">
+            {%csrf_token%}
+            {% comment %} <div class="mb-3">
+                <label for="exampleInputtext1" class="form-label">Username</label>
+                <input type="text" class="form-control" required id="exampleInputtext1"
+                       aria-describedby="textHelp" name="username">
+            </div>
+            <div class="mb-3">
+               <label for="exampleInputtext1" class="form-label">Password</label>
+               <input type="password" class="form-control" required id="exampleInputtext1"
+                      aria-describedby="textHelp" name="password">
+           </div><div class="mb-3"> {% endcomment %}
+               <label for="exampleInputtext1" class="form-label">OTP</label>
+               <input type="text" class="form-control" required id="exampleInputtext1"
+                      aria-describedby="textHelp" name="otp">
+           </div>
+           
+            <button class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Submit</button>
+           </form>
+        {% if not condition %}
+            <div class="button-container">
+                <form method="post" action="{% url 'resend_otp' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Resend OTP</button>
+                    <label for="exampleInputtext1" class="form-label">Your OTP Has Been Expired. Please Resend And Verify!!</label>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}                        

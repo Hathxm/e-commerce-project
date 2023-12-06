@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{%block content%}
+<div class="container">
+     <h1 class="text-center">Edit Profile</h1>
+  	<hr>
+	<div class="row">
+      <!-- left column -->
+      <div class="col-md-3">
+        <form class="form-horizontal" method="post"  enctype="multipart/form-data">
+            {% csrf_token %}
+            {%if user.user_img%}
+            <div class="text-center">
+                <img src="//{{user.user_img.url}}/100" class="avatar img-circle" alt="avatar">
+                <h6>Upload a different photo...</h6>
+                <input type="file" class="form-control" name="image">
+              </div>
+            </div>
+            {%else%}
+        <div class="text-center">
+          <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp/100" class="avatar img-circle" alt="avatar">
+          <h6>Upload a photo...</h6>
+          <input type="file" class="form-control" name="image">
+        </div>
+      </div>
+      {%endif%}
+      
+      <!-- edit form column -->
+      <div class="col-md-9 personal-info">
+   
+        <h3>Personal info</h3>
+        
+          <div class="form-group">
+            <label class="col-lg-3 control-label">First name:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="{{user.first_name}}"name="firstname">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Last name:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="{{user.last_name}}"name="lastname">
+            </div>
+          </div>
+         
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Email:</label>
+            <div class="col-lg-8">
+              <input class="form-control" type="text" value="{{user.email}}"name="email">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Address:</label>
+            <div class="col-lg-8">
+              <div class="ui-select">
+                <select id="user_time_zone" class="form-control" name="address">
+                    {%for addresses in address%}
+                  <option value="Hawaii">{{addresses.district}},{{addresses.street_address}},{{addresses.pin}}</option>
+                  {%endfor%}
+                  
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Username:</label>
+            <div class="col-md-8">
+              <input class="form-control" type="text" value="{{user.username}}" name="username">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">phone number:</label>
+            <div class="col-md-8">
+              <input  class="form-control"  type="tel" id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" >
+          <small>Format: +91-4565-7890</small>
+            </div>
+          </div>
+          
+         
+          <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-8">
+              <input type="submit" class="btn btn-primary" value="Save Changes">
+              <span class="ml-3"><a href="{%url 'forgotpass'%}">change password ?</a></span>
+              
+            </div>
+          </div>
+        </form>
+      </div>
+  </div>
+</div>
+<hr>
+		</body>
+		</html>
+		  {%endblock%}

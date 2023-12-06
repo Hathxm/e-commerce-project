@@ -1,18 +1,27 @@
 from django.shortcuts import render,redirect
-from app.models import product,Size,customuser
+from app.models import *
+from checkout.models import *
 from django.db.models import Q
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.contrib import messages
 from django.http import HttpResponse
-from .models import cart,cartitem
+from .models import *
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
-from django.db.models import Sum
+from django.db.models import Sum,Count
 from django.core.mail import send_mail
 from random import randint
 from django.contrib.auth.hashers import make_password
+from django.db.models import F
+from datetime import datetime, timedelta
+from django.utils import timezone
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+
 
 
 # Create your views here.
@@ -20,11 +29,11 @@ def landing_page(request):
     if request.user.is_authenticated:
         return redirect(shop)
     
-    x=product.objects.filter(Q(gender=1) & (Q(category=1)|Q(category=2)) & Q(category__is_deleted=False) & Q(is_deleted=False))
-    y=product.objects.filter(Q(gender=2) & (Q(category=1)|Q(category=2)) & Q(category__is_deleted=False) & Q(is_deleted=False))
-    z=product.objects.filter(Q(category=3) & Q(is_deleted=False) & Q(category__is_deleted=False))
-
-    return render(request,'userindex.html',{'men':x,'women':y,'acc':z})
+    # x=product.objects.filter(Q(gender=1) & (Q(category=1)|Q(category=2)) & Q(category__is_deleted=False) & Q(is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
+    # y=product.objects.filter(Q(gender=2) & (Q(category=1)|Q(category=2)) & Q(category__is_deleted=False) & Q(is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
+    # z=product.objects.filter(Q(category=3) & Q(is_deleted=False) & Q(category__is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
+    # ,{'men':x,'women':y,'acc':z}
+    return render(request,'userindex.html')
 
 def contact(request):
     return render(request,'contact.html')
@@ -35,82 +44,238 @@ def user_signup(request):
         email=request.POST['email']
         password=request.POST['password']
         name=request.POST['name']
-
-        if len(password)<6:
-            messages.info(request,"password must be of atleast 6 characters")
+        
+        if len(username)<6:
+            messages.info(request,"username must be of atleast 6 characters")
+        elif len(password)<8:
+            messages.info(request,"password must be of atleast 8 characters")
             return redirect(user_signup)
         elif customuser.objects.filter(email=email).exists():
             messages.info(request,"email already exists")
             return redirect(user_signup)
+        elif customuser.objects.filter(username=username).exists():
+            messages.info(request,"username already taken")
+            return redirect(user_signup)
         else:
-            user=customuser.objects.create_user(username=username,password=password,email=email,first_name=name)
-            user.save()
-            return redirect(user_login)
-        
+             otp=randint(1000,9999)
+             request.session['otp'] = otp
+             request.session['otp_created_at'] = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
+             request.session['username'] = username
+             request.session['password'] = password
+             request.session['email'] = email
+             request.session['name'] = name
+
+
+             send_mail(
+                'Password Reset OTP',
+                f'Your password for login is: {otp}',
+                'streetrends@gmail.com',
+                [email],
+                fail_silently=False,
+            )
+             messages.success(request,'Your Signup Was Successful.. Enter Details with OTP sent to your mail')
+             return redirect(OTP_login)
+         
     return render(request,'usersignup.html')
+
+
+def OTP_login(request):
+     if request.user.is_authenticated:
+        return redirect(shop)
+     
+     otpp=request.session.get('otp')
+     username=request.session.get('username')
+     email=request.session.get('email')
+     password=request.session.get('password')
+     name=request.session.get('name')
+
+     otp_created_at_str = request.session.get('otp_created_at')
+     otp_created_at = datetime.strptime(otp_created_at_str, "%Y-%m-%d %H:%M:%S")
+     otp_created_at = timezone.make_aware(otp_created_at, timezone.get_current_timezone())
+
+        # Check if OTP has expired (2 minutes duration)
+     otp_expiry_duration = 2
+     condition = (timezone.now() - otp_created_at).total_seconds() <= otp_expiry_duration * 60
+     
+     if request.method=="POST":
+          otp=int(request.POST.get('otp'))
+          if otp == otpp:
+             user=customuser.objects.create_user(username=username,password=password,email=email,first_name=name)
+             user_balance=wallet.objects.create(user=user)
+             user_wishlist=wishlist.objects.create(user=user)
+             return redirect(user_login)
+          else:
+               messages.info(request,'wrong otp')
+               return redirect(OTP_login)
+     return render(request,'otplogin.html',{'condition':condition})
+          
+               
+def resend_otp(request):
+     if request.method=="POST":
+          email=request.session.get('email')
+          otp=randint(1000,9999)
+          request.session['otp'] = otp
+          request.session['otp_created_at'] = timezone.now().strftime("%Y-%m-%d %H:%M:%S")
+          send_mail(
+                'Password login OTP',
+                f'Your password for login is: {otp}',
+                'streetrends@gmail.com',
+                [email],
+                fail_silently=False,
+            )
+          return redirect(OTP_login)
+
+
+             
 
 def details(request,id):
     data=product.objects.get(id=id)
     size=Size.objects.all()
     similar_products=product.objects.filter(Q(category=data.category) & ~Q(id=data.id))
 
-    return render(request,'details.html',{'data':data,'size':size,'similarproducts':similar_products})
+    if request.method=="POST":
+         return redirect(user_login)
+
+    return render(request,'single.html',{'data':data,'size':size,'similarproducts':similar_products})
 
 def user_login(request):
     if request.user.is_authenticated:
         return redirect(shop)
     
-    
+
     if request.method=="POST":
         username=request.POST['username']
         password=request.POST['password']
         user=authenticate(username=username,password=password)
 
-        if user is not None and not user.is_deleted:
-            login(request,user)
-            return redirect(shop)
+        if user is not None and not user.is_deleted :
+                   login(request,user)
+                   return redirect(shop)
         else:
-            messages.info(request,'invalid username or password')
+                   messages.info(request,'invalid username or password')
+        
     return render(request,'user-login.html')
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=user_login)
 def shop(request):
-     x=product.objects.filter(Q(gender=1) & (Q(category=1)|Q(category=2)) & Q(category__is_deleted=False) & Q(is_deleted=False))
-     y=product.objects.filter(Q(gender=2) & (Q(category=1)|Q(category=2)) & Q(category__is_deleted=False) & Q(is_deleted=False))
-     z=product.objects.filter(Q(category=3) & Q(is_deleted=False) & Q(category__is_deleted=False))
-     return render(request,'mainpage.html',{'men':x,'women':y,'acc':z})
+     user=request.user
+     now=timezone.now()
+     x=product.objects.filter(Q(gender=1) & (Q(category=2)|Q(category=3)) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
+     y=product.objects.filter(Q(gender=2) & (Q(category=2)|Q(category=3)) & Q(category__is_deleted=False) & Q(is_deleted=False)  &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
+     z=product.objects.filter(Q(category=4) & Q(is_deleted=False) & Q(category__is_deleted=False) & Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
+     wish= wishlist.objects.get(user=user)
+     items=wish.items.all() 
+    #  products_you_may_like=cartitem.objects.filter(is_deleted=True,user=user).distinct('product')
+     products_you_may_like = cartitem.objects.filter(user=user,product__brand__is_deleted=False).distinct('product').annotate(
+    amt=F('product__price') - F('product__disc_price'),
+    cat_off=F('product__price') - F('product__price') * F('product__category__discount_percentage') / 100,
+    cat_amt=F('product__price') - (F('product__price') - F('product__price') * F('product__category__discount_percentage') / 100))
+     return render(request,'mainpage.html',{'men':x,'women':y,'acc':z,'wish':items,'now':now,'products_you_may_like':products_you_may_like})
     
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=user_login)
 def womens(request):
-     x=product.objects.filter(Q(gender=2) & Q(category=1) & Q(category__is_deleted=False) & Q(is_deleted=False))
-     y=product.objects.filter(Q(gender=2) & Q(category=2) & Q(category__is_deleted=False) & Q(is_deleted=False))
-     z=product.objects.filter(Q(gender=2) & Q(category=3) & Q(category__is_deleted=False) & Q(is_deleted=False))
-     return render(request,'womensproducts.html',{'tops':x,'lowers':y,'acc':z})
+    user = request.user
+    search_term = request.GET.get('search')
+    sort_option = request.POST.get('sortSelect')
+    now=timezone.now()
+
+    if search_term:
+        # If a search term is present, filter products based on the search term,
+        x = product.objects.filter(Q(gender=2) & Q(category=2) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        y = product.objects.filter(Q(gender=2) & Q(category=3) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        z = product.objects.filter(Q(gender=2) & Q(category=4) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+    else:
+        # If no search term, use the original queryset
+        x = product.objects.filter(Q(gender=2) & Q(category=2) & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        y = product.objects.filter(Q(gender=2) & Q(category=3) & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        z = product.objects.filter(Q(gender=2) & Q(category=4) & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+       
+
+    if sort_option == 'low_to_high':
+        x = x.order_by('price')
+        y = y.order_by('price')
+        z = z.order_by('price')
+    elif sort_option == 'high_to_low':
+        x = x.order_by('-price')
+        y = y.order_by('-price')
+        z = z.order_by('-price')
+
+    wishlist_obj = wishlist.objects.get(user=user)
+    wish = wishlist_obj.items.all()
+    
+
+    return render(request, 'womensproducts.html', {'tops': x, 'lowers': y, 'acc': z, 'wish': wish,'now':now})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)   
 @login_required(login_url=user_login)
 def mens(request):
-     x=product.objects.filter(Q(gender=1) & Q(category=1) &  Q(category__is_deleted=False) & Q(is_deleted=False))
-     y=product.objects.filter(Q(gender=1) & Q(category=2) &  Q(category__is_deleted=False) & Q(is_deleted=False))
-     z=product.objects.filter(Q(gender=1) & Q(category=3) &  Q(category__is_deleted=False) & Q(is_deleted=False))
-     return render(request,'mensproduct.html',{'tops':x,'lowers':y,'acc':z})
+     user = request.user
+     search_term = request.GET.get('search')
+     sort_option = request.POST.get('sortSelect')
+     now=timezone.now()
+
+     if search_term:
+        # If a search term is present, filter products based on the search term
+        x = product.objects.filter(Q(gender=1) & Q(category=2) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        y = product.objects.filter(Q(gender=1) & Q(category=3) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        z = product.objects.filter(Q(gender=1) & Q(category=4) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+     else:
+        # If no search term, use the original queryset
+        x = product.objects.filter(Q(gender=1) & Q(category=2) & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        y = product.objects.filter(Q(gender=1) & Q(category=3) & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        z = product.objects.filter(Q(gender=1) & Q(category=4) & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+       
+
+     if sort_option == 'low_to_high':
+        x = x.order_by('price')
+        y = y.order_by('price')
+        z = z.order_by('price')
+     elif sort_option == 'high_to_low':
+        x = x.order_by('-price')
+        y = y.order_by('-price')
+        z = z.order_by('-price')
+
+     wishlist_obj = wishlist.objects.get(user=user)
+     wish = wishlist_obj.items.all()
+     return render(request,'mensproduct.html',{'tops':x,'lowers':y,'acc':z,'wish':wish,'now':now})
     
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=user_login)
 def accessories(request):
-       x=product.objects.filter(Q(gender=1) & Q(category=3) & Q(category__is_deleted=False) & Q(is_deleted=False))
-       y=product.objects.filter(Q(gender=2) & Q(category=3) & Q(category__is_deleted=False) & Q(is_deleted=False))
-       return render(request,'accessories.html',{'mens':x,'womens':y,})
+       user = request.user
+       search_term = request.GET.get('search')
+       sort_option = request.POST.get('sortSelect')
+       now=timezone.now()
+
+       if search_term:
+             x=product.objects.filter(Q(gender=1) & Q(category=4) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+             y=product.objects.filter(Q(gender=2) & Q(category=4) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+       else:
+            x=product.objects.filter(Q(gender=1) & Q(category=4) & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+            y=product.objects.filter(Q(gender=2) & Q(category=4) & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+
+       if sort_option == 'low_to_high':
+            x = x.order_by('price')
+            y = y.order_by('price')
+       elif sort_option == 'high_to_low':
+            x = x.order_by('-price')
+            y = y.order_by('-price')
+            
+       return render(request,'accessories.html',{'mens':x,'womens':y,'now':now})
     
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=user_login)
 def user_profile(request):
-    if request.user.is_authenticated:
-        return render(request,'userprofile.html')
-    return redirect(user_login)
+     user=request.user
+     user_address=address.objects.filter(user=user)
+     balance=wallet.objects.get(user=user)
+     return render(request,'userprofile.html',{'user_address':user_address,'user_balance':balance})
+
+
 
 def user_logout(request):
     if request.user.is_authenticated:
@@ -118,64 +283,81 @@ def user_logout(request):
         return redirect(landing_page)
     return HttpResponse('page not found')
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url=user_login)
-def product_details(request,id):
-    
-        data=product.objects.get(id=id)
-        size=data.size.all()
-        user=request.user
-        similar_products=product.objects.filter(Q(category=data.category) & ~Q(id=data.id) & Q(gender=data.gender))
-        
 
-        if request.method == 'POST':
-            user_cart, created = cart.objects.get_or_create(user=user)
-            cart_item, created = cartitem.objects.get_or_create(cart=user_cart,product=data)
-            size = request.POST.get('size')
-            quantity = request.POST.get('quantity')
-            size=Size.objects.get(id=size)
-            cart_item.size=size
-            cart_item.quantity=quantity
-            cart_item.price=data.price*Decimal(quantity)
-            cart_item.save()
-            user_cart.items.add(cart_item)
-            return redirect(viewcart)
-        return render(request,'productdetails.html',{'data':data,'size':size,'similarproducts':similar_products})
     
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=user_login)
 def viewcart(request):
-    user=request.user
-    user_cart,created=cart.objects.get_or_create(user=user)
-    data=user_cart.items.all()
-    total_price=data.aggregate(total=Sum('price'))['total']
-         
+    user = request.user
+    cart_items = cartitem.objects.all().filter(is_deleted=False, user=user)
+    total_price = cart_items.aggregate(total=Sum('price'))['total']
+    out_of_stock = []
+    item_count=cart_items.count()
+    if total_price is None:
+         total_price=0
 
-    return render(request, 'viewcart.html',{'data':data,'totalprice':total_price,'user':user})
+    if request.method == 'POST':
+        for item in cart_items:
+            quantity_key = f'quantity_{item.id}'
+            new_quantity = int(request.POST.get(quantity_key))
+            product_items = cartitem.objects.filter(product=item.product, is_deleted=False, user=user)
+
+            #restricting total of product with different sizes
+            total_quantity = product_items.aggregate(qty=Sum('quantity'))['qty']
+
+            if total_quantity > item.product.in_stock: 
+                messages.info(request, f'{item.product} quantity demanded not in stock')
+                return redirect('viewcart')
+
+            if new_quantity >= 0:
+                if new_quantity <= item.product.in_stock:
+                    item.quantity = new_quantity 
+                else:
+                    out_of_stock.append(item)
+            else:
+                messages.error(request, "Invalid quantity.")
+
+        if len(out_of_stock) > 0:
+            product_names = ', '.join([str(item.product) for item in out_of_stock])
+            messages.warning(request, f'Items out of stock: {product_names}')
+            return redirect('viewcart')
+        else:
+            orderitems = ordereditems.objects.create(user=user)
+            for item in cart_items:
+                # Use the updated price for each item
+                 # Refresh the item to get the updated price
+                orderitems.items.add(item)
+                orderitems.save()
+            
+            # Use the total_price calculated from updated prices
+            orderitems.total = total_price
+            orderitems.save()
+
+            messages.success(request, "Cart updated successfully.")
+            return redirect('checkout', id=orderitems.id)
+
+    return render(request, 'viewcart.html', {'data': cart_items, 'user': user, 'total': total_price,'item_count': item_count})
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=user_login)
 def delete_from_orders(request,id):
-        user = request.user
-        user_cart = get_object_or_404(cart, user=user)
-        product_to_remove = get_object_or_404(cartitem,id=id)
-        
-
-        # Remove the product from the user's cart
-        user_cart.items.remove(product_to_remove)
-        cartitem.objects.get(id=id).delete()
-
+        item=cartitem.objects.get(id=id)
+        item.is_deleted=True
+        item.save()
         return redirect(viewcart)
 
 def forgot_password(request):
      if request.method=='POST':
           email=request.POST.get('email')
 
+
           if customuser.objects.filter(email=email).exists():
+               request.session['email']=email
                user=customuser.objects.get(email=email)
                otp=randint(1000,9999)
                user.otp=otp
+               user.otp_created_at=timezone.now()
                user.save()
                send_mail(
                 'Password Reset OTP',
@@ -192,24 +374,232 @@ def forgot_password(request):
 
 
 def verify_otp(request):
+     email=request.session.get('email')
+     user=customuser.objects.get(email=email)
+     current_time=timezone.now()
+     otp_expiry_duration=2
+     condition=(current_time - user.otp_created_at).total_seconds()<= otp_expiry_duration * 60
+
      if request.method=='POST':
-          otp=request.POST.get('otp')
+          otp=int(request.POST.get('otp'))
           password=request.POST.get('password')
           confirm_pass=request.POST.get('confirm_pass')
-          if customuser.objects.filter(otp=otp).exists():
-               if password==confirm_pass:
-                    user=customuser.objects.get(otp=otp)
-                    user.password=make_password(password)
-                    user.save()
-                    return redirect(shop)
+          if otp==user.otp:
+               if condition:
+                    if password==confirm_pass:
+                         user.password=make_password(password)
+                         user.save()
+                         return redirect(user_login)
+                    else:
+                     messages.info(request,'password doesnt match')
                else:
-                    messages.info(request,'password doesnt match')
+                     messages.info(request,'OTP expired')
           else:
                     messages.info(request,'invalid otp')
                     
-     return render(request,'verifyotp.html')
+     return render(request,'verifyotp.html',{'condition':condition})
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=user_login)
+def product_details(request,id):
+     data=product.objects.get(id=id)
+     size=data.size.all()
+     user=request.user
+     wishilistt=wishlist.objects.get(user=user)
+     wish=wishilistt.items.all()
+     similar_products=product.objects.filter(Q(category=data.category) & ~Q(id=data.id)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
+     cat_off_price=data.price-(data.price*data.category.discount_percentage/100)
+     now=timezone.now()
+
+     if data.in_stock==0:
+                messages.warning(request,'Product not in stock')
+
+     if request.method == 'POST':
+            if data.in_stock==None or data.in_stock==0:
+                 messages.warning(request,'Out Of Stock')
+            else:
+              size = request.POST.get('size')
+              size=Size.objects.get(id=size)
+              cart_item,created=cartitem.objects.get_or_create(product=data,user=user,size=size,is_deleted=False)
+              quantity = int(request.POST.get('quantity'))
+              cart_item.quantity=quantity
+
+              if quantity>data.in_stock:
+                 messages.warning(request,'Quantity demanded not in stock')
+                 return redirect(product_details,id=data.id)
+              
+              if data.disc_price == 0:
+                   cart_item.price=data.price*Decimal(quantity)+cart_item.size.price_increment
+                   cart_item.save()
+                   if data.category.discount_percentage>0 and data.category.valid_to>now:
+                     cat_off=data.price-(data.price*(data.category.discount_percentage/100))
+                     cart_item.price=cat_off*float(quantity)+cart_item.size.price_increment
+                     cart_item.save()   
+              else:
+                   cart_item.price=data.disc_price*Decimal(quantity)+cart_item.size.price_increment
+                   cart_item.save()
+              return redirect(viewcart)
+     return render(request,'single.html',{'data':data,'size':size,'similar_products':similar_products,'wish':wish,'cat_off_price':cat_off_price,'now':now})
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=user_login)
+def edit_profile(request):
+     user=request.user.username
+     user=customuser.objects.get(username=user)
+     addres=address.objects.filter(user=user)
+
+     if request.method=="POST":
+          if 'image' in request.FILES:
+               user_img=request.FILES['image']
+               user.user_img=user_img
+          elif user.user_img:
+               user_img=user.user_img
+          else:
+               user_img=None 
+          first_name=request.POST.get('firstname')
+          last_name=request.POST.get('lastname')
+          new_addres=request.POST.get('address')
+          email=request.POST.get('email')
+          phone_number=request.POST.get('phone_number')
+
+
+          user.first_name = first_name
+          user.last_name = last_name
+          user.email = email
+        
+          user.phone_number = phone_number
+          user.user_img=user_img
+
+          user.save()
+          return redirect(user_profile)
+
+     return render(request,'editprofile.html',{'user':user,'address':addres})
+
+def add_to_wishlistt(request,id):
+    user=request.user
+    product_to_add=product.objects.get(id=id)
+    wish,created=wishlist.objects.get_or_create(user=user)
+    wish.items.add(product_to_add)
+    return redirect('shop')
+
+def dlt_from_wishlist(request,id):
+    user=request.user
+    product_to_dlt=product.objects.get(id=id)
+    wishlistt=wishlist.objects.get(user=user)
+    wishlistt.items.remove(product_to_dlt)
+    return redirect('shop')
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='userlogin')
+def view_wishlist(request):
+    user=request.user
+    wishlistt=wishlist.objects.get(user=user)
+    data=wishlistt.items.all().annotate(amt=F('price')-F('disc_price'))
+    return render(request,'wishlist.html',{'data':data})
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=user_login)
+def add_to_cart(request,id):
+     user=request.user
+     productt = product.objects.get(id=id)
+     size_id = 1 
+     size = Size.objects.get(id=size_id)
+     item, created = cartitem.objects.get_or_create(product=productt,size=size,user=user,is_deleted=False)
+     item.quantity = 1
+     item.price=productt.price
+     item.save()
+     return redirect('viewcart')
+
+def qty_update(request):
+    user = request.user
+    item_id = request.POST.get('item_id')
+    new_quantity = int(request.POST.get('new_quantity'))
+
+    cart_item = get_object_or_404(cartitem, id=item_id)
+    now=timezone.now()
+
+    # Update the quantity in the database
+    cart_item.quantity = new_quantity
+
+    if cart_item.product.disc_price == 0:
+        # If the product has no discount, calculate the price based on the category discount
+        base_price = cart_item.product.price
+        valid_to_datetime = cart_item.product.category.valid_to
+
+        if cart_item.product.category.discount_percentage > 0 and valid_to_datetime > now:
+            # Apply the category discount only once to the base price 
+            discounted_price = base_price * (1 - cart_item.product.category.discount_percentage / 100)
+
+            # Adjust the total price based on the new quantity
+            cart_item.price = (discounted_price * new_quantity) + (cart_item.size.price_increment * new_quantity)
+        else:
+            # No category discount, calculate the price without it
+            cart_item.price = (base_price * new_quantity) + (cart_item.size.price_increment * new_quantity)
+    else:
+        # If the product has a discount, use the discounted price for the calculation
+        cart_item.price = (cart_item.product.disc_price * new_quantity) + (cart_item.size.price_increment * new_quantity)
+
+    cart_item.save()
+
+    # You can optionally return some data in the response
+    response_data = {'new_qty':new_quantity,'new_price':cart_item.price}
+    return JsonResponse(response_data)
+
+def delete(request):
+     user=request.user
+     response_data = {'wish':0,'message':'item already in wishlist'}
+     return JsonResponse(response_data)
+
+def add(request):
+    user = request.user
+    item_id = request.POST.get('item_id')
+    wish = wishlist.objects.get(user=user)
+    item = wish.items.all()
+    product_id=product.objects.get(id=item_id)
+    print(product_id)
+
+    if product_id in item:
+        response_data = {
+            'wish': 1,
+            'message': 'item already in wishlist'
+        }
+        return JsonResponse(response_data)
+
+    wish.items.add(product_id)
+    wish.save()
+    response_data = {
+        'wish': 1,
+        'message': 'item added successfully'
+    }
+    return JsonResponse(response_data)
+
+
+def size_variation(request):
+    if request.method == 'POST':
+        id = request.POST.get('id')
+        item = product.objects.filter(id=id).annotate(amt=F('price') - F('disc_price'), cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100), cat_amt=F('price') - (F('price') * F('category__discount_percentage') / 100)).first()
+        user_size = request.POST.get('size')
+        size=Size.objects.get(id=user_size)
+        now=timezone.now()
+        if item.cat_off < item.price and item.disc_price==0 and item.category.valid_to > now:
+            item_price=item.cat_off+size.price_increment
+        elif item.disc_price != 0:
+            item_price=item.disc_price+size.price_increment
+        else:
+            item_price=item.price+size.price_increment  
+        return JsonResponse({'status': 'success','price':item_price})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
+
+     
+
+
+
+
+
+     
 
      
 

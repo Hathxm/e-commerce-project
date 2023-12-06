@@ -1167,7 +1167,7 @@ section
 	visibility: visible;
 	opacity: 1;
 }
-.favorite
+ .favorite
 {
 	position: absolute;
 	top: 15px;
@@ -1206,7 +1206,7 @@ section
 .favorite:hover::after
 {
 	color: #fe4c50;
-}
+} */
 
 /*********************************
 6. Deal of the week

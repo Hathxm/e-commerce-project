@@ -14,6 +14,22 @@
 <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "styles/main_styles.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "styles/responsive.css" %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<style>
+	 .product_image {
+		position: relative;
+	}
+	
+	.product_image .heart-icon {
+		position: absolute;
+		top: 10px; /* Adjust the top value to your desired position */
+		left: 10px; /* Adjust the left value to your desired position */
+		z-index: 1; /* Ensure the heart icon is above the product image */
+	}
+	
+
+</style>
 </head>
 
 <body>
@@ -81,13 +97,27 @@
 							</ul>
 							
 							  <ul class="navbar_user">
-								<li><a href="{%url 'userprofile'%}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-								 <li class="checkout">
-									<a href="{%url 'viewcart'%}">
-										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-										
+								<li>
+									<a href="{%url 'userprofile'%}"><i class="fa fa-user" aria-hidden="true"></i>
+									</a>
+								</li>
+								 <li >
+									<a href="{%url 'wishlist'%}">
+										<i class="fa fa-heart"></i>
 									</a>
 								</li> 
+							
+								<li >
+									<a href="{%url 'viewcart'%}">
+										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+									</a>
+								</li>
+								<li >
+									<a href="{%url 'order_status'%}">
+										<i class="fa fa-shopping-bag"></i>
+									</a>
+								</li>
+								
 							</ul> 
 							
 							 <div class="hamburger_container">
@@ -103,7 +133,7 @@
 
 
 	<!-- Slider -->
-	
+	{%block content%}
 	<div class="main_slider" style="background-image: url({% static 'images/mainpage.jpg' %})">
 		<div class="container fill_height">
 			<div class="row align-items-center fill_height">
@@ -178,77 +208,273 @@
 					<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
 
 						<!-- Product 1 -->
-						 {%for i in men%} 
+						{% comment %} {%for i in men%} 
 
-						<div class="product-item men">
+						<div class="product-item men ">
 							<div class="product discount product_filter">
 								<div class="product_image">
-									 <img src="{{i.img.url}}" alt=""> 
+									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
+										{% if i in wish %}
+										<a href="#" class="wishlist-action" data-action="remove" data-item-id="{{ i.id }}">
+											<i class="fa fa-heart"></i>
+										</a>
+									{% else %}
+										<a href="#" class="wishlist-action" data-action="add" data-item-id="{{ i.id }}">
+											<i class="fa fa-heart-o"></i>
+										</a>
+									{% endif %}
+									</div>
+									<img src="{{i.img.url}}" alt="">
 								</div>
-								<div class="favorite favorite_left"></div>
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+								{%if i.disc_price != 0 %}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
+								{%else%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
+								{%endif%}
 								<div class="product_info">
-									<h6 class="product_name"><a href="single.html">{{i.name}}</a></h6>
-									<div class="product_price">${{i.disc_price}}<span>${{i.price}}</span></div>
+									<h6 class="product_name"><a href="{%url 'product_details' i.id%}">{{i.name}}</a></h6>
+								<div class="product_price">{%if i.disc_price != 0 %} ${{i.disc_price}} <span>${{i.price}}</span></div> {% else %}${{i.price}}<span></span></div> {%endif%}
 								</div>
 							</div>
-							<div class="red_button add_to_cart_button"><a href="{%url 'product_details' i.id%}">View Product</a></div>
+							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
+						</div>
+						{% endfor %} {% endcomment %}
+
+
+						{% comment %} {%for i in men%} 
+
+						<div class="product-item men ">
+							<div class="product discount product_filter">
+								<div class="product_image">
+									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
+										{%if i in wish%} 
+										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart"></i>
+										</a>
+										{%else%}
+										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart-o"></i>
+										</a>
+									{%endif%}
+									</div>
+									<img src="{{i.img.url}}" alt="">
+								</div>
+								{%if i.disc_price != 0 %}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
+								{%else%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
+								{%endif%}
+								<div class="product_info">
+									<h6 class="product_name"><a href="{%url 'product_details' i.id%}">{{i.name}}</a></h6>
+								<div class="product_price">{%if i.disc_price != 0 %} ${{i.disc_price}} <span>${{i.price}}</span></div> {% else %}${{i.price}}<span></span></div> {%endif%}
+								</div>
+							</div>
+							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
+						</div>
+						{% endfor %} {% endcomment %}
+						{%for i in men%} 
+
+						<div class="product-item men ">
+							<div class="product discount product_filter">
+								<div class="product_image">
+									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
+										{%if i in wish%} 
+										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart"></i>
+										</a>
+										 {%else%}
+										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart-o"></i>
+										</a>
+									{%endif%}
+									</div>
+									<img src="{{i.img.url}}" style="width:222px; height:300px;" alt="">
+								</div>
+
+								{%if i.disc_price != 0 %}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
+								{%elif i.cat_off < i.price and i.category.valid_to > now%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.cat_amt}}</span></div>
+								{%else%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
+								{%endif%}
+
+								<div class="product_info">
+									<h6 class="product_name" s><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
+									<div class="product_price">
+										{% if i.disc_price != 0 %}
+											${{ i.disc_price }} <span>${{ i.price }}</span>
+										{% elif i.cat_off < i.price and i.category.valid_to > now %}
+										${{ i.disc_price }} <span>${{ i.price }}</span>
+										{% else %}
+											${{ i.price }} <span></span>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
 						</div>
 						{% endfor %}
-						
-
+					
 
 						{%for i in acc%}
-						
-
-						<div class="product-item accessories">
+						<div class="product-item accessories ">
 							<div class="product discount product_filter">
 								<div class="product_image">
-									 <img src="{{i.img.url}}" alt=""> 
+									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
+										{%if i in wish%} 
+										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart"></i>
+										</a>
+										 {%else%}
+										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart-o"></i>
+										</a>
+									{%endif%}
+								   </div>
+									<img src="{{i.img.url}}"  style="width:222px; height:300px;" alt="">
 								</div>
-								<div class="favorite favorite_left"></div>
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+
+								{%if i.disc_price != 0 %}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
+								{%elif i.cat_off < i.price and i.category.valid_to > now%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.cat_amt}}</span></div>
+								{%else%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
+								{%endif%}
+
 								<div class="product_info">
-									<h6 class="product_name"><a href="#single.html">{{i.name}}</a></h6>
-									<div class="product_price">${{i.disc_price}}<span>${{i.price}}</span></div>
+									<h6 class="product_name"><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
+									<div class="product_price">
+										{% if i.disc_price != 0 %}
+											${{ i.disc_price }} <span>${{ i.price }}</span>
+											{% elif i.cat_off < i.price and i.category.valid_to > now %}
+											${{ i.cat_off }} <span>{{i.price}}</span>
+										{% else %}
+											${{ i.price }} <span></span>
+										{% endif %}
+									</div>
 								</div>
 							</div>
-							<div class="red_button add_to_cart_button"><a href="{%url 'product_details' i.id%}">View Product</a></div>
+							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
 						</div>
 						{%endfor%}
 
 
-						
+						<!-- Product 7 -->
 						{%for i in women%}
 						<div class="product-item women">
 							<div class="product discount product_filter">
 								<div class="product_image">
-									 <img src="{{i.img.url}}" alt=""> 
+									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
+										{%if i in wish%} 
+										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart"></i>
+										</a>
+										 {%else%}
+										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
+											<i class="fa fa-heart-o"></i>
+										</a>
+									{%endif%}
+								   </div>
+									<img src="{{i.img.url}}"  style="width:222px; height:300px;" alt="">
 								</div>
-								<div class="favorite favorite_left"></div>
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+								
+								{%if i.disc_price != 0 %}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
+								{%elif i.cat_off < i.price and i.category.valid_to > now%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.cat_amt}}</span></div>
+								{%else%}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
+								{%endif%}
+
 								<div class="product_info">
-									<h6 class="product_name"><a href="#single.html">{{i.name}}</a></h6>
-									<div class="product_price">${{i.price}}<span>${{i.disc_price}}</span></div>
+									<h6 class="product_name"><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
+									<div class="product_price">
+										{% if i.disc_price != 0 %}
+											${{ i.disc_price }} <span>${{ i.price }}</span>
+											{% elif i.cat_off < i.price and i.category.valid_to > now %}
+											${{ i.cat_off }} <span>{{i.price}}</span>
+										{% else %}
+											${{ i.price }} <span></span>
+										{% endif %}
+									</div>
 								</div>
 							</div>
-							<div class="red_button add_to_cart_button"><a href="{%url 'product_details' i.id%}">View Product</a></div>
+							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
 						</div>
 						{%endfor%}
+
+
+						
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	
+ 
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-	<!-- Deal of the week -->
+
+<script>
+	$(document).ready(function() {
+		$(".wishlist-action").click(function(event) {
+		  event.preventDefault();
+	  
+		  var itemId = $(this).data("item-id");
+	  
+		  $.ajax({
+			url: "{% url 'add_' %}",
+			type: "POST",
+			data: {
+			  item_id: itemId,
+			  csrfmiddlewaretoken: "{{ csrf_token }}"
+			},
+			success: function(data) {
+			  console.log("Wishlist action successful.", data);
+	  
+			  var heartIcon = $("#heart-icon-" + itemId + " i");
+	  
+			  if (data.wish === 1) {
+				heartIcon.removeClass("fa-heart-o").addClass("fa-heart");
+	  
+				if (data.message === "item added successfully") {
+				  Swal.fire({
+					icon: 'success',
+					title: 'Success',
+					text: data.message
+				  });
+				} else { // Handle already-in-wishlist message
+				  Swal.fire({
+					icon: 'info',
+					title: 'Info',
+					text: data.message
+				  });
+				}
+	  
+			  } else {
+				console.error("Unexpected response data:", data);
+			  }
+			},
+			error: function(error) {
+			  console.error("Error:", error);
+			}
+		  });
+		});
+	  });
+	</script>
+
+
+
+	<!-- Deal of the week --> 
 
 	<div class="deal_ofthe_week">
 		<div class="container">
 			<div class="row align-items-center">
 				<div class="col-lg-6">
 					<div class="deal_ofthe_week_img">
-						<img src="images/deal_ofthe_week.png" alt="">
+						<img src="{%static 'images/deal_ofthe_week.png'%}" alt="">
 					</div>
 				</div>
 				<div class="col-lg-6 text-right deal_ofthe_week_col">
@@ -289,7 +515,7 @@
 			<div class="row">
 				<div class="col text-center">
 					<div class="section_title new_arrivals_title">
-						<h2>Best Sellers</h2>
+						<h2>Products You May Like</h2>
 					</div>
 				</div>
 			</div>
@@ -299,26 +525,45 @@
 						<div class="owl-carousel owl-theme product_slider">
 
 							<!-- Slide 1 -->
+							{%for i in products_you_may_like%}
 
 							<div class="owl-item product_slider_item">
 								<div class="product-item">
 									<div class="product discount">
 										<div class="product_image">
-											<img src="images/product_1.png" alt="">
+											<a href="{%url 'product_details' i.product.id%}">
+											<img src="{{i.product.img.url}}" style="height:250px;" alt="">
 										</div>
-										<div class="favorite favorite_left"></div>
-										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+										
+										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
+											{% comment %} <span>-$20</span> {% endcomment %}
+											{%if i.product.disc_price != 0 %}
+											<span>-${{i.amt}}</span>
+											{%elif i.cat_off < i.product.price and i.product.category.valid_to > now%}
+											<span>-${{i.cat_amt}}</span>
+											{%else%}
+											<span>no sale</span>
+											{%endif%}
+										</div>
 										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-											<div class="product_price">$520.00<span>$590.00</span></div>
+											<h6 class="product_name"><a href="{%url 'product_details' i.product.id%}">{{i.product.name}}</a></h6>
+											<div class="product_price">
+											{% if i.product.disc_price != 0 %}
+											 {{i.product.disc_price}}<span>{{i.product.price}}</span></div>
+											{% elif i.cat_off < i.product.price and i.product.category.valid_to > now %}
+											${{ i.cat_off }} <span>{{i.price}}</span></div>
+											{% else %}
+											${{ i.product.price}} <span></span></div>
+										{% endif %}
 										</div>
 									</div>
 								</div>
 							</div>
-
+						</a>
+							{%endfor%}
 							<!-- Slide 2 -->
 
-							<div class="owl-item product_slider_item">
+							{% comment %} <div class="owl-item product_slider_item">
 								<div class="product-item women">
 									<div class="product">
 										<div class="product_image">
@@ -471,7 +716,7 @@
 										</div>
 									</div>
 								</div>
-							</div>
+							</div> {% endcomment %}
 						</div> 
 
 						<!-- Slider Navigation -->
@@ -595,6 +840,54 @@
 	</footer>
 
 </div>
+<!-- In your HTML template -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{% comment %} <script>
+	$(document).ready(function() {
+					updateState()
+		
+				  function updateState() {
+					$.ajax({
+					  url: "{% url 'your_app:get_data' %}", // if you have dynamic url
+					  url: "get_data/" // if you don't have dynamic url
+					  type: 'GET'
+					})
+					.done(response => {
+					  const data = response
+	
+	
+					  // do whatever you want with your data
+					  
+	
+					  // rerun every 10 seconds
+					  setTimeout(function() {
+						updateState()
+					  }, 10000)
+					})
+				  }
+				})
+	</script>  {% endcomment %}
+
+	<script>
+		function updateSize() {
+			var selectedSize = $("#size").val();
+	
+			$.ajax({
+				type: "GET",
+				url: "size_variation",  // Replace this with the actual URL of your Django view
+				data: {'size': selectedSize},
+				success: function(response) {
+					// Handle the response if needed
+					console.log(response);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			});
+		}
+	</script>
+
 
 <script src="{% static "js/jquery-3.2.1.min.js" %}"></script>
 <script src="{% static "styles/bootstrap4/popper.js" %}"></script>
@@ -604,5 +897,5 @@
 <script src="{% static "plugins/easing/easing.js" %}"></script>
 <script src="{% static "js/custom.js" %}"></script>
 </body>
-
 </html>
+{%endblock%}

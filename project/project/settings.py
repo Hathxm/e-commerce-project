@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'user',
     'checkout',
     'phonenumber_field',
+    'import_export',
+    'image_cropping',
+    
 ]
 
 MIDDLEWARE = [
@@ -80,12 +83,20 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'e_commerce_project',
+        'USER': 'postgres',
+        'PASSWORD': '1246',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
 
@@ -136,3 +147,7 @@ EMAIL_PORT = 587  # Use the correct port for your SMTP server
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mohammedhathimeasa@gmail.com'
 EMAIL_HOST_PASSWORD = 'xmgw rihl epfv nkug'
+
+RAZORPAY_KEY_ID='rzp_test_USjwD14i3epQF2'
+RAZORPAY_KEY_SECRET='HZcYrn998bkphZr3uOqNfCUH'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"

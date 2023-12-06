@@ -1,0 +1,18 @@
+{%extends 'add_category.html'%}
+{%block catoff%}
+{% block coupons %}
+                <h2 class="text-center">Apply Discount</h2>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="inputField" name="percentage" placeholder="Enter Discount Percenetage" required>
+                        
+                        <input class="form-control mt-2" type="datetime-local" id="datetime" name="datetime" required>
+                    </div>
+                    <!-- Add more form fields as needed -->
+                    <div class="text-center"> <!-- Add this div to center-align the button -->
+                        <button type="submit" class="btn btn-success mt-2">Submit</button>
+                    </div>
+                </form>
+                {% endblock coupons %}
+                {%endblock%}

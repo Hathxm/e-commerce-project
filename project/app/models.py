@@ -1,10 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from phonenumber_field.modelfields import PhoneNumberField
+from image_cropping import ImageRatioField
+
 # Create your models here.
 class customuser(AbstractUser):
+    user_img=models.ImageField( upload_to='user_pics', height_field=None, width_field=None, max_length=None,null=True)
     is_deleted=models.BooleanField(default=False)
     otp=models.IntegerField(null=True,blank=True)
-
+    otp_created_at=models.DateTimeField(null=True, blank=True)
+    phone_number=PhoneNumberField(null=True)
 
     
 class Size(models.Model):
@@ -14,6 +19,7 @@ class Size(models.Model):
         ('L', 'Large'),
     ]
     size=models.CharField(max_length=50,choices=sizze)
+    price_increment=models.PositiveIntegerField(default=0)
     def __str__(self):
         return self.size
     
@@ -27,6 +33,8 @@ class category(models.Model):
         ]
     wear=models.CharField( max_length=50,choices=choice)
     is_deleted=models.BooleanField(default=False)
+    discount_percentage=models.FloatField(default=0)
+    valid_to=models.DateTimeField(null=True)
 
 
     def __str__(self) -> str:
@@ -44,25 +52,31 @@ class gender(models.Model):
      
 class brand(models.Model):
     name=models.CharField( max_length=50)
+    is_deleted=models.BooleanField(default=False)
     def __str__(self) -> str:
          return self.name
      
 class product(models.Model):
-    img=models.ImageField( upload_to='pics', height_field=None, width_field=None, max_length=None,null=True)
-    rearimg=models.ImageField( upload_to='pics', height_field=None, width_field=None, max_length=None,null=True)
-    frontimg=models.ImageField( upload_to='pics', height_field=None, width_field=None, max_length=None,null=True)
-    name=models.CharField( max_length=50)
+    img=models.ImageField( upload_to='pics', height_field=None, width_field=None, max_length=500,null=True)
+    rearimg=models.ImageField( upload_to='pics', height_field=None, width_field=None, max_length=500,null=True)
+    frontimg=models.ImageField( upload_to='pics', height_field=None, width_field=None, max_length=500,null=True)
+    name=models.CharField(max_length=255)
     discription=models.TextField()
     category=models.ForeignKey(category, on_delete=models.CASCADE)
     size=models.ManyToManyField(Size)
     brand=models.ForeignKey(brand, on_delete=models.CASCADE)
     gender=models.ForeignKey(gender, on_delete=models.PROTECT)
     price=models.IntegerField()
-    disc_price=models.IntegerField(("discount price"),null=True)
+    disc_price=models.IntegerField(("discount price"),default=0)
     is_deleted=models.BooleanField(default=False)
+    in_stock=models.IntegerField(null='not in stock')
     
 
     def __str__(self) -> str:
         return self.name
+    
+
+
+    
     
     

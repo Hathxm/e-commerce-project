@@ -1,67 +1,53 @@
 from django.shortcuts import render,redirect
 from app.models import product,Size,customuser
 from django.db.models import Q
-from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from django.contrib import messages
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from user.models import *
+from django.db.models import Sum,F
+from django.urls import reverse
+from .models import *
+import razorpay 
+from django.dispatch import receiver
+from .signals import order_created_signal
+from django.core.mail import send_mail
+from django.http import JsonResponse,HttpResponse,Http404
+import json
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
 from decimal import Decimal
-from user.models import cart,cartitem,item_status
-from django.db.models import Sum
-from user.views import user_login
-from .models import address,district,Order,payment_method,order_status
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+
+
+
 
 # Create your views here.
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')
-def checkout(request):
+def checkout(request,id):
     user = request.user
-    cart_instance = cart.objects.get(user=user)
-    data = cart_instance.items.all()
-    total = data.aggregate(total=Sum('price'))['total']
-
-    
-
-    # Create a new order or retrieve an existing one
-    if Order.objects.filter(user=user).exists():
-        order = Order.objects.get(user=user)
-        status=order_status.objects.get(id=5)
-        order.order_status=status
-        order.save()
-    else:
-        order = Order.objects.create(user=user)
-
-    # Associate cart items with the order
-    for cart_item in data:
-        order.items.add(cart_item)
-
-    # Clear the cart items
-    cart_instance.delete()
-    return render(request, 'checkout.html', {'data': data, 'total': total})
-
-
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url='userlogin')
-def confirmation(request):
-    user = request.user
-    purchased_items = Order.objects.get(user=user)
-    data = purchased_items.items.filter(status=3)
-    total_price = data.aggregate(total=Sum('price'))['total']
+    cartitems=cartitem.objects.all().filter(user=user,is_deleted=False)
+    orderitems=ordereditems.objects.get(id=id)
+    cart_instance = orderitems.items.all()
+    total=orderitems.total
     districts = district.objects.all()
     prev_address = address.objects.filter(user=user)
-    
 
+
+    if not cart_instance.exists():
+        messages.warning(request, 'No items selected')
+        return redirect('viewcart')
+    
     if request.method == 'POST':
         prev_address_id = request.POST.get('previous_address')
-
+       
         if prev_address_id:
             # User selected a previous address
             prev_address = address.objects.get(id=prev_address_id)
-            purchased_items.address=prev_address
-            purchased_items.save()
-            return redirect('payment')  # You may want to pass prev_address to the payment page
+            request.session['selected_address_id'] = prev_address_id
+            return redirect(payment_view,id=orderitems.id)  # You may want to pass prev_address to the payment page
         else:
             # User is providing a new address
             name = request.POST.get('fullname')
@@ -71,75 +57,293 @@ def confirmation(request):
             pin = request.POST.get('pin')
             x = district.objects.get(id=user_district)
             y=address.objects.create(user=user, full_name=name, district=x, street_address=streetaddress, phone_number=phone_number, pin=pin)
-            purchased_items.address=y
-            purchased_items.save()
-            return redirect('payment')
-
-    return render(request, 'confirmation.html', {
-        'data': data,
-        'total': total_price,
-        'districts': districts,
-        'prev_address': prev_address,
-    })
+            request.session['selected_address_id'] = y.id
+            return redirect(payment_view,id=orderitems.id) 
+    return render(request, 'checkout.html', {'cart_instance':cart_instance,'total':total,'districts':districts,'prev_address':prev_address,'ordereditem':orderitems})
+    
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')
-def payment_view(request):
-     data=payment_method.objects.all()
-     order=Order.objects.get(user=request.user)
-     items=order.items.filter(status=3)
-     if request.method=="POST":
-         payment=request.POST.get('payment_option')
-         pay=payment_method.objects.get(id=payment)
-         order.payment=pay
-         order.save()
-         return redirect(order_confirmed)
-     return render(request,'payment.html',{'data':data,'items':items})
+def user_address(request):
+    #data to display in the page
+    user = request.user
+    districts = district.objects.all()
+    prev_address = address.objects.filter(user=user)
+    items = cartitem.objects.all().filter(is_deleted=False,user=user)
+    total=float(items.aggregate(total=Sum('price'))['total'])
+    
+#getting adrresses of users
+    if request.method == 'POST':
+        prev_address_id = request.POST.get('previous_address')
+        
+        if prev_address_id:
+            # User selected a previous address
+            prev_address = address.objects.get(id=prev_address_id)
+            request.session['selected_address_id'] = prev_address_id
+            return redirect(payment_view)  # You may want to pass prev_address to the payment page
+        else:
+            # User is providing a new address
+            name = request.POST.get('fullname')
+            phone_number = request.POST.get('phone_number')
+            user_district = request.POST.get('district')
+            streetaddress = request.POST.get('streetaddress')
+            pin = request.POST.get('pin')
+            x = district.objects.get(id=user_district)
+            y=address.objects.create(user=user, full_name=name, district=x, street_address=streetaddress, phone_number=phone_number, pin=pin)
+            request.session['selected_address_id'] = y.id
+           
+            return redirect(payment_view) 
+
+    return render(request,'confirmation.html',{'data':items,'districts':districts,'prev_address':prev_address,'total':total})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')
-def order_confirmed(request):
-    order=Order.objects.get(user=request.user)
-    items=order.items.filter(status=3)
-    return render(request,'order_confirm.html',{'order':order,'items':items})
+def payment_view(request,id):
+    user=request.user
+    addresss=request.session.get('selected_address_id')
+    orderitems=ordereditems.objects.get(id=id)
+    items=orderitems.items.all()
+    total_price = orderitems.total
+    walet=wallet.objects.get(user=user)
+    to_pay=total_price*100
+    wallet_option=walet.money>=total_price
+     # Replace 'order_details' with your actual URL name
+    success_url = request.build_absolute_uri(reverse('create_order', kwargs={'id': orderitems.id}))
+    # failed_url = request.build_absolute_uri(reverse('payment-failed'))
+
+    return render(request, 'payment.html', {'ordereditems':orderitems,'items':items,'total':total_price,'to_pay':to_pay,'success_url':success_url,'wallet_option':wallet_option})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')
-def cancel_item(request,id):
-    x=cartitem.objects.get(id=id)
-    canceled_status = item_status.objects.get(id=4)
-    x.status=canceled_status
-    x.save()
-    return redirect(orderr_status)
-
-def return_item(request,id):
-    x=cartitem.objects.get(id=id)
-    return_status = item_status.objects.get(id=1)
-    x.status=return_status
-    x.save()
-    return redirect(orderr_status)
-
+def create_order(request,id):
+    orderitems=ordereditems.objects.get(id=id)
+    user=orderitems.user
+    items=orderitems.items.all()
+    total=Decimal(orderitems.total)
+    adress=request.session.get('selected_address_id')
+    deliver_address=address.objects.get(id=adress)
+    pay=payment_method.objects.get(id=1)
+    
+    order=Order.objects.create(user=user,address=deliver_address,payment=pay,items=orderitems,total=total)
+    for i in items:
+        i.product.in_stock-=i.quantity
+        i.product.save()
+    order.save()
+    return redirect(orders)
+    
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='userlogin')
+def walletpayment(request,id):
+    user=request.user
+    orderitems=ordereditems.objects.get(id=id)
+    items=orderitems.items.all()
+    walet=wallet.objects.get(user=user)
+    total_price = orderitems.total
+    walet.money-=total_price
+    walet.save()
+    adress=request.session.get('selected_address_id')
+    deliver_address=address.objects.get(id=adress)
+    pay=payment_method.objects.get(id=1)
+    if orderitems.coupon_applied==True:
+        coupons=coupon.objects.get(name=request.session.get('coupon'))
+        usercoupon.objects.create(user=user,coupon=coupons,used_at=timezone.now())
+    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment=pay,items=orderitems,total=total_price)
+    for product in items:
+        product.product.in_stock-=product.quantity
+        product.product.save()
+    orderr.save() 
+    return redirect(orders)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')
-def orderr_status(request):
-    order=Order.objects.get(user=request.user)
-    return render(request,'order_status.html',{'order':order})
+def cod(request,id):
+    user=request.user
+    orderitems=ordereditems.objects.get(id=id)
+    items=orderitems.items.all()
+    walet=wallet.objects.get(user=user)
+    total_price = orderitems.total
+    adress=request.session.get('selected_address_id')
+    deliver_address=address.objects.get(id=adress)
+    pay=payment_method.objects.get(id=2)
+    if orderitems.coupon_applied==True:
+        coupons=coupon.objects.get(name=request.session.get('coupon'))
+        usercoupon.objects.create(user=user,coupon=coupons,used_at=timezone.now())
+    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment=pay,items=orderitems,total=total_price)
+    for product in items:
+        product.product.in_stock-=product.quantity
+        product.product.save()
+    orderr.save()
+    
+    return redirect(orders)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')
-def cancel_order(request,order_id):
-    # Fetch the order to be canceled
-    order = get_object_or_404(Order, id=order_id)
+def order_details(request,id):
+   order= Order.objects.get(id=id)
+   items=order.items.all()
+   return render(request,'order_details.html',{'order':order,'items':items})
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='userlogin')
+def orders(request):
+   user=request.user
+   order= Order.objects.filter(user=user).order_by('-created_at')
+   return render(request,'order_status.html',{'data':order,'user':user})
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='userlogin')
+def order_items(request,id):
+    order=Order.objects.get(id=id)
+    items=order.items.items.all()
+    total_price=order.total
+    return render(request,'order_items.html',{'items':items,'total':total_price,'order':order})
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='userlogin')
+def return_order(request,id):
+    order=Order.objects.get(id=id)
     status=order_status.objects.get(id=4)
     order.order_status=status
     order.save()
-    items=order.items.all()
-    itemstatus=item_status.objects.get(id=4)
+    items=order.items.items.all()
+    user_balance=wallet.objects.get(user=order.user)
+    user_balance.money+=order.total
+    user_balance.save()
+
     for i in items:
-        i.status=itemstatus
-        i.save()
-    # Redirect to the order status page
-    return redirect('order_status')
+        product=i.product
+        product.in_stock+=i.quantity
+        product.save()
+
+    user_mail=order.user.email
+    send_mail(
+                'Order cancelled',
+                f' Your Order number: {order.id} from street trends has been requested to return\n Amount {order.total} has been refunded to your wallet..',
+                'streetrends@gmail.com',
+                [user_mail],
+                fail_silently=False,
+            )
+
+    return redirect(orders)
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='userlogin')
+def cancel_order(request,id):
+    order=Order.objects.get(id=id)
+    status=order_status.objects.get(id=4)
+    order.order_status=status
+    order.save()
+    items=order.items.items.all()
+    user_balance=wallet.objects.get(user=order.user)
+    user_balance.money+=order.total
+    user_balance.save()
+
+    for i in items:
+        product=i.product
+        product.in_stock+=i.quantity
+        product.save()
+
+    user_mail=order.user.email
+    send_mail(
+                'Order cancelled',
+                f' Your Order number: {order.id} from street trends has been cancelled\n Amount {order.total} has been refunded to your wallet..',
+                'streetrends@gmail.com',
+                [user_mail],
+                fail_silently=False,
+            )
+
+    return redirect(orders)
+
+def add_to_wishlistt(request,id):
+    user=request.user
+    product_to_add=product.objects.get(id=id)
+    wish,created=wishlist.objects.get_or_create(user=user)
+    wish.items.add(product_to_add)
+    return redirect('shop')
+
+def dlt_from_wishlist(request,id):
+    user=request.user
+    product_to_dlt=product.objects.get(id=id)
+    wishlistt=wishlist.objects.get(user=user)
+    wishlistt.items.remove(product_to_dlt)
+    return redirect('shop')
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url='userlogin')
+def view_wishlist(request):
+    user=request.user
+    wishlistt=wishlist.objects.get(user=user)
+    data=wishlistt.items.all().annotate(amt=F('price')-F('disc_price'))
+    return render(request,'wishlist.html',{'data':data})
+
+def add_to_cart(request,id):
+     user=request.user
+     wishh=wishlist.objects.get(user=user)
+     productt = product.objects.get(id=id)
+     size_id = 1 
+     size = Size.objects.get(id=size_id)
+     item, created = cartitem.objects.get_or_create(product=productt, size=size,user=user,is_deleted=False)
+     item.quantity = 1
+     item.price=productt.price
+     item.save()
+     wishh.items.remove(productt)
+     return redirect('viewcart')
+
+def checkcoupon(request):
+    user=request.user
+    if request.method == 'POST':
+        gift_code = request.POST.get('gift_code')
+        orderid = request.POST.get('order_id')
+        coupons=coupon.objects.filter(name=gift_code,valid_to__gte=timezone.now()).first()
+        couponusage=usercoupon.objects.filter(user=user,coupon=coupons)
+        
+        # Your coupon processing logic here
+        if not couponusage.exists():
+            if coupons is not None:
+                orderitems=ordereditems.objects.get(id=int(orderid))
+                if orderitems.total>500:
+                    if orderitems.coupon_applied==False:
+                        request.session['coupon']=coupons.name
+                        orderitems.total-=(coupons.discount_percentage/100)*orderitems.total 
+                        orderitems.coupon_applied=True
+                        orderitems.save() # Replace with your actual coupon code check
+                        return JsonResponse({'success': True,'message': 'Coupon applied','updated_total': orderitems.total})
+                    else:
+                       return JsonResponse({'success': False, 'message': 'Only 1 coupon for an order is applicable'})
+                else:
+                     return JsonResponse({'success': False, 'message': 'Order total must be greater than $500'})    
+            else:
+                 return JsonResponse({'success': False, 'message': 'Coupon does not exist'})
+        else:    
+            return JsonResponse({'success': False, 'message': 'Coupon already applied'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+def orderinvoice(request,id):
+                orders=Order.objects.get(id=id)
+               
+                items=orders.items.items.all()
+                date=orders.created_at
+                total=orders.total
+                template = 'orderinvoicepdf.html'
+                context = {'orders': orders, 'items': items,'date':date,'total':total}
+                pdf_data = render_to_string(template, context)
+                response = HttpResponse(content_type='application/pdf')
+                response['Content-Disposition'] = f'attachment; filename="sales_report_{timezone.now()}.pdf"'
+                pisa.CreatePDF(pdf_data, dest=response)
+                return response
+
+
+
+    
+
+
+
+
+
+
+
+
 
 

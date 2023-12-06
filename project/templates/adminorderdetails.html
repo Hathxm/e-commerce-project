@@ -1,0 +1,39 @@
+{%extends 'adminindex.html'%}
+{%load static%}
+{%block content%}
+<link rel="stylesheet" type="text/css" href="{% static "styles/salesreport.css" %}">
+
+    <h2> Order details</h2>
+    
+
+    <div class="table-wrapper">
+        <table class="fl-table">
+            <thead>
+            <tr>
+                <th>Product ID</th>
+                <th>Product Name</th>
+                <th>Quantity</th>
+                <th>Per Piece Price</th>
+                <th>Total Price</th>
+
+              
+              
+            </tr>
+            </thead>
+            <tbody>
+                {%for i in data%}
+            <tr>
+                <td>{{i.id}}</td>
+                <td>{{i.product.name}}</td>
+                <td>{{i.quantity}}</td>
+                {%if i.product.disc_price == 0%}
+                <td>{{i.product.price}}</td>
+                {%else%}
+                <td>{{i.product.disc_price}}</td>
+                {%endif%}
+                <td>{{i.price}}</td>  
+            </tr>
+            {% endfor %}
+            <tbody>
+        </table>
+{% endblock %}

@@ -5,8 +5,6 @@ from app.models import product,customuser,Size
 
 class item_status(models.Model):
      ORDER_STATUS_CHOICES = [
-        ('Processing','Processing'),
-        ('Delivered','Delivered'),
         ('Cancelled','Cancelled'),
         ('Return','Returned'),
 
@@ -18,26 +16,29 @@ class item_status(models.Model):
         return self.status
     
 class cartitem(models.Model): 
+    user=models.ForeignKey(customuser, on_delete=models.CASCADE,null=True)
     product=models.ForeignKey(product, on_delete=models.CASCADE)
-    size=models.ForeignKey(Size, on_delete=models.CASCADE,default=3)
+    size=models.ForeignKey(Size, on_delete=models.CASCADE,default=1)
     quantity=models.IntegerField(default=1)
     price=models.BigIntegerField(null=True)
-    status=models.ForeignKey(item_status, on_delete=models.CASCADE, default=3)
-
-
-
+    is_deleted=models.BooleanField(default=False)
+    
     def __str__(self) -> str:
         return self.product.name
-
-class cart(models.Model):
-    user=models.OneToOneField(customuser, on_delete=models.CASCADE)
+    
+class ordereditems(models.Model):
+    user=models.ForeignKey(customuser, on_delete=models.CASCADE)
     items=models.ManyToManyField(cartitem)
-
-
+    total=models.BigIntegerField(null=True)
+    coupon_applied=models.BooleanField(default=False)
 
     def __str__(self) -> str:
-        return self.user.username    
+        return self.user.username
     
+    
+
+
+
 
 
 

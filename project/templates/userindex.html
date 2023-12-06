@@ -7,634 +7,188 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="Colo Shop Template">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" type="text/css" href="{% static "styles/bootstrap4/bootstrap.min.css" %}">
-<link href="{% static "plugins/font-awesome-4.7.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.theme.default.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "styles/main_styles.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "styles/responsive.css" %}">
-</head>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet"  href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" >
+<link rel="stylesheet"  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap.css" >
+<link rel="stylesheet" type="text/css" href="{% static "styles/landingpage.css" %}">
 <body>
-
-<div class="super_container">
-
-	<!-- Header -->
-
-	<header class="header trans_300">
-
-		<!-- Top Navigation -->
-
-		<div class="top_nav">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6">
-						<div class="top_nav_left">free shipping on all u.s orders over $50</div>
-					</div>
-					<div class="col-md-6 text-right">
-						<div class="top_nav_right">
-							<ul class="top_nav_menu">
-
-								<!-- Currency / Language / My Account -->
-
-								
-								<li class="account">
-									<a href="#">
-										My Account
-										<i class="fa fa-angle-down"></i>
-									</a>
-								
-									<ul class="account_selection">
-										<li><a href="{%url 'userlogin'%}"><i class="fa fa-sign-in" aria-hidden="true"></i>Login</a></li>
-										<li><a href="{%url 'usersignup'%}"><i class="fa fa-user-plus" aria-hidden="true"></i>Sign Up</a></li>
-									</ul>
-									
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Main Navigation -->
-
-
-
-						<div class="main_nav_container">
-							<div class="container">
-								<div class="row">
-									<div class="col-lg-12 text-right">
-										<div class="logo_container">
-											<div class="col-md-4 gradient-custom text-center text-white"
-												 style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem; display: flex; align-items: center; margin-top: 90px;">
-												<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-													 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
-												<a href="#" style="margin-left: 10px;">Stree<span>Trends</span></a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						
-
-						<nav class="navbar">
-							<ul class="navbar_menu">
-								<li><a href="{%url 'landing-pg'%}">home</a></li>
-								
-								<li><a href="{%url 'usersignup'%}">Sign up</a></li>
-								
-								<li><a href="#">About</a></li>			
-								<li><a href="{%url 'contact'%}">contact</a></li>
-							</ul>
-							
-							  <ul class="navbar_user">
-								<li><a href="{%url 'userlogin'%}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-								{% comment %} <li class="checkout">
-									<a href="#">
-										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-										<span id="checkout_items" class="checkout_items">2</span>
-									</a>
-								</li> {% endcomment %}
-							</ul> 
-							
-							 <div class="hamburger_container">
-								<i class="fa fa-bars" aria-hidden="true"></i>
-							</div> 
-						</nav>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	</header>
-
-
-	<!-- Slider -->
-	
-	<div class="main_slider" style="background-image: url({% static 'images/slider_1.jpg' %})">
-		<div class="container fill_height">
-			<div class="row align-items-center fill_height">
-				<div class="col">
-					<div class="main_slider_content">
-						<h6>Spring / Summer Collection 2017</h6>
-						<h1>Get up to 30% Off New Arrivals</h1>
-						
-						<div class="red_button shop_now_button"><a href="{%url 'userlogin'%}">shop now</a></div>
-						
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!-- Banner -->
-
-	
-
-	<!-- New Arrivals -->
-
-	<div class="new_arrivals">
+<header>
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark-secondary">
 		<div class="container">
-			<div class="row">
-				<div class="col text-center">
-					<div class="section_title new_arrivals_title">
-						<h2>New Arrivals</h2>
-					</div>
-				</div>
-			</div>
-			<div class="row align-items-center">
-				<div class="col text-center">
-					<div class="new_arrivals_sorting">
-						<ul class="arrivals_grid_sorting clearfix button-group filters-button-group">
-							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center active is-checked" data-filter="*">all</li>
-							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".women">women's</li>
-							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".accessories">accessories</li>
-							<li class="grid_sorting_button button d-flex flex-column justify-content-center align-items-center" data-filter=".men">men's</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
-
-						<!-- Product 1 -->
-						 {%for i in men%} 
-
-						<div class="product-item men">
-							<div class="product discount product_filter">
-								<div class="product_image">
-									<img src="{{i.img.url}}" alt="">
-								</div>
-								<div class="favorite favorite_left"></div>
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-								<div class="product_info">
-									<h6 class="product_name"><a href="single.html">{{i.name}}</a></h6>
-									<div class="product_price">${{i.price}}<span>${{i.disc_price}}</span></div>
-								</div>
-							</div>
-							<div class="red_button add_to_cart_button"><a href="{%url 'details' i.id%}">View Product</a></div>
-						</div>
-						{% endfor %}
+			<div class="col-md-4 gradient-custom text-center text-md-left text-white" style="display: flex; align-items: center;">
+				<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp" alt="Avatar" class="img-fluid " style="width: 80px;" />
+				<div>
+					<h2 class="brand-name" style="margin-left: 10px; font-size: 1.5rem; font-weight: bold;">Stree<span class="text-primary">Trends</span></h2>
 					
-
-						{%for i in acc%}
-						
-
-						<div class="product-item accessories">
-							<div class="product discount product_filter">
-								<div class="product_image">
-									<img src="{{i.img.url}}" alt="">
-								</div>
-								<div class="favorite favorite_left"></div>
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-								<div class="product_info">
-									<h6 class="product_name"><a href="#single.html">{{i.name}}</a></h6>
-									<div class="product_price">${{i.price}}<span>${{i.disc_price}}</span></div>
-								</div>
-							</div>
-							<div class="red_button add_to_cart_button"><a href="/details/{{i.id}}">View Product</a></div>
-						</div>
-						{%endfor%}
-
-
-						<!-- Product 7 -->
-						{%for i in women%}
-						<div class="product-item women">
-							<div class="product discount product_filter">
-								<div class="product_image">
-									<img src="{{i.img.url}}" alt="">
-								</div>
-								<div class="favorite favorite_left"></div>
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-								<div class="product_info">
-									<h6 class="product_name"><a href="#single.html">{{i.name}}</a></h6>
-									<div class="product_price">${{i.price}}<span>${{i.disc_price}}</span></div>
-								</div>
-							</div>
-							<div class="red_button add_to_cart_button"><a href="/details/{{i.id}}">View Product</a></div>
-						</div>
-						{%endfor%}
-
-				
-					</div>
 				</div>
 			</div>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item active">
+						<a class="nav-link text-uppercase font-weight-100 " href="#">Home
+							<span class="sr-only">(current)</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link text-uppercase font-weight-100 " href="#">About Us</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link text-uppercase font-weight-100 " href="#contact">Contact</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link text-uppercase font-weight-100 " href="{%url 'usersignup'%}">Sign Up</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link text-uppercase font-weight-100 " href="{%url 'userlogin'%}">Log In</a>
+					</li>
+				</ul>
+			</div>
 		</div>
+	</nav>
+  </header>
+  
+  <main>
+	<section class="background grid grid-center" id="showcase-background-1">
+	  <div class="container text-white">
+		<h1 class="display-2 mb-3">On Sale Now!</h1>
+		<div class="row">
+		  <div class="col-12 col-lg-8">
+			<p>Join us for a fashion spectacle like never before, featuring your favorite trends harmonized into one unforgettable experience. Don't miss the fashion event of the year
+		</p>
+		  </div>
+		</div>
+		<a class="pr-5 pl-5 pt-2 pb-2 text-white btn text-uppercase font-weight-bold btn-gradient" href="#">Shop Now</a>
+	  </div>
+	</section>
+  
+	{% comment %} <section class="pb-5 pt-5 bg-dark-secondary">
+	  <div class="container">
+		<div class="row">
+		  <div class="col-12 col-lg-6 text-white">
+			<h2 class="text-uppercase display-4">Upcoming Events</h2>
+			<hr class="hr-red">
+			<p class="mt-5 font-weight-100 letter-spacing-4px">Make sure you stay up to date with the latest concert news. Get the best discount alerts when you sign up today.</p>
+			<form action="#" method="POST">
+			  <div class="form-group position-relative">
+				<input class="form-outline-gray" name="email" id="email" type="email" required>
+				<label class="label-absolute" for="email">Email</label>
+			  </div>
+			  <input class="mb-4 pr-5 pl-5 pt-2 pb-2 btn text-uppercase font-weight-bold text-red btn-outline-red" type="submit" name="send" id="send" value="Send">
+			</form>
+		  </div>
+		  <div class="col-12 col-lg-6">
+			<aside class="card box-shadow bg-dark-primary text-white">
+			  <div class="card-header p-0">
+				<img class="cover" src="https://raw.githubusercontent.com/Jesus-E-Rodriguez/Concert/master/images/singer.jpg" alt="Singer">
+			  </div>
+			  <div class="card-body">
+				<h3>Jonathan Smith</h3>
+				<p>April 13<sup>th</sup> 2018 <br> <span class="font-weight-100">Join us for a combination of the most talented artists in the industry. This concert will be a musical adventure, one like
+										  you have never been in before.</span></p>
+				<a class="text-red text-uppercase font-weight-bold" href="#">More Info</a>
+			  </div>
+			</aside>
+		  </div>
+		</div>
+	  </div>
+	</section> {% endcomment %}
+  
+	<section class="background pb-5 pt-5 text-white text-center" id="showcase-background-2">
+	  <div class="container">
+		<h2 class="text-uppercase display-4">Latest Ambasadors</h2>
+		<hr class="hr-red">
+		<p>Dive into the Soulful Journeys of our Latest Ambassadors ! 🌟 Join the musical odyssey as these industry trailblazers share their inspirations, triumphs, and the raw stories behind their chart-topping quests.Witness the resilience and passion that fuels their artistic brilliance, turning obstacles into symphonies.</p>
+  
+		<div class="card-deck mt-5 mb-3 text-center">
+		  <div class="card mb-4 box-shadow border-0 h-500px">
+			<img class="position-absolute cover" src="{% static "images/Fashion2.jpg" %} " alt="Steven Lee">
+			<h4 class="text-red position-bottom position-absolute position-center text-uppercase font-weight-bold">Steven Lee</h4>
+		  </div>
+		  <div class="card mb-4 box-shadow border-0  h-500px">
+			<img class="position-absolute cover" src="{% static "images/landing1.jpg" %}" alt="Wesley Francis">
+			<h4 class="text-red position-bottom position-absolute position-center text-uppercase font-weight-bold">Wesley Francis</h4>
+		  </div>
+  
+		  <div class="card mb-4 box-shadow border-0  h-500px">
+			<img class="position-absolute cover" src="{% static "images/landing2.jpg" %}" alt="Jake Lively">
+			<h4 class="text-red position-bottom position-absolute position-center text-uppercase font-weight-bold">Jake Lively</h4>
+		  </div>
+		</div>
+	</section>
+  
+	<section class="pb-5 pt-5 text-white text-center">
+	  <h2 class="text-uppercase display-4">Latest Updates</h2>
+	  <hr class="hr-red">
+	  <br>
+	  <h3 class="mt-5 fab fa-twitter"></h3>
+	  <p class="font-weight-100 letter-spacing-4px"><i class="fas fa-quote-left"></i> I am looking foward to attending the Jonathan Smith's Concert!!! <i class="fas fa-quote-right"></i></p>
+	  <a class="text-red" href="#">@aconcertfan</a>
+	</section>
+  
+	<section class="pb-5 pt-5 bg-dark-secondary text-white text-center " id="contact">
+	  <h2 class="text-uppercase display-4">Contact Us</h2>
+	  <hr class="hr-red">
+	  <form class="text-left container mt-5" action="#" method="POST">
+		<div class="row">
+		  <div class="col-12 col-lg-6">
+			<div class="form-group position-relative">
+			  <input class="form-outline-gray" name="firstname" id="firstname" type="text" required>
+			  <label class="label-absolute" for="firstname">First Name</label>
+			</div>
+		  </div>
+		  <div class="col-12 col-lg-6">
+			<div class="form-group position-relative">
+			  <input class="form-outline-gray" name="lastname" id="lastname" type="text" required>
+			  <label class="label-absolute" for="lastname">Last Name</label>
+			</div>
+		  </div>
+		  <div class="col-12">
+			<div class="form-group position-relative">
+			  <input class="form-outline-gray" name="email" id="email" type="email" required>
+			  <label class="label-absolute" for="email">Email</label>
+			</div>
+  
+			<div class="form-group position-relative">
+			  <input class="form-outline-gray" name="subject" id="subject" type="subject" required>
+			  <label class="label-absolute" for="subject">Subject</label>
+			</div>
+  
+			<div class="form-group position-relative">
+			  <input class="form-outline-gray" name="message" id="message" type="message" required>
+			  <label class="label-absolute" for="message">Message</label>
+			</div>
+		  </div>
+		</div>
+		<input class="pr-5 pl-5 pt-2 pb-2 btn text-uppercase font-weight-bold text-red btn-outline-red" type="submit" name="send" id="send" value="Send">
+	  </form>
+	</section>
+  
+  </main>
+  
+  <footer class="text-white pt-3 pb-3">
+	<div class="container d-flex align-items-center justify-content-between">
+	  <small>Concert 2018. All rights reserved.</small>
+	  <ul class="list-unstyled d-flex p-0 m-0">
+		<li class="p-3">
+		  <a class="text-white text-decoration-none" href="#">
+								<i class="fab fa-facebook-f"></i>
+						   </a>
+		</li>
+		<li class="p-3">
+		  <a class="text-white text-decoration-none" href="#">
+								<i class="fab fa-instagram"></i>
+						   </a>
+		</li>
+		<li class="p-3">
+		  <a class="text-white text-decoration-none" href="#">
+								<i class="fab fa-twitter"></i>
+						   </a>
+		</li>
+	  </ul>
 	</div>
-
-	<!-- Deal of the week -->
-
-	<div class="deal_ofthe_week">
-		<div class="container">
-			<div class="row align-items-center">
-				<div class="col-lg-6">
-					<div class="deal_ofthe_week_img">
-						<img src="images/deal_ofthe_week.png" alt="">
-					</div>
-				</div>
-				<div class="col-lg-6 text-right deal_ofthe_week_col">
-					<div class="deal_ofthe_week_content d-flex flex-column align-items-center float-right">
-						<div class="section_title">
-							<h2>Deal Of The Week</h2>
-						</div>
-						<ul class="timer">
-							<li class="d-inline-flex flex-column justify-content-center align-items-center">
-								<div id="day" class="timer_num">03</div>
-								<div class="timer_unit">Day</div>
-							</li>
-							<li class="d-inline-flex flex-column justify-content-center align-items-center">
-								<div id="hour" class="timer_num">15</div>
-								<div class="timer_unit">Hours</div>
-							</li>
-							<li class="d-inline-flex flex-column justify-content-center align-items-center">
-								<div id="minute" class="timer_num">45</div>
-								<div class="timer_unit">Mins</div>
-							</li>
-							<li class="d-inline-flex flex-column justify-content-center align-items-center">
-								<div id="second" class="timer_num">23</div>
-								<div class="timer_unit">Sec</div>
-							</li>
-						</ul>
-						
-						<div class="red_button deal_ofthe_week_button"><a href="{%url 'usersignup'%}">shop now</a></div>
-						
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	{% comment %} <!-- Best Sellers -->
-
-	<div class="best_sellers">
-		<div class="container">
-			<div class="row">
-				<div class="col text-center">
-					<div class="section_title new_arrivals_title">
-						<h2>Best Sellers</h2>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col">
-					<div class="product_slider_container">
-						<div class="owl-carousel owl-theme product_slider">
-
-							<!-- Slide 1 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item">
-									<div class="product discount">
-										<div class="product_image">
-											<img src="images/product_1.png" alt="">
-										</div>
-										<div class="favorite favorite_left"></div>
-										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-											<div class="product_price">$520.00<span>$590.00</span></div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 2 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item women">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_2.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center"><span>new</span></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Samsung CF591 Series Curved 27-Inch FHD Monitor</a></h6>
-											<div class="product_price">$610.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 3 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item women">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_3.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Blue Yeti USB Microphone Blackout Edition</a></h6>
-											<div class="product_price">$120.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 4 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item accessories">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_4.png" alt="">
-										</div>
-										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>sale</span></div>
-										<div class="favorite favorite_left"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">DYMO LabelWriter 450 Turbo Thermal Label Printer</a></h6>
-											<div class="product_price">$410.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 5 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item women men">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_5.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Pryma Headphones, Rose Gold & Grey</a></h6>
-											<div class="product_price">$180.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 6 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item accessories">
-									<div class="product discount">
-										<div class="product_image">
-											<img src="images/product_6.png" alt="">
-										</div>
-										<div class="favorite favorite_left"></div>
-										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-											<div class="product_price">$520.00<span>$590.00</span></div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 7 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item women">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_7.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Samsung CF591 Series Curved 27-Inch FHD Monitor</a></h6>
-											<div class="product_price">$610.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 8 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item accessories">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_8.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Blue Yeti USB Microphone Blackout Edition</a></h6>
-											<div class="product_price">$120.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 9 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item men">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_9.png" alt="">
-										</div>
-										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>sale</span></div>
-										<div class="favorite favorite_left"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">DYMO LabelWriter 450 Turbo Thermal Label Printer</a></h6>
-											<div class="product_price">$410.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 10 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item men">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_10.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Pryma Headphones, Rose Gold & Grey</a></h6>
-											<div class="product_price">$180.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div> {% endcomment %}
-
-						<!-- Slider Navigation -->
-
-						<div class="product_slider_nav_left product_slider_nav d-flex align-items-center justify-content-center flex-column">
-							<i class="fa fa-chevron-left" aria-hidden="true"></i>
-						</div>
-						<div class="product_slider_nav_right product_slider_nav d-flex align-items-center justify-content-center flex-column">
-							<i class="fa fa-chevron-right" aria-hidden="true"></i>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Benefit -->
-
-	<div class="benefit">
-		<div class="container">
-			<div class="row benefit_row">
-				<div class="col-lg-3 benefit_col">
-					<div class="benefit_item d-flex flex-row align-items-center">
-						<div class="benefit_icon"><i class="fa fa-truck" aria-hidden="true"></i></div>
-						<div class="benefit_content">
-							<h6>free shipping</h6>
-							<p>Suffered Alteration in Some Form</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 benefit_col">
-					<div class="benefit_item d-flex flex-row align-items-center">
-						<div class="benefit_icon"><i class="fa fa-money" aria-hidden="true"></i></div>
-						<div class="benefit_content">
-							<h6>cach on delivery</h6>
-							<p>The Internet Tend To Repeat</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 benefit_col">
-					<div class="benefit_item d-flex flex-row align-items-center">
-						<div class="benefit_icon"><i class="fa fa-undo" aria-hidden="true"></i></div>
-						<div class="benefit_content">
-							<h6>45 days return</h6>
-							<p>Making it Look Like Readable</p>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 benefit_col">
-					<div class="benefit_item d-flex flex-row align-items-center">
-						<div class="benefit_icon"><i class="fa fa-clock-o" aria-hidden="true"></i></div>
-						<div class="benefit_content">
-							<h6>opening all week</h6>
-							<p>8AM - 09PM</p>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Blogs -->
-	
-
-	<div class="blogs">
-		<div class="container">
-			<div class="row">
-				<div class="col text-center">
-					<div class="section_title">
-						<h2>Latest Blogs</h2>
-					</div>
-				</div>
-			</div>
-			<div class="row blogs_container">
-				<div class="col-lg-4 blog_item_col">
-					<div class="blog_item">
-						<div class="blog_background" style="background-image:url(images/blog_1.jpg)"></div>
-						<div class="blog_content d-flex flex-column align-items-center justify-content-center text-center">
-							<h4 class="blog_title">Here are the trends I see coming this fall</h4>
-							<span class="blog_meta">by admin | dec 01, 2017</span>
-							<a class="blog_more" href="#">Read more</a>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-4 blog_item_col">
-					<div class="blog_item">
-						<div class="blog_background" style="background-image:url(images/blog_2.jpg)"></div>
-						<div class="blog_content d-flex flex-column align-items-center justify-content-center text-center">
-							<h4 class="blog_title">Here are the trends I see coming this fall</h4>
-							<span class="blog_meta">by admin | dec 01, 2017</span>
-							<a class="blog_more" href="#">Read more</a>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-4 blog_item_col">
-					<div class="blog_item">
-						<div class="blog_background" style="background-image:{% static 'images/blog_3.jpg'%}"></div>
-						<div class="blog_content d-flex flex-column align-items-center justify-content-center text-center">
-							<h4 class="blog_title">Here are the trends I see coming this fall</h4>
-							<span class="blog_meta">by admin | dec 01, 2017</span>
-							<a class="blog_more" href="#">Read more</a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-
-	<!-- Newsletter -->
-
-	<div class="newsletter">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6">
-					<div class="newsletter_text d-flex flex-column justify-content-center align-items-lg-start align-items-md-center text-center">
-						<h4>Newsletter</h4>
-						<p>Subscribe to our newsletter and get 20% off your first purchase</p>
-					</div>
-				</div>
-				<div class="col-lg-6">
-					<form action="post">
-						<div class="newsletter_form d-flex flex-md-row flex-column flex-xs-column align-items-center justify-content-lg-end justify-content-center">
-							<input id="newsletter_email" type="email" placeholder="Your email" required="required" data-error="Valid email is required.">
-							<button id="newsletter_submit" type="submit" class="newsletter_submit_btn trans_300" value="Submit">subscribe</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Footer -->
-
-	<footer class="footer">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-6">
-					<div class="footer_nav_container d-flex flex-sm-row flex-column align-items-center justify-content-lg-start justify-content-center text-center">
-						<ul class="footer_nav">
-							<li><a href="#">Blog</a></li>
-							<li><a href="#">FAQs</a></li>
-							<li><a href="contact.html">Contact us</a></li>
-						</ul>
-					</div>
-				</div>
-				<div class="col-lg-6">
-					<div class="footer_social d-flex flex-row align-items-center justify-content-lg-end justify-content-center">
-						<ul>
-							<li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-							<li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-							<li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-							<li><a href="#"><i class="fa fa-skype" aria-hidden="true"></i></a></li>
-							<li><a href="#"><i class="fa fa-pinterest" aria-hidden="true"></i></a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="footer_nav_container">
-						<div class="cr">©2018 All Rights Reserverd. Made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="#">Colorlib</a> &amp; distributed by <a href="https://themewagon.com">ThemeWagon</a></div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</footer>
-
-</div>
-
-<script src="{% static "js/jquery-3.2.1.min.js" %}"></script>
-<script src="{% static "styles/bootstrap4/popper.js" %}"></script>
-<script src="{% static "styles/bootstrap4/bootstrap.min.js" %}"></script>
-<script src="{% static "plugins/Isotope/isotope.pkgd.min.js" %}"></script>
-<script src="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.js" %}"></script>
-<script src="{% static "plugins/easing/easing.js" %}"></script>
-<script src="{% static "js/custom.js" %}"></script>
+  </footer>
 </body>
-
-</html>
+  </html>

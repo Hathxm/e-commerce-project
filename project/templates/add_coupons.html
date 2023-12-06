@@ -1,0 +1,24 @@
+{% extends "admin_catoff.html" %}
+{%block coupons%}
+<h2 class="text-center">Add Coupon</h2>
+<form method="POST" action="">
+    {% csrf_token %}
+    <div class="form-group">
+        <input type="text" class="form-control" id="inputField" name="coupon" placeholder="Enter Coupon name" required>
+        <label class="mt-2"><b>Valid To</b></label>
+        <input class="form-control mt-2" type="datetime-local" id="datetime" name="datetime" required>
+        <label class="mt-2"><b>Discount Percentage</b></label>
+        <input type="number" class="form-control" id="inputField" name="disc_percentage" placeholder="Enter Coupon discount percentage" required>
+    </div>
+    <!-- Add more form fields as needed -->
+    <div class="text-center"> <!-- Add this div to center-align the button -->
+        <button type="submit" class="btn btn-success mt-2">Submit</button>
+    </div>
+        <div class="text-center">
+        {%for message in messages%}
+        <p style="color:red ">{{message}}<p>
+        {% endfor %}
+        </div>
+    </div>
+</form>
+{%endblock coupons%}

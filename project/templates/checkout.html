@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	{% load static %}
+{% load static %}
 <title>Colo Shop</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,140 +14,124 @@
 <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "styles/main_styles.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "styles/responsive.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "styles/checkout.css" %}"> 
+
+	
 </head>
 
 <body>
 
-<div class="super_container">
 
-	<!-- Header -->
+	<div class="super_container">
 
+		<!-- Header -->
 	
-
-		<!-- Top Navigation -->
-
-		<div class="top_nav">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6">
-						<div class="top_nav_left">free shipping on all u.s orders over $50</div>
-					</div>
-					<div class="col-md-6 text-right">
-						<div class="top_nav_right">
-							<ul class="top_nav_menu">
-
-								<!-- Currency / Language / My Account -->
- 
-								<li class="account">
-									<a href="#">
-										My Account
-										<i class="fa fa-angle-down"></i>
-									</a>
-									<ul class="account_selection">
-										<li><a href="{%url 'userlogout'%}"><i class="fa fa-sign-in" aria-hidden="true"></i>Log out</a></li>
-									</ul>
-								</li>
-							</ul>
+		<header class="header trans_300">
+	
+			<!-- Top Navigation -->
+	
+			<div class="top_nav">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-6">
+							<div class="top_nav_left">free shipping on all u.s orders over $50</div>
 						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Main Navigation -->
-
-		
-		<div class="main_nav_container">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12 text-right">
-						<div class="logo_container">
-							<div class="col-md-4 gradient-custom text-center text-white"
-								 style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem; display: flex; align-items: center; margin-top: 90px;">
-								<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-									 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
-								<a href="#" style="margin-left: 10px;">Stree<span>Trends</span></a>
+						<div class="col-md-6 text-right">
+							<div class="top_nav_right">
+								<ul class="top_nav_menu">
+	
+									<!-- Currency / Language / My Account -->
+	 
+									<li class="account">
+										<a href="#">
+											My Account
+											<i class="fa fa-angle-down"></i>
+										</a>
+										<ul class="account_selection">
+											<li><a href="{%url 'userlogout'%}"><i class="fa fa-sign-in" aria-hidden="true"></i>Log out</a></li>
+										</ul>
+									</li>
+								</ul>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-						<nav class="navbar">
-							<ul class="navbar_menu">
-								<li><a href="{%url 'landing-pg'%}">home</a></li>								
-								<li><a href="#">About</a></li>			
-								<li><a href="{%url 'contact'%}">contact</a></li>
-							</ul>
-							
-							  <ul class="navbar_user">
-								<li><a href="{%url 'userprofile'%}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-								 <li class="checkout">
-									<a href="{%url 'viewcart'%}">
-										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-										
-									</a>
-								</li> 
-							</ul> 
-							
-							 <div class="hamburger_container">
-								<i class="fa fa-bars" aria-hidden="true"></i>
-							</div> 
-						</nav>
+	
+			<!-- Main Navigation -->
+	
+			
+			<div class="main_nav_container">
+				<div class="container">
+					<div class="row">
+						<div class="col-lg-12 text-right">
+							<div class="logo_container">
+								<div class="col-md-4 gradient-custom text-center text-white"
+									 style="border-top-left-radius: .5rem; border-bottom-left-radius: .5rem; display: flex; align-items: center; margin-top: 90px;">
+									<img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+										 alt="Avatar" class="img-fluid my-5" style="width: 80px;" />
+									<a href="#" style="margin-left: 10px;">Stree<span>Trends</span></a>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-
+							<nav class="navbar">
+								<ul class="navbar_menu">
+									<li><a href="{%url 'landing-pg'%}">home</a></li>								
+									<li><a href="#">About</a></li>			
+									<li><a href="{%url 'contact'%}">contact</a></li>
+								</ul>
+								
+								  <ul class="navbar_user">
+									<li>
+										<a href="{%url 'userprofile'%}"><i class="fa fa-user" aria-hidden="true"></i>
+										</a>
+									</li>
+									 <li >
+										<a href="{%url 'wishlist'%}">
+											<i class="fa fa-heart"></i>
+										</a>
+									</li> 
+								
+									<li >
+										<a href="{%url 'viewcart'%}">
+											<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+										</a>
+									</li>
+									<li >
+										<a href="{%url 'order_status'%}">
+											<i class="fa fa-shopping-bag"></i>
+										</a>
+									</li>
+									
+								</ul> 
+								
+								 <div class="hamburger_container">
+									<i class="fa fa-bars" aria-hidden="true"></i>
+								</div> 
+							</nav>
+						</div>
+					</div>
+				</div>
+			</div>
+	
+		</header>
+	
 
 
 		
-				{% comment %} <div class="container">
-					<h2 class="fw-semibold text-center">Checkout</h2>
-					<div class="row">
-						<div class="col-lg-12">
-							<table class="table table-bordered">
-								<div class="row">
-									<div class="col-lg-12">
-										<table class="table table-bordered">
-											<thead>
-												<tr>
-													<th>Image</th>
-													<th>Name</th>
-													<th>Price</th>
-													<th>Size</th>
-													<th>Quantity</th>
-													
-												</tr>
-											</thead>
-											<tbody>
-												{% for item in data %}
-												<tr>
-													<td><img src="{{ item.product.img.url }}" alt="{{ item.name }}" class="img-thumbnail" style="max-width: 100px;"></td>
-													<td>{{ item.product }}</td>
-													<td>{{ item.price }}</td>
-													<td>{{ item.size }}</td>
-													<td>{{ item.quantity }}</td>
-												</tr>
-												{% endfor %}
-											</tbody>
-										</table>
-							</table>
-							<div class="d-flex justify-content-between"> <!-- Flex container for buttons and total -->
-								<div class="col-auto">
-									<a href="{% url 'viewcart' %}">
-										<button class="btn btn-danger">Back to Cart</button>
-									</a>
-								</div>
-								<div class="col-auto text-center"> <!-- Center the total amount -->
-									<p>Total Amount is</p>
-									<h3>{{ total }}</h3>
-								</div>
-								<div class="col-auto text-center"> <!-- Center the Proceed To Shipment button -->
-									<a href="{% url 'confirmation' %}">
-									<button class="btn btn-success">Proceed To Shipment</button>
-								</div>
-							</div> {% endcomment %}
+		
+{%block order_status%}
+ {% comment %} <div class="container">
+	{% for message in messages %}
+    <div class="alert alert-success d-flex align-items-center justify-content-center" role="alert" style="border: 2px solid green;">
+        <i class="fa fa-thumbs-up" style="color: green; margin-right: 10px;"></i>
+        <span>{{ message }}</span>
+    </div>
+{% endfor %}
+
 
 							<div class="container">
 								<h2 class="fw-semibold text-center">Checkout</h2>
@@ -164,7 +148,7 @@
 												</tr>
 											</thead>
 											<tbody>
-												{% for item in data %}
+												{% for item in cart_instance %}
 												<tr>
 													<td><img src="{{ item.product.img.url }}" alt="{{ item.name }}" class="img-thumbnail" style="max-width: 100px;"></td>
 													<td>{{ item.product }}</td>
@@ -180,18 +164,213 @@
 							
 								<div class="d-flex justify-content-between"> <!-- Flex container for buttons and total -->
 									<div class="col-auto">
-										<a href="{% url 'viewcart' %}">
-											<button class="btn btn-danger">Back to Cart</button>
-										</a>
+										
 									</div>
 									<div class="col-auto text-center"> <!-- Center the total amount -->
 										<p>Total Amount is</p>
 										<h3>{{ total }}</h3>
 									</div>
 									<div class="col-auto text-end"> <!-- Align the Proceed To Shipment button to the right -->
-										<a href="{% url 'confirmation' %}">
+									<a href="{% url 'address' %}">  
 											<button class="btn btn-success">Proceed To Shipment</button>
 										</a>
+								
 									</div>
 								</div>
-							</div>
+							</div>  {% endcomment %}
+							<div class="main_slider" style="margin-top:200px;">
+								<div class="container-fluid my-5">
+								<div class="row justify-content-center" >
+									
+									<div class="col-xl-10">
+										{% for message in messages %}
+										<div class="alert alert-success d-flex align-items-center justify-content-center" role="alert" style="border: 2px solid green; width: 100%;">
+											<i class="fa fa-thumbs-up" style="color: green; margin-right: 10px;"></i>
+											<span>{{ message }}</span>
+										</div>
+									{% endfor %}
+										<div class="card shadow-lg ">
+											<div class="row p-2 mt-3 justify-content-between mx-sm-2">
+												<div class="col">
+												</div>
+												<div class="col">
+													<div class="row justify-content-start">
+														<div class="col">
+															<img class="irc_mi img-fluid cursor-pointer" src="https://i.imgur.com/jFQo2lD.png" width="70" height="70">
+														</div>
+													</div>
+												</div>
+												<div class="col-auto">
+													<img class="irc_mi img-fluid bell" src="https://i.imgur.com/uSHMClk.jpg" width="30" height="30">
+												</div>
+											</div>
+											<div class="row mx-auto justify-content-center text-center">
+												<div class="col-12 mt-3">
+													<nav aria-label="breadcrumb" class="second">
+														<ol class="breadcrumb indigo lighten-6 first">
+															<li class="breadcrumb-item font-weight-bold"><a class="black-text text-uppercase" href="#"><span class="mr-md-3 mr-1">BACK TO SHOP</span></a><i class="fa fa-angle-double-right" aria-hidden="true"></i></li>
+															<li class="breadcrumb-item font-weight-bold"><a class="black-text text-uppercase" href="#"><span class="mr-md-3 mr-1">SHOPPING BAG</span></a><i class="fa fa-angle-double-right text-uppercase" aria-hidden="true"></i></li>
+															<li class="breadcrumb-item font-weight-bold"><a class="black-text text-uppercase active-2" href="#"><span class="mr-md-3 mr-1">CHECKOUT</span></a></li>
+														</ol>
+													</nav>
+												</div>
+											</div>
+							
+											<div class="row justify-content-around">
+												<div class="col-md-5">
+													<div class="card border border-dark mb-4"style="background-color:silver" >
+														<div class="card-header pb-0" >
+															<h2 class="card-title space">Checkout</h2>
+															<p class="card-text text-muted mt-4 space">SHIPPING DETAILS</p>
+															<hr class="my-0">
+														</div>
+														<div class="card-body">
+															<div class="row justify-content-between">
+																
+															</div>
+															<div class="row mt-4">
+																<div class="col">
+																	<small for="NAME" class=" mb-1"><b>ADD ADDRESS </b></small>
+																	<hr class="mt-0">
+																</div>
+															</div>
+															<form method="post">
+																{% csrf_token %}
+																<div class="form-group">
+																	<small for="NAME" class=" mb-1"><b>FULL NAME </b></small>
+																	<input type="text" class="form-control form-control-sm" name="fullname" id="NAME" aria-describedby="helpId" placeholder="Enter your name">
+																</div>
+																<div class="form-group">
+																	<small for="NAME" class=" mb-1"><b>PHONE NUMBER</b></small>
+																	<input type="text" class="form-control form-control-sm" name="phone_number" id="NAME" aria-describedby="helpId" placeholder="Enter Your Number" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+																	<small>Format: +91-4565-7890</small>
+																</div>
+																<div class="form-group">
+																	<small for="NAME" class=" mb-1"><b>STREET ADDRESS</b></small>
+																	<input type="text" class="form-control form-control-sm" name="streetaddress" id="NAME" aria-describedby="helpId" placeholder="Enter Local Address">
+																</div>
+																<div class="row no-gutters">
+																	<div class="col-sm-6 pr-sm-2">
+																		<div class="form-group">
+																			<small for="NAME" class=" mb-1"><b>DISTRICT</b></small>
+																			<select id="district" name="district" required class="form-control form-control-sm" name="NAME" id="NAME" aria-describedby="helpId">
+																				<option value="">Select a district</option>
+																				{% for district in districts %}
+																				<option value="{{ district.id }}">{{ district.district }}</option>
+																				{% endfor %}
+																			</select>
+																		</div>
+																	</div>
+																	<div class="col-sm-6">
+																		<div class="form-group">
+																			<small for="NAME" class=" mb-1"><b>PIN</b></small>
+																			<input type="text" class="form-control form-control-sm" name="pin" id="NAME" aria-describedby="helpId" placeholder="183">
+																		</div>
+																	</div>
+																</div>
+																<div class="row mb-md-5">
+																	<div class="col">
+																		<button type="submit" name="" id="" class="btn btn-lg btn-block " >Add Address</button>
+																	</div>
+																</div>
+															</form>
+														</div>
+													</div>
+												</div>
+					
+							
+												<div class="col-md-5" >
+													<div class="card border border-dark mb-4" >
+														<div class="card-header card-2">
+															<small class=" mt-md-4 mb-2 space"><b>YOUR ORDER </b> <span class="small text-muted ml-2 cursor-pointer"><b>EDIT SHOPPING BAG</b></span></small>
+															<hr class="my-2">
+														</div>
+														
+														 <div class="card-body pt-0"> 
+															{% for item in cart_instance %}
+															<div class="row justify-content-between">
+																<div class="col-auto col-md-7">
+																	<div class="media flex-column flex-sm-row">
+																		<img class="img-fluid" src="{{item.product.img.url}}" width="62" height="62">
+																		<div class="media-body my-auto">
+																			<div class="row">
+																				<div class="col-auto">
+																					<p class="boxed mb-0 ml-3"><b>{{item.product.name}}</b></p>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																</div>
+																<div class="pl-0 flex-sm-col col-auto my-auto">
+																	<p class="boxed-1 mt-3">{{item.quantity}}</p>
+																</div>
+																<div class="pl-0 flex-sm-col col-auto my-auto">
+																	<p class="boxed-1 mt-3"><b>{{item.price}}</b></p>
+																</div>
+															</div>
+															<hr class="my-2">
+															{% endfor %}
+							
+															<div class="row">
+																<div class="col">
+																	<div class="row justify-content-between">
+																		<div class="col-4">
+																			<p><b>Total</b></p>
+																		</div>
+																		<div class="flex-sm-col col-auto">
+																			<p  id="total"  class="mb-1"><b>{{total}}</b></p>
+																		</div>
+																	</div>
+																	<hr class="my-0">
+																</div>
+															</div> 
+														
+															 
+															
+															
+															<div class="card border border-dark mb-4 mx-3">
+																<div class="card-header bg-dark text-white text-center">
+																	<h5 style="color: white;">Previous Addresses</h5>
+																</div>
+																<div class="card-body pt-0">
+																	<form method="post">
+																		{% csrf_token %}
+																		{% for address in prev_address %}
+																		<div class="row justify-content-between mb-3">
+																			<div class="col-auto col-md-7">
+																				<div class="media flex-column flex-sm-row">
+																					<input class="form-check-input mt-1" type="radio" name="previous_address" id="prevAddress{{ address.id }}" value="{{ address.id }}" required>
+																					<label class="mb-0 ml-3"><b>{{address.district}}, {{address.street_address}}, {{address.pin}}</b></label>
+																					<div class="media-body my-auto">
+																						<div class="row">
+																							<div class="col-auto">
+																							</div>
+																						</div>
+																					</div>
+																				</div>
+																			</div>
+																		</div>
+																		<hr class="my-2">
+																		{% endfor %}
+																		<div class="text-center">
+																			<button class="btn btn-lg btn-block">Submit</button>
+																		</div>
+																	</form>
+																</div>
+															</div>	
+														</div>
+													</div>
+													
+	
+													
+                                                                               
+															
+										
+																
+															
+														
+
+						
+								
+							{%endblock%}
+					

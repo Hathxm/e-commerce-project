@@ -99,6 +99,12 @@
 							</ul>
 							 <ul class="navbar_user">
 								<li><a href="{%url 'userprofile'%}"><i class="fa fa-user" aria-hidden="true"></i></a></li>
+                <li class="checkout">
+									<a href="{%url 'viewcart'%}">
+										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+										
+									</a>
+								</li> 
 							</ul>
 							 
 						</nav>
@@ -125,7 +131,7 @@
          
           
          <div class="d-flex justify-content-center mb-3">
-            <a data-lightbox="mygallery" class="border mx-1 rounded-2" target="_blank" href="{{ data.rearimg.url }}" class="item-thumb">
+            <a data-lightbox="mygallery" class="border mx-1 rounded-2" target="_blank" href="{{ data.frontimg.url }}" class="item-thumb">
               <img width="60" height="60" class="rounded-2" src="{{ data.frontimg.url }}" />
             </a>
             <a data-lightbox="mygallery" class="border mx-1 rounded-2" target="_blank" href="{{ data.rearimg.url }}" class="item-thumb">
@@ -149,12 +155,16 @@
           </h4>
           <div class="d-flex flex-row my-3">
         
-            <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span>
+            <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i> In stock : {{data.in_stock}}</span>
             <span class="text-success ms-2">In stock</span>
+            
+            {% for i in messages %}
+        <span class="text-danger ms-2">{{ i }}</span>
+    {% endfor %}
           </div>
 
           <div class="mb-3">
-            <span class="h5">${{data.price}}</span>
+            <span class="h5">${{data.disc_price}}</span>
            
           </div>
 
@@ -192,12 +202,12 @@
               <td> <button type ="submit"class="btn btn-success"><i class="me-1 btn btn-success fa fa-shopping-basket"></i> Add To Cart</button>
               </td> 
             </form>
-           
+            <td><a href="{%url 'addtowishlist' data.id%}"> <button type ="submit"class="btn btn-primary"><i class="me-1 btn btn-primary fa fa-shopping-basket"></i> Wishlist</a></button>
+            </td> 
             </div>
         </div>
            
-          {% comment %} <a href="{%url 'userlogin'%}" class="btn btn-warning shadow-0"> Buy now </a> {% endcomment %}
-          {% comment %} <a href="{%url 'userlogin'%}" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i class="me-1 fa fa-heart fa-lg"></i> Save </a> {% endcomment %}
+          
           {%endblock%}
         </div>
       </main>
@@ -214,19 +224,21 @@
                       <div class="card">
                           <div class="card-body">
                               <h5 class="card-title">Similar items</h5>
+                              {%block similarproducts%}
                               {% for i in similarproducts %}
                               <div class="d-flex mb-3">
                                   <a href="#" class="me-3">
                                       <img src="{{ i.img.url }}" style="min-width: 96px; height: 96px;" class="img-md img-thumbnail" />
                                   </a>
                                   <div class="info">
-                                      <a href="#" class="nav-link mb-1">
+                                      <a href="{%url 'product_details' i.id%}" class="nav-link mb-1">
                                           {{ i.name }}
                                       </a>
                                       <strong class="text-dark ml-3">${{ i.price }}</strong>
                                   </div>
                               </div>
                               {% endfor %}
+                              {% endblock %}
                           </div>
                       </div>
                   </div>
@@ -234,19 +246,7 @@
           </div>
       </div>
       
-        {% comment %} <div class="col-lg-5 ">
-          <ul class="list-group">
-              {% for product in similarproducts %}
-                  <li class="list-group-item d-flex justify-content-between align-items-center">
-                      <div>
-                          <img src="{{ product.img.url }}" alt="{{ product.name }}" class="img-thumbnail" style="max-width: 96px; height: 96px;">
-                          <span class="ms-3 ">{{ product.name }}</span>
-                      </div>
-                      <span class="badge bg-primary">${{ product.price }}</span>
-                  </li>
-              {% endfor %}
-          </ul>
-      </div> {% endcomment %}
+      
       <script>
         lightbox.option({
           'resizeDuration': 200,

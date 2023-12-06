@@ -1,11 +1,15 @@
 {%extends 'usersignup.html'%}
+{%block login%}
+                
+{%endblock%}	
+
 {%block forgotpass%}
                          
                          {%for i in messages%}
                          <p class="text-center">{{i}}</p>
                          {%endfor%}
                          
-
+{%block signupotp%}
                          <form method="post">
                              {%csrf_token%}
                              <div class="mb-3">
@@ -17,5 +21,5 @@
                              <button class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2">Sign Up</button>
                              
                          </form>
-                        
+{%endblock%}
                          {%endblock%}

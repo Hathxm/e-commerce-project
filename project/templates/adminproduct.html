@@ -1,145 +1,409 @@
 {% extends "adminindex.html" %}
 
 {% block content %}
-<div class="body-wrapper">
-    <!-- Removed comment for header section -->
-    <!-- Header Start -->
-    <!-- Header End -->
-    <div class="container-fluid">
-        <h2 class="fw-semibold">Products</h2>
-        <!-- Removed comment for Row 1 -->
-        <!-- Row 1 -->
-        <div class="row">
-            <!-- Content section -->
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <!-- Your content goes here -->
-                        {% for item in data %}
-                            <img src="{{ item.img.url }}" class="img-fluid" style="max-width: 100px;">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="card-title fw-semibold">{{ item }}</h5>
-                                <div>
-                                    <a href="{% url 'edit_product' item.id %}">
-                                        <button class="btn btn-primary btn-sm">Edit</button>
-                                    </a>
-                                    {% if item.is_deleted %}
-                                    <a href="{% url 'undlt_product' item.id %}">
-                                        <button class="btn btn-warning btn-sm">Deleted</button>
-                                    </a>
-                                    {% else %}
-                                    <a href="{% url 'dlt_product' item.id %}">
-                                        <button class="btn btn-danger btn-sm">Delete</button>
-                                    </a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <hr>
-                        {% endfor %}
-                    </div>
-                </div>
-                <!-- End of Row 1 -->
-            </div>
-        </div>
-    </div>
-    <!-- End of Row 1 -->
-</div>
-</div>
+{% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static "styles/salesreport.css" %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    
 
-<div class="product-details">
-    <form class="edit-form" method="post" action="" enctype="multipart/form-data">
+  <h2>Products</h2>
+  <div class="text-center">
+  {%for message in messages%}
+  <p style="color:red">{{message}}
+  {%endfor%}
+  </div>
+
+  <div class="table-wrapper">
+      <table class="fl-table">
+        <thead>
+          <tr>
+            <th>Product img</th>
+            <th>Product Name</th>
+            <th>Product Price</th>
+            <th>Product dicount Price</th>
+            <th>Products Sizes</th>
+            <th>Gender</th>
+            <th>In stock</th>
+            <th>Edit</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for i in data %}
+            <tr>
+              <td><img src="{{ i.img.url }}" alt="{{ i.name }}" style="max-width: 100px;"></td>
+              <td>{{ i.name }}</td>
+              <td>{{ i.price }}</td>
+              <td>{{ i.disc_price }}</td>
+              <td>{% for size in i.size.all %}{{ size.size }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+              <td>{{ i.gender }}</td>
+              <td>{{ i.in_stock }}</td>
+              <td><a href="{% url 'edit_product' i.id %}"><button  class="btn btn-primary btn-sm">Edit</button></a></td>
+              <td>
+                {% if i.is_deleted %}
+                  <a href="{% url 'undlt_product' i.id %}" class="undelete-link">
+                    <button class="btn btn-warning btn-sm">Deleted</button>
+                  </a>
+                {% else %}
+                  <a href="{% url 'dlt_product' i.id %}" class="delete-link">
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                  </a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+          <tbody>
+      </table>
+
+
+ <div class="container">
+  <h2 style="text-align: center; color: black; font-weight: bold; font-size: 24px;">Add Product</h2>
+    <form action="" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="form-group">
-            <label for="image">Image</label>
-            <input type="file" class="form-control" id="image" required name="image" size="20">
-            <!-- Adjust the size attribute -->
+      <div class="row">
+        <div class="col-25">
+          <label for="fname">Image</label>
         </div>
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" required name="name" value="{{ data.name }}" size="20" placeholder="product name">
-            <!-- Adjust the size attribute -->
+        <div class="col-75">
+          <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="initCropper('image')" required>
+          <div class="text-center mt-2">
+        <img src="" id="showimage" style="width: auto; height: 300px; width: 300px;  margin-top: 10px; display: block;" alt=""> 
+          <button class="btn btn-warning p-2 px-5 mt-2" id="updateimage" onclick="uploadCroppedImage('image')" type="button" style="display: none; margin-left:300px;">Update</button>
+          </div>
         </div>
-        <div class="form-group">
-            <label for="price">Price</label>
-            <input type="text" class="form-control" id="price" required name="price" value="{{ data.price }}" size="20" placeholder="product price">
-            <!-- Adjust the size attribute -->
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="lname">Front Image</label>
         </div>
-        <div class="form-group">
-            <label for="brand">Brand</label>
-            <div class="col-5 offset-md-4 border p-3">
-                <div class="horizontal-radio-buttons row">
-                    {% for i in brand %}
+        <div class="col-75">
+          <input type="file" class="form-control" id="frontimage"  name="frontimage" accept="image/*" onchange="initCropper('frontimage')" required>
+          <div class="text-center">
+            <img src="" id="showfrontimage" style="width: auto; height: 300px; width: 300px;  margin-top: 10px; display: block;" alt="">
+            <button class="btn btn-warning p-2 px-5" id="updatefrontimage" onclick="uploadCroppedImage('frontimage')" type="button" style="display: none; margin-left:300px;">Update</button>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="country">Rear Image</label>
+        </div>
+        <div class="col-75">
+          <input type="file" class="form-control" id="rearimage" accept="image/*" onchange="initCropper('rearimage')" required required name="rearimage">
+          <div class="text-center">
+            <img src="" id="showrearimage" style="width: auto; height: 300px; width: 300px;  margin-top: 10px; display: block;" alt="">
+            <button class="btn btn-warning p-2 px-5" id="updaterearimage" onclick="uploadCroppedImage('rearimage')" type="button" style="display: none; margin-left:300px;">Update</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Make the following fields similar to the image upload fields -->
+      <div class="row">
+        <div class="col-25">
+          <label for="name">Product Name</label>
+        </div>
+        <div class="col-75">
+          <input type="text" class="form-control" id="name" required name="name" value="{{ data.name }}" placeholder="Product Name">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="price">Product Price</label>
+        </div>
+        <div class="col-75">
+          <input type="text" class="form-control" id="price" required name="price" value="{{ data.price }}" placeholder="Product Price">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="disc_price">Product Discount Price</label>
+        </div>
+        <div class="col-75">
+          <input type="text" class="form-control" id="disc_price" name="disc_price" value="{{ data.disc_price }}" placeholder="Product Discount Price">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-25">
+          <label for="stock">Stock</label>
+        </div>
+        <div class="col-75">
+          <input type="number" class="form-control" required id="stock" name="stock" value="0" min="0">
+        </div>
+      </div>
+      <!-- End of similar fields -->
+
+      <!-- The rest of the form -->
+      <div class="form-group">
+        <label for="brand">Brand</label>
+        <div class="border-2 p-3 custom-radio-container">
+            <div class="horizontal-radio-buttons row">
+                {% for i in brand %}
                     <div class="col-3">
-                        <div class="border p-3">
-                            <input type="radio" name="brand" value="{{ i.id }}" id="brand_{{ i.id }}">
+                        <div class="border p-3 custom-radio">
+                            <input type="radio" name="brand" required value="{{ i.id }}" id="brand_{{ i.id }}">
                             <label for="brand_{{ i.id }}" class="form-check-label">{{ i.name }}</label>
                         </div>
                     </div>
-                    {% endfor %}
-                </div>
+                {% endfor %}
             </div>
         </div>
+    </div>
 
-        <div class="form-group">
-            <label for="brand">Gender</label>
-            <div class="col-5 offset-md-4 border p-3">
-                <div class="horizontal-radio-buttons row">
-                    {% for i in sex %}
+    <div class="form-group">
+    <label for="size">Size</label>
+    <div class="border-2 p-3 custom-radio-container">
+        <div class="horizontal-checkboxes row">
+            {% for i in size %}
+                <div class="col-3">
+                    <div class="border p-3 custom-checkbox">
+                        <input type="checkbox" name="size"  value="{{ i.id }}" id="size_{{ i.id }}">
+                        <label for="size_{{ i.id }}" class="form-check-label">{{ i.size }}</label>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+    <div class="form-group">
+        <label for="gender">Gender</label>
+        <div class="border-2 p-3 custom-radio-container">
+            <div class="horizontal-radio-buttons row">
+                {% for i in sex %}
                     <div class="col-3">
-                        <div class="border p-3">
-                            <input type="radio" name="gender" value="{{ i.id }}" id="sex_{{ i.id }}">
+                        <div class="border p-3 custom-radio">
+                            <input type="radio" name="gender" required  value="{{ i.id }}" id="sex_{{ i.id }}">
                             <label for="sex_{{ i.id }}" class="form-check-label">{{ i.gender }}</label>
                         </div>
                     </div>
-                    {% endfor %}
-                </div>
+                {% endfor %}
             </div>
         </div>
-
-
-        <div class="form-group">
-            <label for="brand">Category</label>
-            <div class="col-6 offset-md-4 border-2 p-3">
-                <div class="horizontal-radio-buttons row">
-                    {% for i in category %}
+    </div>
+    
+    <div class="form-group">
+        <label for="category">Category</label>
+        <div class="border-2 p-3 custom-radio-container">
+            <div class="horizontal-radio-buttons row">
+                {% for i in category %}
                     <div class="col-5">
-                        <div class="border p-3">
+                        <div class="border p-3 custom-radio">
                             <input type="radio" name="category" required value="{{ i.id }}" id="category_{{ i.id }}">
                             <label for="category_{{ i.id }}" class="form-check-label">{{ i.wear }}</label>
                         </div>
                     </div>
-                    {% endfor %}  
-
-
-                </div>
-                <div class="buttoncls d-flex justify-content-center mt-1">
-                <button type="submit" class="btn btn-primary">Add Product</button>
-                </div>
+                {% endfor %}  
             </div>
         </div>
+    </div>
       
+      <div class="row">
+        <div class="col-25">
+          <label for="subject">Description</label>
+        </div>
+        <div class="col-75">
+          <input class="textarea" type="textarea" id="subject" name="discription" required placeholder="Write something about the product.." style="height:200px"></input>
+        </div>
+      </div>
+      <div class="row">
+        <button type="submit" class="btn btn-success mt-1" >Add Product</button>
+      </div>
     </form>
-  
-</div>
-
+ 
 <style>
-    .edit-form {
-        margin-top: 20px;
+     input[type=text],select,input[type=textarea] {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        resize: vertical;
+      }
+      
+      /* Style the label to display next to the inputs */
+      label {
+        padding: 12px 12px 12px 0;
+        display: inline-block;
+      }
+      
+      /* Style the submit button */
+      input[type=submit] {
+        background-color: #04AA6D;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        float: right;
+      }
+      
+      /* Style the container */
+      .container {
+        
+        border-radius: 5px;
+        background-color: #f2f2f2;
+        margin-top:50px;
+     
+      }
+      
+      /* Floating column for labels: 25% width */
+      .col-25 {
+        float: left;
+        width: 25%;
+        margin-top: 6px;
+      }
+      
+      /* Floating column for inputs: 75% width */
+      .col-75 {
+        float: left;
+        width: 75%;
+        margin-top: 6px;
+      }
+      
+      /* Clear floats after the columns */
+      .row:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+      .custom-radio-container {
+        border: 2px solid #333; /* Dark border */
+        padding: 10px;
     }
 
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    .form-control {
-        width: 50%;
+    .custom-radio {
+        border: 1px solid #333; /* Dark border for individual radio options */
         padding: 5px;
-        font-size: 14px;
-        margin-left: 400px;
+        margin: 5px;
     }
-    .buttoncls{
-     margin-right:120px;
-  }
+
+    /* Adjust the size of radio buttons and labels if needed */
+    .custom-radio input[type="radio"] {
+        transform: scale(1.5); /* Increase the radio button size */
+        margin-right: 5px; /* Adjust the spacing between radio button and label */
+    }
+
+    /* Ensure labels are aligned properly */
+    .custom-radio label {
+        vertical-align: middle; /* Align labels vertically with radio buttons */
+    }
+     .table-wrapper {
+      overflow-x: auto; /* Add horizontal scroll if needed */
+    } 
+  
+    
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var deleteLinks = document.querySelectorAll('.delete-link');
+        deleteLinks.forEach(function(link) {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                swal.fire({
+                    title: "Are you sure?",
+                    text: " you want restrict this item!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, restrict it!',
+                    allowOutsideClick: false  // Add this line to prevent clicking outside the modal
+                })
+                .then((result) => {
+                    if(result.isConfirmed){
+                        // Perform the redirection without reloading the page
+                        window.location.href = link.getAttribute('href');
+                     
+                    } else {
+                        // Do nothing if the user cancels
+                       
+                    }
+                });
+            });
+        });
+    });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      var deleteLinks = document.querySelectorAll('.undelete-link');
+      deleteLinks.forEach(function(link) {
+          link.addEventListener('click', function(event) {
+              event.preventDefault();
+
+              swal.fire({
+                  title: "Are you sure?",
+                  text: "you want to unblock this item!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: '#d33',
+                  cancelButtonColor: '#3085d6',
+                  confirmButtonText: 'Yes, unblock !',
+                  allowOutsideClick: false  // Add this line to prevent clicking outside the modal
+              })
+              .then((result) => {
+                  if(result.isConfirmed){
+                      // Perform the redirection without reloading the page
+                       window.location.href = link.getAttribute('href'); 
+                   
+                  } else {
+                      // Do nothing if the user cancels
+                     
+                  }
+              });
+          });
+      });
+  });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script>
+  let cropper;
+
+  function initCropper(id) {
+      const input = document.getElementById(id);
+      const canvas = document.getElementById(`show${id}`);
+      const file = input.files[0];
+
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+              canvas.src = e.target.result;
+              document.getElementById(`update${id}`).style.display = 'block';
+
+              if (cropper) {
+                  cropper.destroy();
+              }
+
+              cropper = new Cropper(canvas, {
+                  viewMode: 2,
+              });
+          };
+          reader.readAsDataURL(file);
+      } else {
+          canvas.src = '';
+          if (cropper) {
+              cropper.destroy();
+          }
+      }
+  }
+
+  function uploadCroppedImage(id) {
+      const canvas = cropper.getCroppedCanvas();
+      if (canvas) {
+          canvas.toBlob((blob) => {
+              // Your file handling logic here
+
+              const showImg = document.getElementById(`show${id}`);
+              showImg.src = URL.createObjectURL(blob);
+
+              cropper.destroy();
+              document.getElementById(`update${id}`).style.display = 'none';
+          });
+      }
+  }
+</script>
+
 {% endblock %}

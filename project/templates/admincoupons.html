@@ -1,0 +1,22 @@
+{% extends "admincategory.html" %}
+{%block heading%}
+        <h2 class=" fw-semibold">Coupons </h2>
+{%endblock%}
+{%block button%}
+<div class="text-center">
+<a href="{%url 'addcoupons'%}"><button class="btn btn-success btn-lg">Add Coupons</button></a>
+</div>
+{%endblock%}
+{%block offerandblocking%}
+
+{% if item.is_deleted %}
+    <a href="{% url 'undlt_coupons' item.id %}" class="undelete-link">
+        <button class="btn btn-danger btn-sm">Unavailable</button>
+    </a>
+{% else %}
+    <a href="{% url 'dlt_coupons' item.id %}" class="delete-link">
+        <button class="btn btn-warning btn-sm">Available</button>
+    </a>
+{% endif %}
+
+{%endblock%}

@@ -1,0 +1,22 @@
+{% extends "admincategory.html" %}
+{%block heading%}
+        <h2 class=" fw-semibold">Brands </h2>
+        {%endblock%}
+
+        {%block button%}
+        <div class="text-center">
+        <a href="{%url 'addbrand'%}"><button class="btn btn-success btn-lg">Add Brand</button></a>
+        </div>
+        {%endblock%}
+        {%block offerandblocking%}
+        
+        {% if item.is_deleted %}
+            <a href="{% url 'undlt_brand' item.id %}" class="undelete-link">
+                <button class="btn btn-danger btn-sm">Unavailable</button>
+            </a>
+        {% else %}
+            <a href="{% url 'dlt_brand' item.id %}" class="delete-link">
+                <button class="btn btn-warning btn-sm">Available</button>
+            </a>
+        {% endif %}
+        {%endblock%}
