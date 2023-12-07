@@ -107,11 +107,13 @@ def payment_view(request,id):
     walet=wallet.objects.get(user=user)
     to_pay=total_price*100
     wallet_option=walet.money>=total_price
+    coupons=coupon.objects.all()
+    usedcoupons=usercoupon.objects.filter(user=user)
      # Replace 'order_details' with your actual URL name
     success_url = request.build_absolute_uri(reverse('create_order', kwargs={'id': orderitems.id}))
     # failed_url = request.build_absolute_uri(reverse('payment-failed'))
 
-    return render(request, 'payment.html', {'ordereditems':orderitems,'items':items,'total':total_price,'to_pay':to_pay,'success_url':success_url,'wallet_option':wallet_option})
+    return render(request, 'payment.html', {'ordereditems':orderitems,'items':items,'total':total_price,'to_pay':to_pay,'success_url':success_url,'wallet_option':wallet_option,'coupons':coupons,'usedcoupons':usedcoupons})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')

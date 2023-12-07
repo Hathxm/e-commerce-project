@@ -294,22 +294,17 @@
 
 
         <div class="col-lg-4 payment-summary">
-            <p class="fw-bold pt-lg-0 pt-4 pb-2">Payment Summary</p>
+            <p class="fw-bold pt-lg-0 pt-4 pb-2"></p>
             <div class="card px-md-3 px-2 pt-4">
-                <div class="unregistered mb-4"> <span class="py-1">unregistered account</span> </div>
-                <div class="d-flex justify-content-between pb-3"> <small class="text-muted">Transaction code</small>
-                    <p class="">VC115665</p>
+                <div class="unregistered mb-4"> <span class="py-1">Order Summary</span> </div>
+                <div class="d-flex justify-content-between pb-3"> <small class="text-muted">order id</small>
+                    <p class="">{{ordereditems.id}}</p>
                 </div>
                 <div class="d-flex justify-content-between b-bottom"> <input type="text" class="ps-2" id="coupon" placeholder="COUPON CODE">
                     <div class="btn btn-primary red_button">Apply</div>
                 </div>
                 <div class="d-flex flex-column b-bottom">
-                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">Order Summary</small>
-                        <p>$122</p>
-                    </div>
-                    <div class="d-flex justify-content-between pb-3"> <small class="text-muted">Additional Service</small>
-                        <p>$22</p>
-                    </div>
+                   
                     <div class="d-flex justify-content-between"> <small class="text-muted">Total Amount</small>
                         <p id="total">{{total}}</p>
                     </div>
@@ -322,15 +317,17 @@
             <p class="fw-bold pt-lg-0 pt-4 pb-2"></p>
             <div class="card px-md-3 px-2 pt-4">
                 <div class="unregistered mb-4"> <span class="py-1">Coupon Details</span> </div>
-                <div class="d-flex  pb-3 "> <small class="text-muted text-center"><b>Avialable Coupons</b></small>
+                <div class="d-flex  pb-3 "> <small class="text-muted text-center"><b>Used Coupons</b></small>
                 </div>
                 <div class="d-flex justify-content-between b-bottom"> 
                     
                 </div>
+                {%for coupon in usedcoupons%}
                 <div class="d-flex flex-column b-bottom">
-                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">Order Summary</small>
-                        <p>$122</p>
+                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">{{coupon.coupon.name}}</small>
+                        <p>{{coupon.coupon.discount_percentage}}%</p>
                     </div>
+                    {%endfor%}
                     {% comment %} <div class="d-flex justify-content-between pb-3"> <small class="text-muted">Additional Service</small>
                         <p>$22</p>
                     </div>
@@ -339,15 +336,17 @@
                     </div> {% endcomment %}
                 </div>
                
-                <div class="d-flex  pb-3 mt-2 "> <small class="text-muted text-center" ><b>Used Coupons</b></small>
+                <div class="d-flex  pb-3 mt-2 "> <small class="text-muted text-center" ><b>All Coupons</b></small>
                 </div>
                 <div class="d-flex justify-content-between b-bottom"> 
                     
                 </div>
                 <div class="d-flex flex-column b-bottom">
-                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">Order Summary</small>
-                        <p>$122</p>
+                    {%for coupon in coupons%}
+                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">{{coupon.name}}</small>
+                        <p>{{coupon.discount_percentage}}%</p>
                     </div>
+                    {%endfor%}
                     {% comment %} <div class="d-flex justify-content-between pb-3"> <small class="text-muted">Additional Service</small>
                         <p>$22</p>
                     </div>
