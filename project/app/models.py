@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from phonenumber_field.modelfields import PhoneNumberField
 from image_cropping import ImageRatioField
+from django.utils import timezone
 
 # Create your models here.
 class customuser(AbstractUser):
@@ -61,6 +62,8 @@ class product(models.Model):
     disc_price=models.IntegerField(("discount price"),default=0)
     is_deleted=models.BooleanField(default=False)
     in_stock=models.IntegerField(null='not in stock')
+    arrival_time=models.DateTimeField(default=timezone.now)
+
     
 
     def __str__(self) -> str:
