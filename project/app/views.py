@@ -284,7 +284,8 @@ def edit_product(request,id):
 def delete_product(request,id):
     if request.user.is_superuser:
         data=product.objects.get(id=id)
-        data.delete()
+        data.is_deleted=True
+        data.save()
         return redirect(admin_products)
     return redirect(admin_login)
     
