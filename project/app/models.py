@@ -39,16 +39,7 @@ class category(models.Model):
 
     def __str__(self) -> str:
         return self.wear
-    
-class gender(models.Model):
-     choice=[
-        ('Men','Male'),
-        ('Women','Female'),
-        ]
-     gender=models.CharField( max_length=50,choices=choice)
 
-     def __str__(self) -> str:
-         return self.gender
      
 class brand(models.Model):
     name=models.CharField( max_length=50)
@@ -65,7 +56,7 @@ class product(models.Model):
     category=models.ForeignKey(category, on_delete=models.CASCADE)
     size=models.ManyToManyField(Size)
     brand=models.ForeignKey(brand, on_delete=models.CASCADE)
-    gender=models.ForeignKey(gender, on_delete=models.PROTECT)
+    gender=models.CharField(max_length=10)
     price=models.IntegerField()
     disc_price=models.IntegerField(("discount price"),default=0)
     is_deleted=models.BooleanField(default=False)

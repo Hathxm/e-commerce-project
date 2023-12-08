@@ -125,11 +125,7 @@ def admin_coupons(request):
         return render(request,'admincoupons.html',{'data':data})
     return redirect(admin_login)
 
-def admin_genders(request):
-    if request.user.is_superuser:
-     data=gender.objects.all()
-     return render(request,'admingender.html',{'sex':data})
-    return redirect(admin_login)
+
     
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -139,7 +135,6 @@ def admin_products(request):
         data=product.objects.filter(category__is_deleted=False)
         product_brand=brand.objects.all()
         product_category=category.objects.filter(is_deleted=False)
-        sex=gender.objects.all()
         size=Size.objects.all()
        
 
@@ -162,10 +157,10 @@ def admin_products(request):
          elif len(name)>20:
              messages.warning(request,"choose a shorter name for the product")
         
-         new_pro_gender_instance=gender.objects.get(id=new_pro_gender)
+         
          category_instance = category.objects.get(id=new_category)
          brand_instance = brand.objects.get(id=new_brand)
-         new_product=product.objects.create(img=img,name=name,rearimg=rearimg,frontimg=frontimg,category=category_instance,brand=brand_instance,price=price,disc_price=disc_price,gender=new_pro_gender_instance,in_stock=new_stock,discription=discription)
+         new_product=product.objects.create(img=img,name=name,rearimg=rearimg,frontimg=frontimg,category=category_instance,brand=brand_instance,price=price,disc_price=disc_price,gender=new_pro_gender,in_stock=new_stock,discription=discription)
          for size in new_size:
            new_product.size.add(size)
          new_product.save()
@@ -173,7 +168,7 @@ def admin_products(request):
              
         
          
-        return render(request,'adminproduct.html',{'data':data,'brand':product_brand,'category':product_category,'sex':sex,'size':size})
+        return render(request,'adminproduct.html',{'data':data,'brand':product_brand,'category':product_category,'size':size})
     return redirect(admin_login)
    
 
@@ -196,14 +191,6 @@ def add_brand(request):
             return redirect(admin_brands)
          return render(request,'add_brand.html')
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url=admin_login)
-def add_gender(request):
-         if request.method=='POST':
-            sex=request.POST['addcategoryfield']
-            gender.objects.create(gender=sex)
-            return redirect(admin_genders)
-         return render(request,'add_gender.html')
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -240,7 +227,7 @@ def edit_product(request,id):
      data=product.objects.get(id=id)
      product_brand=brand.objects.all()
      product_category=category.objects.filter(is_deleted=False)
-     sex=gender.objects.all()
+    
      categoryy=category.objects.all()
      size=Size.objects.all()
 
@@ -283,7 +270,7 @@ def edit_product(request,id):
 
          data.save()
          return redirect(edit_product,id=data.id)
-     return render (request,'edit_product.html',{'data':data,'brand':product_brand,'category':product_category,'sex':sex,'category':categoryy,'size':size})
+     return render (request,'edit_product.html',{'data':data,'brand':product_brand,'category':product_category,'category':categoryy,'size':size})
     return redirect(admin_login)
    
 
@@ -477,6 +464,9 @@ def undelete_coupons(request,id):
     coupons.is_deleted=False
     coupons.save()
     return redirect(admin_coupons)
+
+
+
 
 
 

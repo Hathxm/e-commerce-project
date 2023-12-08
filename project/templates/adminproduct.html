@@ -165,21 +165,25 @@
     </div>
 </div>
 
-    <div class="form-group">
-        <label for="gender">Gender</label>
-        <div class="border-2 p-3 custom-radio-container">
-            <div class="horizontal-radio-buttons row">
-                {% for i in sex %}
-                    <div class="col-3">
-                        <div class="border p-3 custom-radio">
-                            <input type="radio" name="gender" required  value="{{ i.id }}" id="sex_{{ i.id }}">
-                            <label for="sex_{{ i.id }}" class="form-check-label">{{ i.gender }}</label>
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+<div class="form-group">
+  <label for="gender">Gender</label>
+  <div class="border-2 p-3 custom-radio-container">
+      <div class="horizontal-radio-buttons row">
+          <div class="col-6">
+              <div class="border p-3 custom-radio">
+                  <input type="radio" name="gender" required value="Men" id="gender_male">
+                  <label for="gender_male" class="form-check-label">Men</label>
+              </div>
+          </div>
+          <div class="col-6">
+              <div class="border p-3 custom-radio">
+                  <input type="radio" name="gender" required value="Women" id="gender_female">
+                  <label for="gender_female" class="form-check-label">Women</label>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
     
     <div class="form-group">
         <label for="category">Category</label>
