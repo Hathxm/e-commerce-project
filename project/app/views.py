@@ -156,6 +156,7 @@ def admin_products(request):
              disc_price=0
          elif len(name)>20:
              messages.warning(request,"choose a shorter name for the product")
+             return redirect(admin_products)
         
          
          category_instance = category.objects.get(id=new_category)
@@ -247,6 +248,10 @@ def edit_product(request,id):
 
          if float(new_disc_price) >= float(new_price):
              messages.info(request, 'Discount price should be less than the product price.')
+             return redirect(edit_product)
+         elif len(name)>20:
+             messages.warning(request,"choose a shorter name for the product")
+             return redirect(edit_product)
 
 
          category_instance = category.objects.get(id=new_category)
@@ -279,8 +284,7 @@ def edit_product(request,id):
 def delete_product(request,id):
     if request.user.is_superuser:
         data=product.objects.get(id=id)
-        data.is_deleted=True
-        data.save()
+        data.delete()
         return redirect(admin_products)
     return redirect(admin_login)
     
