@@ -242,6 +242,7 @@ def edit_product(request,id):
          selected_sizes = request.POST.getlist('size')
          sizes = [int(size_id) for size_id in selected_sizes]
          new_brand=request.POST['brand']
+         gender=request.POST['gender']
          new_price=request.POST['price']
          new_disc_price=request.POST['disc_price']
          new_stock=request.POST['stock']
@@ -265,6 +266,7 @@ def edit_product(request,id):
          data.category=category_instance
          data.brand=brand_instance
          data.price=new_price
+         data.gender=gender
          for i in sizes:
              data.size.add(i)
          data.disc_price=new_disc_price

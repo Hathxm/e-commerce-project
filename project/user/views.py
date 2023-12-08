@@ -10,11 +10,12 @@ from django.http import HttpResponse
 from .models import *
 from django.shortcuts import get_object_or_404
 from decimal import Decimal
-from django.db.models import Sum,Count
+from django.db.models import *
+from django.db.models.functions import Coalesce
 from django.core.mail import send_mail
 from random import randint
 from django.contrib.auth.hashers import make_password
-from django.db.models import  ExpressionWrapper, F, FloatField ,Case, When, Value
+from django.db.models import F,ExpressionWrapper,FloatField
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
@@ -172,9 +173,9 @@ def details(request,id):
 def shop(request):
      user=request.user
      now=timezone.now()
-     x=product.objects.filter(Q(gender="Men") & (Q(category__wear="Tops")|Q(category__wear="Lowers")) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('-arrival_time')
-     y=product.objects.filter(Q(gender="Women") &  (Q(category__wear="Tops")|Q(category__wear="Lowers")) & Q(category__is_deleted=False) & Q(is_deleted=False)  &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('-arrival_time')
-     z=product.objects.filter(Q(category__wear="Accessories") & Q(is_deleted=False) & Q(category__is_deleted=False) & Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('-arrival_time')
+     x=product.objects.filter(Q(gender="Men") & (Q(category__wear="Tops")|Q(category__wear="Lowers")) & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
+     y=product.objects.filter(Q(gender="Women") &  (Q(category__wear="Tops")|Q(category__wear="Lowers")) & Q(category__is_deleted=False) & Q(is_deleted=False)  &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
+     z=product.objects.filter(Q(category__wear="Accessories") & Q(is_deleted=False) & Q(category__is_deleted=False) & Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
      wish= wishlist.objects.get(user=user)
      items=wish.items.all() 
    
@@ -205,24 +206,17 @@ def womens(request):
         z = product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
        
 
-    price_to_sort = ExpressionWrapper(
-    Case(
-        When(disc_price__gt=0, then=F('disc_price')),
-        When(cat_off__lt=F('price'), then=F('cat_off')),
-        default=F('price'),
-    ),
-     output_field=FloatField()
-     )
-
-# Apply the sorting based on the defined conditional expression
+    
+# Apply the sorting individually for each queryset
     if sort_option == 'low_to_high':
-     x = x.order_by(price_to_sort)
-     y = y.order_by(price_to_sort)
-     z = z.order_by(price_to_sort)
+         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+         z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+       
     elif sort_option == 'high_to_low':
-     x = x.order_by(price_to_sort.desc())
-     y = y.order_by(price_to_sort.desc())
-     z = z.order_by(price_to_sort.desc())
+         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
 
     wishlist_obj = wishlist.objects.get(user=user)
     wish = wishlist_obj.items.all()
@@ -250,13 +244,17 @@ def mens(request):
        z = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
 
      if sort_option == 'low_to_high':
-      x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-      y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-      z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+         z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+
+       
      elif sort_option == 'high_to_low':
-      x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
-      y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
-      z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+
+
 
      wishlist_obj = wishlist.objects.get(user=user)
      wish = wishlist_obj.items.all()
@@ -278,12 +276,14 @@ def accessories(request):
             y=product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
 
        if sort_option == 'low_to_high':
-        x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-        y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-        
+         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+       
        elif sort_option == 'high_to_low':
-        x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
-        y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+  
+
             
        return render(request,'accessories.html',{'mens':x,'womens':y,'now':now})
     

@@ -242,8 +242,8 @@
 									<div class="product_price">
 										{% if i.disc_price != 0 %}
 											${{ i.disc_price }} <span>${{ i.price }}</span>
-										{% elif i.cat_off < i.price and i.category.valid_to > now %}
-										${{ i.disc_price }} <span>${{ i.price }}</span>
+											{% elif i.cat_off < i.price and i.category.valid_to > now %}
+											${{ i.cat_off }} <span>{{i.price}}</span>
 										{% else %}
 											${{ i.price }} <span></span>
 										{% endif %}
