@@ -65,7 +65,7 @@ class product(models.Model):
     category=models.ForeignKey(category, on_delete=models.CASCADE)
     size=models.ManyToManyField(Size)
     brand=models.ForeignKey(brand, on_delete=models.CASCADE)
-    gender=models.ForeignKey(gender, on_delete=models.PROTECT)
+    gender=models.CharField( max_length=50)
     price=models.IntegerField()
     disc_price=models.IntegerField(("discount price"),default=0)
     is_deleted=models.BooleanField(default=False)
