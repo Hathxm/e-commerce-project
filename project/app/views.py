@@ -122,7 +122,8 @@ def admin_size(request):
 def admin_coupons(request):
     if request.user.is_superuser:
         data=coupon.objects.all()
-        return render(request,'admincoupons.html',{'data':data})
+        now=timezone.now()
+        return render(request,'admincoupons.html',{'data':data,'now':now})
     return redirect(admin_login)
 
 
@@ -152,8 +153,12 @@ def admin_products(request):
          discription=request.POST['discription']
          new_size=request.POST.getlist('size')
 
+         
          if not disc_price:
-             disc_price=0
+             disc_price=price
+         elif disc_price>price:
+             messages.warning(request,"discount price must be lower than product price")
+             return redirect(admin_products)
          elif len(name)>20:
              messages.warning(request,"choose a shorter name for the product")
              return redirect(admin_products)
@@ -162,6 +167,7 @@ def admin_products(request):
          category_instance = category.objects.get(id=new_category)
          brand_instance = brand.objects.get(id=new_brand)
          new_product=product.objects.create(img=img,name=name,rearimg=rearimg,frontimg=frontimg,category=category_instance,brand=brand_instance,price=price,disc_price=disc_price,gender=new_pro_gender,in_stock=new_stock,discription=discription)
+         
          for size in new_size:
            new_product.size.add(size)
          new_product.save()
@@ -170,6 +176,65 @@ def admin_products(request):
         
          
         return render(request,'adminproduct.html',{'data':data,'brand':product_brand,'category':product_category,'size':size})
+    return redirect(admin_login)
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=admin_login)
+def edit_product(request,id):
+    if request.user.is_superuser:
+     data=product.objects.get(id=id)
+     product_brand=brand.objects.all()
+     product_category=category.objects.filter(is_deleted=False)
+    
+     categoryy=category.objects.all()
+     size=Size.objects.all()
+
+   
+     if request.method=='POST':
+         img=request.FILES['image'] if 'image' in request.FILES else data.img
+         rearimg=request.FILES['rearimage']  if 'rearimg' in request.FILES else data.rearimg
+         frontimg=request.FILES['frontimage']  if 'frontimage' in request.FILES else data.frontimg
+         name=request.POST['name']
+         new_category=request.POST['category']
+         selected_sizes = request.POST.getlist('size')
+         sizes = [int(size_id) for size_id in selected_sizes]
+         new_brand=request.POST['brand']
+         gender=request.POST['gender']
+         new_price=request.POST['price']
+         new_disc_price=request.POST['disc_price']
+         new_stock=request.POST['stock']
+
+         if new_disc_price > new_price:
+             messages.info(request, 'Discount price should be less than the product price.')
+             return redirect(edit_product,id=data.id)
+         elif len(name)>20:
+             messages.warning(request,"choose a shorter name for the product")
+             return redirect(edit_product,id=data.id)
+
+
+         category_instance = category.objects.get(id=new_category)
+         brand_instance = brand.objects.get(id=new_brand)
+
+
+         data.name=name
+         data.img=img
+         data.rearimg=rearimg
+         data.frontimg=frontimg
+         data.category=category_instance
+         data.brand=brand_instance
+         data.price=new_price
+         data.gender=gender
+         for i in sizes:
+             data.size.add(i)
+         data.disc_price=new_disc_price
+         data.in_stock=new_stock
+
+         
+
+
+         data.save()
+         return redirect(edit_product,id=data.id)
+     return render (request,'edit_product.html',{'data':data,'brand':product_brand,'category':product_category,'category':categoryy,'size':size})
     return redirect(admin_login)
    
 
@@ -221,65 +286,6 @@ def add_coupons(request):
             messages.warning(request,"discount percentage cannot be greater than 100 or below 0")
     return render(request,'add_coupons.html')
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url=admin_login)
-def edit_product(request,id):
-    if request.user.is_superuser:
-     data=product.objects.get(id=id)
-     product_brand=brand.objects.all()
-     product_category=category.objects.filter(is_deleted=False)
-    
-     categoryy=category.objects.all()
-     size=Size.objects.all()
-
-   
-     if request.method=='POST':
-         img=request.FILES['image'] if 'image' in request.FILES else data.img
-         rearimg=request.FILES['rearimage']  if 'rearimg' in request.FILES else data.rearimg
-         frontimg=request.FILES['frontimage']  if 'frontimage' in request.FILES else data.frontimg
-         name=request.POST['name']
-         new_category=request.POST['category']
-         selected_sizes = request.POST.getlist('size')
-         sizes = [int(size_id) for size_id in selected_sizes]
-         new_brand=request.POST['brand']
-         gender=request.POST['gender']
-         new_price=request.POST['price']
-         new_disc_price=request.POST['disc_price']
-         new_stock=request.POST['stock']
-
-         if float(new_disc_price) >= float(new_price):
-             messages.info(request, 'Discount price should be less than the product price.')
-             return redirect(edit_product)
-         elif len(name)>20:
-             messages.warning(request,"choose a shorter name for the product")
-             return redirect(edit_product)
-
-
-         category_instance = category.objects.get(id=new_category)
-         brand_instance = brand.objects.get(id=new_brand)
-
-
-         data.name=name
-         data.img=img
-         data.rearimg=rearimg
-         data.frontimg=frontimg
-         data.category=category_instance
-         data.brand=brand_instance
-         data.price=new_price
-         data.gender=gender
-         for i in sizes:
-             data.size.add(i)
-         data.disc_price=new_disc_price
-         data.in_stock=new_stock
-
-         
-
-
-         data.save()
-         return redirect(edit_product,id=data.id)
-     return render (request,'edit_product.html',{'data':data,'brand':product_brand,'category':product_category,'category':categoryy,'size':size})
-    return redirect(admin_login)
-   
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=admin_login)
@@ -287,7 +293,7 @@ def delete_product(request,id):
     if request.user.is_superuser:
         data=product.objects.get(id=id)
         data.is_deleted=True
-        data.save()
+        data.delete()
         return redirect(admin_products)
     return redirect(admin_login)
     
@@ -435,6 +441,10 @@ def cat_off(request,id):
          categoryy.discount_percentage = percentage
          categoryy.valid_to = valid_to
          categoryy.save()
+         products=product.objects.filter(category=categoryy)
+         for i in products:
+             i.disc_price=i.price-(i.price*categoryy.discount_percentage/100)
+             i.save()
          return redirect(admin_category)
         else:
             messages.warning(request,"discount percentage cannot be greater than 100 or below 0")

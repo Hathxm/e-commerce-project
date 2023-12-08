@@ -80,7 +80,7 @@
           <input type="file" class="form-control" id="frontimage"  name="frontimage" accept="image/*" onchange="initCropper('frontimage')" required>
           <div class="text-center">
             <img src="" id="showfrontimage" style="width: auto; height: 300px; width: 300px;  margin-top: 10px; display: block;" alt="">
-            <button class="btn btn-warning p-2 px-5" id="updatefrontimage" onclick="uploadCroppedImage('frontimage')" type="button" style="display: none; margin-left:300px;">Update</button>
+            <button class="btn btn-warning p-2 px-5 mt-2" id="updatefrontimage" onclick="uploadCroppedImage('frontimage')" type="button" style="display: none; margin-left:300px;">Update</button>
           </div>
         </div>
       </div>
@@ -92,7 +92,7 @@
           <input type="file" class="form-control" id="rearimage" accept="image/*" onchange="initCropper('rearimage')" required required name="rearimage">
           <div class="text-center">
             <img src="" id="showrearimage" style="width: auto; height: 300px; width: 300px;  margin-top: 10px; display: block;" alt="">
-            <button class="btn btn-warning p-2 px-5" id="updaterearimage" onclick="uploadCroppedImage('rearimage')" type="button" style="display: none; margin-left:300px;">Update</button>
+            <button class="btn btn-warning p-2 px-5 mt-2" id="updaterearimage" onclick="uploadCroppedImage('rearimage')" type="button" style="display: none; margin-left:300px;">Update</button>
           </div>
         </div>
       </div>
@@ -111,15 +111,15 @@
           <label for="price">Product Price</label>
         </div>
         <div class="col-75">
-          <input type="number" class="form-control" id="price" required name="price" value="{{ data.price }}" placeholder="Product Price">
+          <input type="number" class="form-control" id="price" required name="price" value="{{ data.price }}" placeholder="Product Price" >
         </div>
       </div>
       <div class="row">
         <div class="col-25">
-          <label for="disc_price">Product Discount Price</label>
+          <label for="disc_price">Selling Price</label>
         </div>
         <div class="col-75">
-          <input type="number" class="form-control" id="disc_price" name="disc_price" value="{{ data.disc_price }}" placeholder="Product Discount Price">
+          <input type="number" class="form-control" id="disc_price" name="disc_price" value="{{ data.disc_price }}" placeholder="Product Discount Price" >
         </div>
       </div>
       <div class="row">

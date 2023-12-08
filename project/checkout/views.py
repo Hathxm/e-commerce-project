@@ -120,7 +120,7 @@ def payment_view(request,id):
     walet=wallet.objects.get(user=user)
     to_pay=total_price*100
     wallet_option=walet.money>=total_price
-    coupons=coupon.objects.all()
+    coupons=coupon.objects.filter(is_deleted=False)
     usedcoupons=usercoupon.objects.filter(user=user)
      # Replace 'order_details' with your actual URL name
     success_url = request.build_absolute_uri(reverse('create_order', kwargs={'id': orderitems.id}))

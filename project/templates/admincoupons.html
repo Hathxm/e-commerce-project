@@ -9,9 +9,13 @@
 {%endblock%}
 {%block offerandblocking%}
 
-{% if item.is_deleted %}
+{% if item.is_deleted%}
     <a href="{% url 'undlt_coupons' item.id %}" class="undelete-link">
         <button class="btn btn-danger btn-sm">Unavailable</button>
+    </a>
+{% elif item.valid_to < now %}
+    <a href="#" >
+        <button class="btn btn-primary btn-sm">Expired</button>
     </a>
 {% else %}
     <a href="{% url 'dlt_coupons' item.id %}" class="delete-link">

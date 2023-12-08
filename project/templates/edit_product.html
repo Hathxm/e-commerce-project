@@ -3,15 +3,16 @@
 {%load static%}
 <link rel="stylesheet" type="text/css" href="{% static "styles/editproduct.css" %}">
 
-{%for i in messages%}
-{{i}}
-{%endfor%}
 
 
 {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static "styles/salesreport.css" %}">
  
-    
+  <div class="text-center">
+    {%for message in messages%}
+    <p style="color:red">{{message}}
+    {%endfor%}
+    </div>
 
     <h2 class="text-align: center; color: black; font-weight: bold; font-size: 24px;">{{data.name}}</h2>
 
@@ -87,7 +88,7 @@
       <label for="price">Product Price</label>
     </div>
     <div class="col-75">
-      <input type="text" class="form-control" id="price" required name="price" value="{{ data.price }}" placeholder="Product Price">
+      <input type="number" class="form-control" id="price" required name="price" value="{{ data.price }}" placeholder="Product Price">
     </div>
   </div>
   <div class="row">
@@ -95,7 +96,7 @@
       <label for="disc_price">Product Discount Price</label>
     </div>
     <div class="col-75">
-      <input type="text" class="form-control" id="disc_price" name="disc_price" value="{{ data.disc_price }}" placeholder="Product Discount Price">
+      <input type="number" class="form-control" id="disc_price" name="disc_price" value="{{ data.disc_price }}" placeholder="Product Discount Price">
     </div>
   </div>
   <div class="row">

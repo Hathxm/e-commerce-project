@@ -209,14 +209,13 @@ def womens(request):
     
 # Apply the sorting individually for each queryset
     if sort_option == 'low_to_high':
-         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-         z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-       
+        x = x.order_by(F('disc_price'))
+        y = y.order_by(F('disc_price'))
+        z = z.order_by(F('disc_price'))
     elif sort_option == 'high_to_low':
-         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
-         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
-         z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         x = x.order_by('-disc_price')
+         y = y.order_by('-disc_price')
+         z = z.order_by('-disc_price')
 
     wishlist_obj = wishlist.objects.get(user=user)
     wish = wishlist_obj.items.all()
@@ -234,9 +233,9 @@ def mens(request):
 
      if search_term:
         # If a search term is present, filter products based on the search term
-        x = product.objects.filter(Q(gender="Men") & Q(category__wear="Tops") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
-        y = product.objects.filter(Q(gender="Men") & Q(category__wear="Lowers") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
-        z = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        x = product.objects.filter(Q(gender="Men") & Q(category__wear="Tops") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
+        y = product.objects.filter(Q(gender="Men") & Q(category__wear="Lowers") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
+        z = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
      else:
         # If no search term, use the original queryset
        x = product.objects.filter(Q(gender="Men") & Q(category__wear="Tops") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
@@ -244,21 +243,20 @@ def mens(request):
        z = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
 
      if sort_option == 'low_to_high':
-         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-         z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-
-       
+        x = x.order_by(F('disc_price'))
+        y = y.order_by(F('disc_price'))
+        z = z.order_by(F('disc_price'))
      elif sort_option == 'high_to_low':
-         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
-         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
-         z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         x = x.order_by('-disc_price')
+         y = y.order_by('-disc_price')
+         z = z.order_by('-disc_price')
 
 
 
      wishlist_obj = wishlist.objects.get(user=user)
      wish = wishlist_obj.items.all()
      return render(request,'mensproduct.html',{'tops':x,'lowers':y,'acc':z,'wish':wish,'now':now})
+   
     
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=user_login)
@@ -269,19 +267,20 @@ def accessories(request):
        now=timezone.now()
 
        if search_term:
-             x=product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
-             y=product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+             x=product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
+             y=product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
        else:
-            x=product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
-            y=product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+            x=product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
+            y=product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
 
        if sort_option == 'low_to_high':
-         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
-         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+        x = x.order_by(F('disc_price'))
+        y = y.order_by(F('disc_price'))
        
        elif sort_option == 'high_to_low':
-         x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
-         y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+         x = x.order_by('-disc_price')
+         y = y.order_by('-disc_price')
+
   
 
             
@@ -438,9 +437,6 @@ def product_details(request,id):
                 messages.warning(request,'Product not in stock')
 
      if request.method == 'POST':
-            if data.in_stock==None or data.in_stock==0:
-                 return redirect(product_details)
-            else:
               size = request.POST.get('size')
               size=Size.objects.get(id=size)
               cart_item,created=cartitem.objects.get_or_create(product=data,user=user,size=size,is_deleted=False)
@@ -449,18 +445,10 @@ def product_details(request,id):
 
               if quantity>data.in_stock:
                  messages.warning(request,'Quantity demanded not in stock')
+                 return redirect(product_details,id=data.id)
                  
-              
-              if data.disc_price == 0:
-                   cart_item.price=data.price*(quantity)+(cart_item.size.price_increment*quantity)
-                   cart_item.save()
-                   if data.category.discount_percentage>0 and data.category.valid_to>now:
-                     cat_off=data.price-(data.price*(data.category.discount_percentage/100))
-                     cart_item.price=cat_off*(quantity)+(cart_item.size.price_increment*quantity)
-                     cart_item.save()   
-              else:
-                   cart_item.price=data.disc_price*(quantity)+(cart_item.size.price_increment*quantity)
-                   cart_item.save()
+              cart_item.price=data.disc_price*(quantity)+(cart_item.size.price_increment*quantity)
+              cart_item.save()
               return redirect(viewcart)
      return render(request,'single.html',{'data':data,'size':size,'similar_products':similar_products,'wish':wish,'cat_off_price':cat_off_price,'now':now})
 
@@ -554,7 +542,7 @@ def add_to_cart(request,id):
     )
 
      item.quantity = 1
-     item.price = product_instance.price + (size.price_increment if size else 0)
+     item.price = product_instance.disc_price + (size.price_increment if size else 0)
      item.save()
  
      return redirect('viewcart')
@@ -569,25 +557,7 @@ def qty_update(request):
 
     # Update the quantity in the database
     cart_item.quantity = new_quantity
-
-    if cart_item.product.disc_price == 0:
-        # If the product has no discount, calculate the price based on the category discount
-        base_price = cart_item.product.price
-        valid_to_datetime = cart_item.product.category.valid_to
-
-        if cart_item.product.category.discount_percentage > 0 and valid_to_datetime > now:
-            # Apply the category discount only once to the base price 
-            discounted_price = base_price * (1 - cart_item.product.category.discount_percentage / 100)
-
-            # Adjust the total price based on the new quantity
-            cart_item.price = (discounted_price * new_quantity) + (cart_item.size.price_increment * new_quantity)
-        else:
-            # No category discount, calculate the price without it
-            cart_item.price = (base_price * new_quantity) + (cart_item.size.price_increment * new_quantity)
-    else:
-        # If the product has a discount, use the discounted price for the calculation
-        cart_item.price = (cart_item.product.disc_price * new_quantity) + (cart_item.size.price_increment * new_quantity)
-
+    cart_item.price = (cart_item.product.disc_price * new_quantity) + (cart_item.size.price_increment * new_quantity)
     cart_item.save()
 
     # You can optionally return some data in the response
@@ -631,13 +601,12 @@ def add(request):
 def size_variation(request):
     if request.method == 'POST':
         id = request.POST.get('id')
-        item = product.objects.filter(id=id).annotate(amt=F('price') - F('disc_price'), cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100), cat_amt=F('price') - (F('price') * F('category__discount_percentage') / 100)).first()
+        item = product.objects.filter(id=id).annotate(amt=F('price') - F('disc_price')).first()
         user_size = request.POST.get('size')
         size=Size.objects.get(id=user_size)
         now=timezone.now()
-        if item.cat_off < item.price and item.disc_price==0 and item.category.valid_to > now:
-            item_price=item.cat_off+size.price_increment
-        elif item.disc_price != 0:
+        
+        if item.disc_price != 0:
             item_price=item.disc_price+size.price_increment
         else:
             item_price=item.price+size.price_increment  

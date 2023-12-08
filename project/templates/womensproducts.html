@@ -55,71 +55,7 @@
 				<div class="col">
 					<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
 
-						<!-- Product 1 -->
-						{% comment %} {%for i in men%} 
-
-						<div class="product-item men ">
-							<div class="product discount product_filter">
-								<div class="product_image">
-									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
-										{% if i in wish %}
-										<a href="#" class="wishlist-action" data-action="remove" data-item-id="{{ i.id }}">
-											<i class="fa fa-heart"></i>
-										</a>
-									{% else %}
-										<a href="#" class="wishlist-action" data-action="add" data-item-id="{{ i.id }}">
-											<i class="fa fa-heart-o"></i>
-										</a>
-									{% endif %}
-									</div>
-									<img src="{{i.img.url}}" alt="">
-								</div>
-								{%if i.disc_price != 0 %}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
-								{%else%}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
-								{%endif%}
-								<div class="product_info">
-									<h6 class="product_name"><a href="{%url 'product_details' i.id%}">{{i.name}}</a></h6>
-								<div class="product_price">{%if i.disc_price != 0 %} ${{i.disc_price}} <span>${{i.price}}</span></div> {% else %}${{i.price}}<span></span></div> {%endif%}
-								</div>
-							</div>
-							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
-						</div>
-						{% endfor %} {% endcomment %}
-
-
-						{% comment %} {%for i in men%} 
-
-						<div class="product-item men ">
-							<div class="product discount product_filter">
-								<div class="product_image">
-									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
-										{%if i in wish%} 
-										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
-											<i class="fa fa-heart"></i>
-										</a>
-										{%else%}
-										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
-											<i class="fa fa-heart-o"></i>
-										</a>
-									{%endif%}
-									</div>
-									<img src="{{i.img.url}}" alt="">
-								</div>
-								{%if i.disc_price != 0 %}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
-								{%else%}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
-								{%endif%}
-								<div class="product_info">
-									<h6 class="product_name"><a href="{%url 'product_details' i.id%}">{{i.name}}</a></h6>
-								<div class="product_price">{%if i.disc_price != 0 %} ${{i.disc_price}} <span>${{i.price}}</span></div> {% else %}${{i.price}}<span></span></div> {%endif%}
-								</div>
-							</div>
-							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
-						</div>
-						{% endfor %} {% endcomment %}
+					
 						{%for i in acc%} 
 
 						<div class="product-item men ">
@@ -139,10 +75,9 @@
 									<img src="{{i.img.url}}" style="width:222px; height:300px;" alt="">
 								</div>
 
-								{%if i.disc_price != 0 %}
+								{%if i.disc_price != i.price %}
 								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
-								{%elif i.cat_off < i.price and i.category.valid_to > now%}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.cat_amt}}</span></div>
+								
 								{%else%}
 								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
 								{%endif%}
@@ -150,10 +85,8 @@
 								<div class="product_info">
 									<h6 class="product_name"><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
 									<div class="product_price">
-										{% if i.disc_price != 0 %}
+										{%if i.disc_price != i.price %}
 											${{ i.disc_price }} <span>${{ i.price }}</span>
-											{% elif i.cat_off < i.price and i.category.valid_to > now %}
-											${{ i.cat_off }} <span></span>
 										{% else %}
 											${{ i.price }} <span></span>
 										{% endif %}
@@ -183,10 +116,9 @@
 									<img src="{{i.img.url}}"  style="width:222px; height:300px;" alt="">
 								</div>
 
-								{%if i.disc_price != 0 %}
+								{%if i.disc_price != i.price %}
 								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
-								{%elif i.cat_off < i.price and i.category.valid_to > now%}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.cat_amt}}</span></div>
+								
 								{%else%}
 								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
 								{%endif%}
@@ -194,10 +126,8 @@
 								<div class="product_info">
 									<h6 class="product_name"><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
 									<div class="product_price">
-										{% if i.disc_price != 0 %}
+										{%if i.disc_price != i.price %}
 											${{ i.disc_price }} <span>${{ i.price }}</span>
-											{% elif i.cat_off < i.price and i.category.valid_to > now %}
-											${{ i.cat_off }} <span></span>
 										{% else %}
 											${{ i.price }} <span></span>
 										{% endif %}
@@ -228,10 +158,8 @@
 									<img src="{{i.img.url}}"  style="width:222px; height:300px;" alt="">
 								</div>
 
-								{%if i.disc_price != 0 %}
+								{%if i.disc_price != i.price %}
 								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
-								{%elif i.cat_off < i.price and i.category.valid_to > now%}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.cat_amt}}</span></div>
 								{%else%}
 								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
 								{%endif%}
@@ -239,10 +167,8 @@
 								<div class="product_info">
 									<h6 class="product_name"><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
 									<div class="product_price">
-										{% if i.disc_price != 0 %}
+										{%if i.disc_price != i.price %}
 											${{ i.disc_price }} <span>${{ i.price }}</span>
-											{% elif i.cat_off < i.price and i.category.valid_to > now %}
-											${{ i.cat_off }} <span></span>
 										{% else %}
 											${{ i.price }} <span></span>
 										{% endif %}
@@ -261,32 +187,7 @@
 		</div>
 	</div>
     {%endblock%}
-	 {% comment %} <script>
 	
-
-
-		 function fetchFunction(id,IdotId) {
-			fetch(id).then((response)=>{
-			   if(response.status==200){
-				   document.getElementById('DeletefetchFunction'+IdotId).className = 'fa fa-heart-o'
-			   }
-			   setTimeout(()=>{location.reload()},0)
-		   })
-		   
-	   }
-
-
-		function AddfetchFunction(id,IdotId) {
-			fetch(id).then((response)=>{
-			   if(response.status==200){
-				   document.getElementById('AddfetchFunction'+IdotId).className = 'fa fa-heart'
-			   }
-			   setTimeout(()=>{location.reload()},0)
-			   
-			})
-		   
-	   }
-   </script>    {% endcomment %}
  
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script>

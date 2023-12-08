@@ -67,21 +67,17 @@
 
 					</div>
 					<div class="free_delivery d-flex flex-row align-items-center justify-content-center mb-3">
-					{%if data.disc_price != 0%}
+						{%if i.disc_price != i.price %}
 						<span class="fa fa-thumbs-up"></span><span> In Sale Item !</span>
-					{%elif cat_off_price < data.price and data.category.valid_to > now%}
-						<span class="fa fa-thumbs-up"></span><span> In Sale Item !</span>
+			
 						{%else%}
 						<span class="fa fa-thumbs-down"></span><span>Not In Sale Item !</span>
 					{%endif%}
 					</div>
 
-					{% if data.disc_price != 0 %}
+					{%if i.disc_price != i.price %}
     				<div class="original_price" style="font-size:20px;">${{ data.price }}</div>
     				<div class="product_price"  style="font-size:25px;" id="price">${{ data.disc_price }}</div>
-					{% elif cat_off_price < data.price and data.category.valid_to > now %}
-					<div class="original_price"  style="font-size:20px;" >${{ data.price }}</div>
-    				<div class="product_price" style="font-size:25px;"  id="price">${{ cat_off_price }}</div>
 					{% else %}
     				<div class="product_price"  style="font-size:25px;"  id="price">${{ data.price }}</div> 
 					{% endif %}
