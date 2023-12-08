@@ -211,8 +211,8 @@ def womens(request):
         When(cat_off__lt=F('price'), then=F('cat_off')),
         default=F('price'),
     ),
-    output_field=FloatField()
-    )
+     output_field=FloatField()
+     )
 
 # Apply the sorting based on the defined conditional expression
     if sort_option == 'low_to_high':
