@@ -27,34 +27,52 @@ from django.conf import settings
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')
 def checkout(request,id):
-    user = request.user
-    cartitems=cartitem.objects.all().filter(user=user,is_deleted=False)
-    orderitems=ordereditems.objects.get(id=id)
-    cart_instance = orderitems.items.all()
-    total=orderitems.total
-    districts = district.objects.all()
-    prev_address = address.objects.filter(user=user)
-    
-    if request.method == 'POST':
-        prev_address_id = request.POST.get('previous_address')
-       
-        if prev_address_id:
-            # User selected a previous address
-            prev_address = address.objects.get(id=prev_address_id)
-            request.session['selected_address_id'] = prev_address_id
-            return redirect(payment_view,id=orderitems.id)  # You may want to pass prev_address to the payment page
-        else:
-            # User is providing a new address
-            name = request.POST.get('fullname')
-            phone_number = request.POST.get('phone_number')
-            user_district = request.POST.get('district')
-            streetaddress = request.POST.get('streetaddress')
-            pin = request.POST.get('pin')
-            x = district.objects.get(id=user_district)
-            y=address.objects.create(user=user, full_name=name, district=x, street_address=streetaddress, phone_number=phone_number, pin=pin)
-            request.session['selected_address_id'] = y.id
-            return redirect(payment_view,id=orderitems.id) 
-    return render(request, 'checkout.html', {'cart_instance':cart_instance,'total':total,'districts':districts,'prev_address':prev_address,'ordereditem':orderitems})
+    try:
+        user = request.user
+        cartitems = cartitem.objects.all().filter(user=user, is_deleted=False)
+        orderitems = ordereditems.objects.get(id=id)
+        cart_instance = orderitems.items.all()
+        total = orderitems.total
+
+        prev_address = address.objects.filter(user=user)
+
+        if request.method == 'POST':
+            prev_address_id = request.POST.get('previous_address')
+
+            try:
+                if prev_address_id:
+                    # User selected a previous address
+                    prev_address = address.objects.get(id=prev_address_id)
+                    request.session['selected_address_id'] = prev_address_id
+                    return redirect(payment_view, id=orderitems.id)
+                else:
+                    # User is providing a new address
+                    name = request.POST.get('fullname')
+                    phone_number = request.POST.get('phone_number')
+                    user_district = request.POST.get('district')
+                    streetaddress = request.POST.get('streetaddress')
+                    pin = request.POST.get('pin')
+                    new_address = address.objects.create(
+                        user=user, full_name=name, district=user_district,
+                        street_address=streetaddress, phone_number=phone_number, pin=pin
+                    )
+                    request.session['selected_address_id'] = new_address.id
+                    return redirect(payment_view, id=orderitems.id)
+            except Exception as e:
+                # Handle specific exceptions or log the error
+                print(f"Error during checkout: {e}")
+                # You can customize this part based on the specific exceptions you want to catch
+
+        return render(request, 'checkout.html', {'cart_instance': cart_instance, 'total': total, 'prev_address': prev_address, 'ordereditem': orderitems})
+
+    except ordereditems.DoesNotExist:
+        # Handle the case when the ordereditems object is not found
+        return render(request, 'checkout_error.html', {'error_message': 'Invalid order ID'})
+
+    except Exception as e:
+        # Handle other unexpected exceptions
+        print(f"Unexpected error during checkout: {e}")
+        return render(request, 'checkout_error.html', {'error_message': 'An unexpected error occurred during checkout'})
     
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -62,7 +80,7 @@ def checkout(request,id):
 def user_address(request):
     #data to display in the page
     user = request.user
-    districts = district.objects.all()
+    
     prev_address = address.objects.filter(user=user)
     items = cartitem.objects.all().filter(is_deleted=False,user=user)
     total=float(items.aggregate(total=Sum('price'))['total'])
@@ -83,13 +101,13 @@ def user_address(request):
             user_district = request.POST.get('district')
             streetaddress = request.POST.get('streetaddress')
             pin = request.POST.get('pin')
-            x = district.objects.get(id=user_district)
-            y=address.objects.create(user=user, full_name=name, district=x, street_address=streetaddress, phone_number=phone_number, pin=pin)
+           
+            y=address.objects.create(user=user, full_name=name, district=user_district, street_address=streetaddress, phone_number=phone_number, pin=pin)
             request.session['selected_address_id'] = y.id
            
             return redirect(payment_view) 
 
-    return render(request,'confirmation.html',{'data':items,'districts':districts,'prev_address':prev_address,'total':total})
+    return render(request,'confirmation.html',{'data':items,'prev_address':prev_address,'total':total})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')

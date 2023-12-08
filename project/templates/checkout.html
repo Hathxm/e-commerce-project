@@ -71,7 +71,7 @@
 																</div>
 																<div class="form-group">
 																	<small for="NAME" class=" mb-1"><b>PHONE NUMBER</b></small>
-																	<input type="text" class="form-control form-control-sm" name="phone_number" id="NAME" aria-describedby="helpId" placeholder="Enter Your Number" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+																	<input type="text" class="form-control form-control-sm" name="phone_number" id="NAME" aria-describedby="helpId" placeholder="Enter Your Number" pattern="\+91-[0-9]{4}-[0-9]{4}">
 																	<small>Format: +91-4565-7890</small>
 																</div>
 																<div class="form-group">
@@ -82,11 +82,22 @@
 																	<div class="col-sm-6 pr-sm-2">
 																		<div class="form-group">
 																			<small for="NAME" class=" mb-1"><b>DISTRICT</b></small>
-																			<select id="district" name="district" required class="form-control form-control-sm" name="NAME" id="NAME" aria-describedby="helpId">
+																			<select id="district" name="district" required class="form-control form-control-sm" aria-describedby="helpId">
 																				<option value="">Select a district</option>
-																				{% for district in districts %}
-																				<option value="{{ district.id }}">{{ district.district }}</option>
-																				{% endfor %}
+																				<option value="Thiruvananthapuram">Thiruvananthapuram</option>
+																				<option value="Kollam">Kollam</option>
+																				<option value="Pathanamthitta">Pathanamthitta</option>
+																				<option value="Alappuzha">Alappuzha</option>
+																				<option value="Kottayam">Kottayam</option>
+																				<option value="Idukki">Idukki</option>
+																				<option value="Ernakulam">Ernakulam</option>
+																				<option value="Thrissur">Thrissur</option>
+																				<option value="Palakkad">Palakkad</option>
+																				<option value="Malappuram">Malappuram</option>
+																				<option value="Kozhikode">Kozhikode</option>
+																				<option value="Wayanad">Wayanad</option>
+																				<option value="Kannur">Kannur</option>
+																				<option value="Kasaragod">Kasaragod</option>
 																			</select>
 																		</div>
 																	</div>

@@ -11,25 +11,6 @@ from datetime import date
 # Create your models here.
 
 
-class district(models.Model):
-    choice_fields=[('Kasaragod','Kasaragod'),
-                   ('Kannur','Kannur'),
-                   ('Kozhikode','Kozhikode'),
-                   ('Malappuram','Malappuram'),
-                   ('Thrissur','Thrissur'),
-                   ('Ernankulam','Kochi'),
-                   ('Alapuzha','Alapuzha'),
-                   ('Kottayam','Kottayam'),
-                   ('Kollam','Kollam'),
-                   ('Palakkad','Palakkad'),
-                   ('Trivandrum','Trivandrum')
-                   ]
-    district=models.CharField( max_length=20,choices=choice_fields)
- 
-
-    def __str__(self) -> str:
-        return self.district
-
 
     
 
@@ -37,7 +18,7 @@ class address(models.Model):
     user=models.ForeignKey(customuser, on_delete=models.CASCADE) 
     full_name=models.CharField( max_length=50)
     phone_number=PhoneNumberField()
-    district=models.ForeignKey(district, on_delete=models.CASCADE)
+    district=models.CharField(max_length=50)
     street_address = models.CharField(max_length=255)
     pin=models.IntegerField()
 

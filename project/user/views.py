@@ -428,7 +428,7 @@ def product_details(request,id):
 
      if request.method == 'POST':
             if data.in_stock==None or data.in_stock==0:
-                 messages.warning(request,'Out Of Stock')
+                 return redirect(product_details)
             else:
               size = request.POST.get('size')
               size=Size.objects.get(id=size)
