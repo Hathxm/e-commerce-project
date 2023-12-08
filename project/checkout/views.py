@@ -317,7 +317,7 @@ def checkcoupon(request):
     if request.method == 'POST':
         gift_code = request.POST.get('gift_code')
         orderid = request.POST.get('order_id')
-        coupons=coupon.objects.filter(name=gift_code,valid_to__gte=timezone.now()).first()
+        coupons=coupon.objects.filter(name=gift_code,is_deleted=False,valid_to__gte=timezone.now()).first()
         couponusage=usercoupon.objects.filter(user=user,coupon__name=coupons.name)
         
         # Your coupon processing logic here

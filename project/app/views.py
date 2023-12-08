@@ -293,7 +293,7 @@ def delete_product(request,id):
     if request.user.is_superuser:
         data=product.objects.get(id=id)
         data.is_deleted=True
-        data.delete()
+        data.save()
         return redirect(admin_products)
     return redirect(admin_login)
     
