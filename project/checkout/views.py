@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from app.models import product,Size,customuser
+from app.models import *
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
@@ -34,11 +34,6 @@ def checkout(request,id):
     total=orderitems.total
     districts = district.objects.all()
     prev_address = address.objects.filter(user=user)
-
-
-    if not cart_instance.exists():
-        messages.warning(request, 'No items selected')
-        return redirect('viewcart')
     
     if request.method == 'POST':
         prev_address_id = request.POST.get('previous_address')
@@ -120,13 +115,21 @@ def payment_view(request,id):
 def create_order(request,id):
     orderitems=ordereditems.objects.get(id=id)
     user=orderitems.user
+    user_mail=user.email
     items=orderitems.items.all()
     total=Decimal(orderitems.total)
     adress=request.session.get('selected_address_id')
     deliver_address=address.objects.get(id=adress)
-    pay=payment_method.objects.get(id=1)
     
-    order=Order.objects.create(user=user,address=deliver_address,payment=pay,items=orderitems,total=total)
+
+    order=Order.objects.create(user=user,address=deliver_address,payment="Paid",items=orderitems,total=total,order_status="Processing")
+    send_mail(
+                'Order confirmed',
+                f' Your Order number: {order.id} from street trends has been confirmed .. will be dellivered in a few.. Thank You for shopping with streetrends',
+                'streetrends@gmail.com',
+                [user_mail],
+                fail_silently=False,
+            )
     for i in items:
         i.product.in_stock-=i.quantity
         i.product.save()
@@ -145,11 +148,11 @@ def walletpayment(request,id):
     walet.save()
     adress=request.session.get('selected_address_id')
     deliver_address=address.objects.get(id=adress)
-    pay=payment_method.objects.get(id=1)
+    
     if orderitems.coupon_applied==True:
         coupons=coupon.objects.get(name=request.session.get('coupon'))
         usercoupon.objects.create(user=user,coupon=coupons,used_at=timezone.now())
-    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment=pay,items=orderitems,total=total_price)
+    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment="Paid",items=orderitems,total=total_price,order_status="Processing")
     for product in items:
         product.product.in_stock-=product.quantity
         product.product.save()
@@ -166,11 +169,11 @@ def cod(request,id):
     total_price = orderitems.total
     adress=request.session.get('selected_address_id')
     deliver_address=address.objects.get(id=adress)
-    pay=payment_method.objects.get(id=2)
+    
     if orderitems.coupon_applied==True:
         coupons=coupon.objects.get(name=request.session.get('coupon'))
         usercoupon.objects.create(user=user,coupon=coupons,used_at=timezone.now())
-    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment=pay,items=orderitems,total=total_price)
+    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment="COD",items=orderitems,total=total_price,order_status="Processing")
     for product in items:
         product.product.in_stock-=product.quantity
         product.product.save()
@@ -204,7 +207,7 @@ def order_items(request,id):
 @login_required(login_url='userlogin')
 def return_order(request,id):
     order=Order.objects.get(id=id)
-    status=order_status.objects.get(id=4)
+    status="Returned"
     order.order_status=status
     order.save()
     items=order.items.items.all()
@@ -232,7 +235,7 @@ def return_order(request,id):
 @login_required(login_url='userlogin')
 def cancel_order(request,id):
     order=Order.objects.get(id=id)
-    status=order_status.objects.get(id=4)
+    status="Cancelled"
     order.order_status=status
     order.save()
     items=order.items.items.all()
@@ -297,7 +300,7 @@ def checkcoupon(request):
         gift_code = request.POST.get('gift_code')
         orderid = request.POST.get('order_id')
         coupons=coupon.objects.filter(name=gift_code,valid_to__gte=timezone.now()).first()
-        couponusage=usercoupon.objects.filter(user=user,coupon=coupons)
+        couponusage=usercoupon.objects.filter(user=user,coupon__name=coupons.name)
         
         # Your coupon processing logic here
         if not couponusage.exists():
@@ -335,6 +338,11 @@ def orderinvoice(request,id):
                 response['Content-Disposition'] = f'attachment; filename="sales_report_{timezone.now()}.pdf"'
                 pisa.CreatePDF(pdf_data, dest=response)
                 return response
+
+
+
+
+
 
 
 

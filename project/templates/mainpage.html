@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	{% load static %}
-<title>Colo Shop</title>
+<title>Streetrends</title>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="Colo Shop Template">
@@ -91,8 +91,8 @@
 		</div>
 						<nav class="navbar">
 							<ul class="navbar_menu">
-								<li><a href="{%url 'landing-pg'%}">home</a></li>								
-								<li><a href="#">About</a></li>			
+								<li><a href="{%url 'shop'%}">home</a></li>								
+								<li><a href="{%url 'landing-pg'%}">About</a></li>			
 								<li><a href="{%url 'contact'%}">contact</a></li>
 							</ul>
 							
@@ -149,6 +149,8 @@
 			</div>
 		</div>
 	</div>
+
+	
 	
 	<!-- Banner -->
 
@@ -207,71 +209,7 @@
 				<div class="col">
 					<div class="product-grid" data-isotope='{ "itemSelector": ".product-item", "layoutMode": "fitRows" }'>
 
-						<!-- Product 1 -->
-						{% comment %} {%for i in men%} 
-
-						<div class="product-item men ">
-							<div class="product discount product_filter">
-								<div class="product_image">
-									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
-										{% if i in wish %}
-										<a href="#" class="wishlist-action" data-action="remove" data-item-id="{{ i.id }}">
-											<i class="fa fa-heart"></i>
-										</a>
-									{% else %}
-										<a href="#" class="wishlist-action" data-action="add" data-item-id="{{ i.id }}">
-											<i class="fa fa-heart-o"></i>
-										</a>
-									{% endif %}
-									</div>
-									<img src="{{i.img.url}}" alt="">
-								</div>
-								{%if i.disc_price != 0 %}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
-								{%else%}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
-								{%endif%}
-								<div class="product_info">
-									<h6 class="product_name"><a href="{%url 'product_details' i.id%}">{{i.name}}</a></h6>
-								<div class="product_price">{%if i.disc_price != 0 %} ${{i.disc_price}} <span>${{i.price}}</span></div> {% else %}${{i.price}}<span></span></div> {%endif%}
-								</div>
-							</div>
-							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
-						</div>
-						{% endfor %} {% endcomment %}
-
-
-						{% comment %} {%for i in men%} 
-
-						<div class="product-item men ">
-							<div class="product discount product_filter">
-								<div class="product_image">
-									<div id="heart-icon-{{ i.id }}" class="heart-icon"  data-item-id="{{ i.id }}">
-										{%if i in wish%} 
-										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
-											<i class="fa fa-heart"></i>
-										</a>
-										{%else%}
-										<a  class="wishlist-action"  data-item-id="{{ i.id }}">
-											<i class="fa fa-heart-o"></i>
-										</a>
-									{%endif%}
-									</div>
-									<img src="{{i.img.url}}" alt="">
-								</div>
-								{%if i.disc_price != 0 %}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
-								{%else%}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
-								{%endif%}
-								<div class="product_info">
-									<h6 class="product_name"><a href="{%url 'product_details' i.id%}">{{i.name}}</a></h6>
-								<div class="product_price">{%if i.disc_price != 0 %} ${{i.disc_price}} <span>${{i.price}}</span></div> {% else %}${{i.price}}<span></span></div> {%endif%}
-								</div>
-							</div>
-							<div class="red_button add_to_cart_button"><a href="product_details/{{i.id}}">View Product</a></div>
-						</div>
-						{% endfor %} {% endcomment %}
+				
 						{%for i in men%} 
 
 						<div class="product-item men ">
@@ -561,162 +499,7 @@
 							</div>
 						</a>
 							{%endfor%}
-							<!-- Slide 2 -->
-
-							{% comment %} <div class="owl-item product_slider_item">
-								<div class="product-item women">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_2.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_bubble product_bubble_left product_bubble_green d-flex flex-column align-items-center"><span>new</span></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Samsung CF591 Series Curved 27-Inch FHD Monitor</a></h6>
-											<div class="product_price">$610.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 3 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item women">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_3.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Blue Yeti USB Microphone Blackout Edition</a></h6>
-											<div class="product_price">$120.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 4 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item accessories">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_4.png" alt="">
-										</div>
-										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>sale</span></div>
-										<div class="favorite favorite_left"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">DYMO LabelWriter 450 Turbo Thermal Label Printer</a></h6>
-											<div class="product_price">$410.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 5 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item women men">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_5.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Pryma Headphones, Rose Gold & Grey</a></h6>
-											<div class="product_price">$180.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 6 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item accessories">
-									<div class="product discount">
-										<div class="product_image">
-											<img src="images/product_6.png" alt="">
-										</div>
-										<div class="favorite favorite_left"></div>
-										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Fujifilm X100T 16 MP Digital Camera (Silver)</a></h6>
-											<div class="product_price">$520.00<span>$590.00</span></div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 7 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item women">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_7.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Samsung CF591 Series Curved 27-Inch FHD Monitor</a></h6>
-											<div class="product_price">$610.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 8 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item accessories">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_8.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Blue Yeti USB Microphone Blackout Edition</a></h6>
-											<div class="product_price">$120.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 9 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item men">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_9.png" alt="">
-										</div>
-										<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>sale</span></div>
-										<div class="favorite favorite_left"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">DYMO LabelWriter 450 Turbo Thermal Label Printer</a></h6>
-											<div class="product_price">$410.00</div>
-										</div>
-									</div>
-								</div>
-							</div>
-
-							<!-- Slide 10 -->
-
-							<div class="owl-item product_slider_item">
-								<div class="product-item men">
-									<div class="product">
-										<div class="product_image">
-											<img src="images/product_10.png" alt="">
-										</div>
-										<div class="favorite"></div>
-										<div class="product_info">
-											<h6 class="product_name"><a href="single.html">Pryma Headphones, Rose Gold & Grey</a></h6>
-											<div class="product_price">$180.00</div>
-										</div>
-									</div>
-								</div>
-							</div> {% endcomment %}
+							
 						</div> 
 
 						<!-- Slider Navigation -->

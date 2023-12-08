@@ -4,10 +4,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Modernize Free</title>
+  <title>Admin Dashboard</title>
   <link rel="shortcut icon" type="image/png" href="{% static "assets/images/logos/favicon.png" %}" />
-  <link rel="stylesheet" href="{% static "assets/css/styles.min.css" %}" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{% static "assets/css/styles.min.css" %}" /> 
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-c0UoU4Ggzv0K4PKMOGQECfV5UtOEvqLbOyFQ8n1bB9DIByK6WyhW4WS2z2R6XbMa" crossorigin="anonymous">
+
 <!-- Bootstrap CSS from CDN -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
@@ -86,6 +88,14 @@
               </a>
             </li>
             <li class="sidebar-item">
+              <a class="sidebar-link" href="{%url 'gender'%}" aria-expanded="false">
+                <span>
+                  <i class="gender-icon">&#9903;</i>
+                </span>
+                <span class="hide-menu">gender</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
               <a class="sidebar-link" href="{%url 'adminproduct'%}" aria-expanded="false">
                 <span>
                   <i class="ti ti-shirt"></i>
@@ -111,6 +121,14 @@
                   <i class="ti ti-mood-happy"></i>
                 </span>
                 <span class="hide-menu">Users</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="{%url 'reviews'%}" aria-expanded="false">
+                <span>
+                  <i class="ti ti-mood-happy"></i>
+                </span>
+                <span class="hide-menu">Reviews</span>
               </a>
             </li>
            
@@ -234,80 +252,76 @@
                   </div>
                 </div>
               </div>
-              <div class="col-lg-12">
-                <!-- Monthly Earnings -->
-                
-                  <div id="earning"></div>
+              <div class="col-lg-12 mt-4">
+                <!-- Payment Percentage Box with Progress Bars -->
+                <div class="card overflow-hidden">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-3 fw-semibold">Payment Percentage</h5>
+                        <div class="row">
+                            <div class="col-6">
+                                <h4 class="fw-semibold mb-3">COD</h4>
+                                <div class="progress">
+                                    <div class="progress-bar" role="progressbar" style="width: {{cod}}%;" aria-valuenow="{{cod}}" aria-valuemin="0" aria-valuemax="100">{{cod}}%</div>
+                                </div>
+                            </div>
+                            <div class="col-8">
+                                <h4 class="fw-semibold mb-3">Online Payments</h4>
+                                <div class="progress">
+                                  <div class="progress-bar" role="progressbar" style="width: {{ online_payment_percentage }}%;" aria-valuenow="{{ online_payment_percentage }}" aria-valuemin="0" aria-valuemax="100">{{ online_payment_percentage }}%</div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
+    </div>
         <div class="row">
           <div class="col-lg-4 d-flex align-items-stretch">
             <div class="card w-100">
               <div class="card-body p-4">
                 <div class="mb-4">
-                  <h5 class="card-title fw-semibold">Recent Transactions</h5>
+                  <h3 class="card-title fw-semibold">Transactions</h3>
                 </div>
                 
                 <ul class="timeline-widget mb-0 position-relative mb-n5">
-                  <li class="timeline-item d-flex position-relative overflow-hidden">
-                    <div class="timeline-time text-dark flex-shrink-0 text-end"></div>
-                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                      <span class="timeline-badge border-2 border border-primary flex-shrink-0 my-8"></span>
-                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                    </div>
-                    <div class="timeline-desc fs-3 text-dark mt-n1">Payment received from John Doe of $385.90</div>
-                  </li>
-                  <li class="timeline-item d-flex position-relative overflow-hidden">
-                    <div class="timeline-time text-dark flex-shrink-0 text-end">10:00 am</div>
-                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                      <span class="timeline-badge border-2 border border-info flex-shrink-0 my-8"></span>
-                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                    </div>
-                    <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New sale recorded <a
-                        href="javascript:void(0)" class="text-primary d-block fw-normal">#ML-3467</a>
-                    </div>
-                  </li>
-                  <li class="timeline-item d-flex position-relative overflow-hidden">
-                    <div class="timeline-time text-dark flex-shrink-0 text-end">12:00 am</div>
-                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                      <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
-                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                    </div>
-                    <div class="timeline-desc fs-3 text-dark mt-n1">Payment was made of $64.95 to Michael</div>
-                  </li>
-                  <li class="timeline-item d-flex position-relative overflow-hidden">
-                    <div class="timeline-time text-dark flex-shrink-0 text-end">09:30 am</div>
-                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                      <span class="timeline-badge border-2 border border-warning flex-shrink-0 my-8"></span>
-                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                    </div>
-                    <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New sale recorded <a
-                        href="javascript:void(0)" class="text-primary d-block fw-normal">#ML-3467</a>
-                    </div>
-                  </li>
-                  <li class="timeline-item d-flex position-relative overflow-hidden">
-                    <div class="timeline-time text-dark flex-shrink-0 text-end">09:30 am</div>
-                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                      <span class="timeline-badge border-2 border border-danger flex-shrink-0 my-8"></span>
-                      <span class="timeline-badge-border d-block flex-shrink-0"></span>
-                    </div>
-                    <div class="timeline-desc fs-3 text-dark mt-n1 fw-semibold">New arrival recorded 
-                    </div>
-                  </li>
-                  <li class="timeline-item d-flex position-relative overflow-hidden">
-                    <div class="timeline-time text-dark flex-shrink-0 text-end">12:00 am</div>
-                    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
-                      <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
-                    </div>
-                    <div class="timeline-desc fs-3 text-dark mt-n1">Payment Done</div>
-                  </li>
+                  <h5>Online Transactions</h5>
+<ul>
+  {% for transaction in paid_transactions %}
+  <li class="timeline-item d-flex position-relative overflow-hidden">
+    <div class="timeline-time text-dark flex-shrink-0 text-end">{{transaction.created_at}}</div>
+    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+      <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
+    </div>
+    <div class="timeline-desc fs-3 text-dark mt-0">{{transaction.payment}}</div>
+    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+      <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
+    </div>
+    <div class="timeline-desc fs-3 text-dark mt-0">{{transaction.user}}</div>
+  </li>
+  {% endfor %}
+</ul>
+
+<!-- Display transactions for COD orders -->
+<h5>COD Transactions</h5>
+<ul>
+  {% for transaction in transactions_cod %}
+  <li class="timeline-item d-flex position-relative overflow-hidden">
+    <div class="timeline-time text-dark flex-shrink-0 text-end">{{transaction.created_at}}</div>
+    <div class="timeline-badge-wrap d-flex flex-column align-items-center">
+      <span class="timeline-badge border-2 border border-success flex-shrink-0 my-8"></span>
+    </div>
+    <div class="timeline-desc fs-3 text-dark mt-n1">{{transaction.payment}}</div>
+  </li>
+  {% endfor %}
+</ul>
+                  
                 </ul>
               </div>
             </div>
           </div>
+
           <div class="col-lg-8 d-flex align-items-stretch  overflow-hidden">
             <div class="card w-100">
               <div class="card-body p-4">
@@ -347,11 +361,11 @@
                         </td>
                         <td class="border-bottom-0">
                           <div class="d-flex align-items-center gap-2">
-                            {%if i.order_status_id == 1%}
+                            {%if i.order_status == "Processing"%}
                              <span class="badge bg-primary rounded-3 fw-semibold">Processing</span> 
-                             {%elif i.order_status_id == 2%}
+                             {%elif i.order_status == "Delivered"%}
                             <span class="badge bg-success rounded-3 fw-semibold">Delivered</span>
-                            {%elif i.order_status_id == 3%}
+                            {%elif i.order_status_id == "Returned"%}
                             <span class="badge bg-danger rounded-3 fw-semibold">Returned</span>
                             {%else%}
                             <span class="badge bg-danger rounded-3 fw-semibold">Cancelled</span>
@@ -371,101 +385,8 @@
             </div>
           </div>
         </div>
-        <div class="row">
-          <div class="col-sm-6 col-xl-3">
-            <div class="card overflow-hidden rounded-2">
-              <div class="position-relative">
-                <a href="javascript:void(0)"><img src="../assets/images/products/s4.jpg" class="card-img-top rounded-0" alt="..."></a>
-                <a href="javascript:void(0)" class="bg-primary rounded-circle p-2 text-white d-inline-flex position-absolute bottom-0 end-0 mb-n3 me-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Cart"><i class="ti ti-basket fs-4"></i></a>                      </div>
-              <div class="card-body pt-3 p-4">
-                <h6 class="fw-semibold fs-4">Boat Headphone</h6>
-                <div class="d-flex align-items-center justify-content-between">
-                  <h6 class="fw-semibold fs-4 mb-0">$50 <span class="ms-2 fw-normal text-muted fs-3"><del>$65</del></span></h6>
-                  <ul class="list-unstyled d-flex align-items-center mb-0">
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-         
-          <div class="col-sm-6 col-xl-3">
-            <div class="card overflow-hidden rounded-2">
-              <div class="position-relative">
-                <a href="javascript:void(0)"><img src="../assets/images/products/s7.jpg" class="card-img-top rounded-0" alt="..."></a>
-                <a href="javascript:void(0)" class="bg-primary rounded-circle p-2 text-white d-inline-flex position-absolute bottom-0 end-0 mb-n3 me-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Cart"><i class="ti ti-basket fs-4"></i></a>                      </div>
-              <div class="card-body pt-3 p-4">
-                <h6 class="fw-semibold fs-4">Red Valvet Dress</h6>
-                <div class="d-flex align-items-center justify-content-between">
-                  <h6 class="fw-semibold fs-4 mb-0">$150 <span class="ms-2 fw-normal text-muted fs-3"><del>$200</del></span></h6>
-                  <ul class="list-unstyled d-flex align-items-center mb-0">
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
+      
 
-          <div class="col-sm-6 col-xl-3">
-            <div class="card overflow-hidden rounded-2">
-              <div class="position-relative">
-                <a href="javascript:void(0)"><img src="../assets/images/products/s11.jpg" class="card-img-top rounded-0" alt="..."></a>
-                <a href="javascript:void(0)" class="bg-primary rounded-circle p-2 text-white d-inline-flex position-absolute bottom-0 end-0 mb-n3 me-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Cart"><i class="ti ti-basket fs-4"></i></a>                      </div>
-              <div class="card-body pt-3 p-4">
-                <h6 class="fw-semibold fs-4">Cute Soft Teddybear</h6>
-                <div class="d-flex align-items-center justify-content-between">
-                  <h6 class="fw-semibold fs-4 mb-0">$285 <span class="ms-2 fw-normal text-muted fs-3"><del>$345</del></span></h6>
-                  <ul class="list-unstyled d-flex align-items-center mb-0">
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="me-1" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                    <li><a class="" href="javascript:void(0)"><i class="ti ti-star text-warning"></i></a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> 
-  {% comment %} <div>
-    <canvas id="myChart"></canvas>
-  </div>
-  
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <script>
-    const ctx = document.getElementById('myChart');
-  
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: {{labels|safe}},
-        datasets: [{
-          label: '# of Votes',
-          data: {{data|safe}},
-          borderWidth: 1
-        }]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-  </script> {% endcomment %}
    
  
  

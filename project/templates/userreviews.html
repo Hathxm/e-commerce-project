@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	{% load static %}
+<title>Steetrends</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="Colo Shop Template">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" type="text/css" href="{% static "styles/userreviews.css" %}">
+
+</head>
+<body>
+    <div class="header">
+        <h1>User Suggestions and Messages</h1>
+    </div>
+    <div class="card-container">
+        {%for data in data%}
+    <figure class="snip1390">
+    
+    <figcaption>
+      <h2>{{data.first_name}}</h2>
+      <h4>{{data.last_name}}</h4>
+      <h5>{{data.email}}</h5>
+      <blockquote>{{data.message}}</blockquote>
+    </figcaption>
+    
+  </figure>
+  {%endfor%}
+ 
+</div>
+</body>
+
+
+
+  <script>
+    /* Demo purposes only */
+$(".hover").mouseleave(
+    function () {
+      $(this).removeClass("hover");
+    }
+  );
+  
+  </script>
+  </html>

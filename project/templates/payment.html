@@ -230,11 +230,11 @@
                 </div>
             <div class="collapse navbar-collapse" id="nav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 ml-4">
-                    {% comment %} <li class="nav-item"> <a class="nav-link active" href="#"><b>New</b></a> </li> {% endcomment %}
+               
                     <li class="nav-item"> <a class="nav-link" href="{%url 'men'%}"><b>Men</b></a> </li>
                     <li class="nav-item"> <a class="nav-link" href="{%url 'women'%}"><b>Women</b></a> </li>
                     <li class="nav-item"> <a class="nav-link" href="{%url 'accessories'%}"><b>Accessories</b></a> </li>
-                    {% comment %} <li class="nav-item"> <a class="nav-link" href="#">Special Offers</a> </li> {% endcomment %}
+                   
                 </ul>
                 <ul class="d-flex mb-0 ml-5">
                     <li class="nav-item pe-3">
@@ -304,7 +304,6 @@
                     <div class="btn btn-primary red_button">Apply</div>
                 </div>
                 <div class="d-flex flex-column b-bottom">
-                   
                     <div class="d-flex justify-content-between"> <small class="text-muted">Total Amount</small>
                         <p id="total">{{total}}</p>
                     </div>
@@ -317,26 +316,27 @@
             <p class="fw-bold pt-lg-0 pt-4 pb-2"></p>
             <div class="card px-md-3 px-2 pt-4">
                 <div class="unregistered mb-4"> <span class="py-1">Coupon Details</span> </div>
-                <div class="d-flex  pb-3 "> <small class="text-muted text-center"><b>Used Coupons</b></small>
-                </div>
-                <div class="d-flex justify-content-between b-bottom"> 
-                    
-                </div>
-                {%for coupon in usedcoupons%}
+                <div class="d-flex pb-3 "> <small class="text-muted text-center"><b>Used Coupons</b></small></div>
+                {% for coupon in usedcoupons %}
                 <div class="d-flex flex-column b-bottom">
-                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">{{coupon.coupon.name}}</small>
-                        <p>{{coupon.coupon.discount_percentage}}%</p>
+                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">{{ coupon.coupon.name }}</small>
+                        <p>{{ coupon.coupon.discount_percentage }}%</p>
                     </div>
-                    {%endfor%}
-                    {% comment %} <div class="d-flex justify-content-between pb-3"> <small class="text-muted">Additional Service</small>
-                        <p>$22</p>
-                    </div>
-                    <div class="d-flex justify-content-between"> <small class="text-muted">Total Amount</small>
-                        <p id="total">{{total}}</p>
-                    </div> {% endcomment %}
                 </div>
+                {% endfor %}
+
+                <div class="d-flex pb-3 "> <small class="text-muted text-center"><b>All Coupons</b></small></div>
+                {% for coupon in coupons %}
+                <div class="d-flex flex-column b-bottom">
+                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">{{ coupon.name }}</small>
+                        <p>{{ coupon.discount_percentage }}%</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
                
-                <div class="d-flex  pb-3 mt-2 "> <small class="text-muted text-center" ><b>All Coupons</b></small>
+                {% comment %} <div class="d-flex  pb-3 mt-2 "> <small class="text-muted text-center" ><b>All Coupons</b></small>
                 </div>
                 <div class="d-flex justify-content-between b-bottom"> 
                     
@@ -347,16 +347,11 @@
                         <p>{{coupon.discount_percentage}}%</p>
                     </div>
                     {%endfor%}
-                    {% comment %} <div class="d-flex justify-content-between pb-3"> <small class="text-muted">Additional Service</small>
-                        <p>$22</p>
-                    </div>
-                    <div class="d-flex justify-content-between"> <small class="text-muted">Total Amount</small>
-                        <p id="total">{{total}}</p>
-                    </div> {% endcomment %}
+                    
                 </div>
                
             </div>
-        </div>
+        </div> {% endcomment %}
 
            
             
@@ -453,7 +448,7 @@
 <script>
     var options = {
         "key": "rzp_test_2Ppy65nLGqi9SS", // Enter the Key ID generated from the Dashboard
-        "amount": "50000",
+        "amount": "{{to_pay}}",
         "currency": "INR",
         "name": "sneakerstreet",
         "description": "Purchases",

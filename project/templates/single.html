@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	{%load static%}
-<title>Single Product</title>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="description" content="Colo Shop Template">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+{% extends "base.html" %}
+{% load static %}
+
+	{% block content %}
 <link rel="stylesheet" type="text/css" href="{% static "styles/bootstrap4/bootstrap.min.css" %}">
 <link href="{% static "plugins/font-awesome-4.7.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.css" %}">
@@ -17,126 +12,13 @@
 <link rel="stylesheet" type="text/css" href="{% static "styles/single_styles.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "styles/single_responsive.css" %}">
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
- {% comment %} <link rel="stylesheet" type="text/css" href="{% static "styles/bootstrap4/bootstrap.min.css" %}"> 
+ <link rel="stylesheet" type="text/css" href="{% static "styles/bootstrap4/bootstrap.min.css" %}"> 
 <link href="{% static "plugins/font-awesome-4.7.0/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/owl.theme.default.css" %}">
-<link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}">{% endcomment %} 
+<link rel="stylesheet" type="text/css" href="{% static "plugins/OwlCarousel2-2.2.1/animate.css" %}">
 <link rel="stylesheet" type="text/css" href="{% static "styles/main_styles.css" %}">
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-</head>
-<style>
-	
-    .heart-icon {
-        margin-left: 10px; /* Adjust the margin as needed */
-        border: 1px solid #ccc; /* Define the border properties */
-        padding: 5px; /* Optional: Add padding for a cleaner look */
-        border-radius: 5px; /* Optional: Add border-radius for rounded corners */
-    }
-</style>
-<body>
-
-<div class="super_container">
-
-	<!-- Header -->
-
-	<header class="header trans_300">
-
-		<!-- Top Navigation -->
-
-		<div class="top_nav">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6">
-						
-					</div>
-					<div class="col-md-6 text-right">
-						<div class="top_nav_right">
-							<ul class="top_nav_menu">
-
-								<!-- Currency / Language / My Account -->
-
-							
-								
-								<li class="account">
-									<a href="#">
-										My Account
-										<i class="fa fa-angle-down"></i>
-									</a>
-									<ul class="account_selection">
-										<li><a href="{%url 'logout'%}"><i class="fa fa-sign-in" aria-hidden="true"></i>Logout</a></li>
-									</ul>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Main Navigation -->
-
-		<div class="main_nav_container">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12 text-right">
-						<div class="logo_container">
-							<a href="#">Stree<span>trends</span></a>
-						</div>
-						<nav class="navbar">
-							<ul class="navbar_menu">
-								<li><a href="{%url 'shop'%}">home</a></li>
-								<li><a href="#">About</a></li>
-								<li><a href="{%url 'contact'%}">contact</a></li>
-							</ul>
-							<ul class="navbar_user">
-							
-								<li><a href="#"><i class="fa fa-user" aria-hidden="true"></i></a></li>
-								<li class="checkout">
-									<a href="{%url 'viewcart'%}">
-										<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-									</a>
-								</li>
-							</ul>
-							<div class="hamburger_container">
-								<i class="fa fa-bars" aria-hidden="true"></i>
-							</div>
-						</nav>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	</header>
-
-	<div class="fs_menu_overlay"></div>
-
-	<!-- Hamburger Menu -->
-
-	<div class="hamburger_menu">
-		<div class="hamburger_close"><i class="fa fa-times" aria-hidden="true"></i></div>
-		<div class="hamburger_menu_content text-right">
-			<ul class="menu_top_nav">
-				
-			
-				<li class="menu_item has-children">
-					<a href="#">
-						My Account
-						<i class="fa fa-angle-down"></i>
-					</a>
-					<ul class="menu_selection">
-						<li><a href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>Logout</a></li>
-					</ul>
-				</li>
-				<li class="menu_item"><a href="#">home</a></li>
-				<li class="menu_item"><a href="#">shop</a></li>
-				<li class="menu_item"><a href="#">promotion</a></li>
-				<li class="menu_item"><a href="#">pages</a></li>
-				<li class="menu_item"><a href="#">blog</a></li>
-				<li class="menu_item"><a href="#">contact</a></li>
-			</ul>
-		</div>
-	</div>
 
 	<div class="container single_product_container">
 		<div class="row">
@@ -213,26 +95,10 @@
 
 					
 
-					{% comment %} <ul class="star_rating">
-						<li><i class="fa fa-star" aria-hidden="true"></i></li>
-						<li><i class="fa fa-star" aria-hidden="true"></i></li>
-						<li><i class="fa fa-star" aria-hidden="true"></i></li>
-						<li><i class="fa fa-star" aria-hidden="true"></i></li>
-						<li><i class="fa fa-star-o" aria-hidden="true"></i></li>
-					</ul> {% endcomment %} 
+					
 					<form method="post">
 						{% csrf_token %}
-					{% comment %} <div class="product_size">
-						<span>Select Size:</span>
-							<ul>
-								{% for i in size %}
-									<label>
-										<input type="radio" name="size" value="{{ i.id }}">
-										<span class="size-option">{{ i.size }}</span>
-									</label>
-								{% endfor %}
-							</ul>
-					</div> {% endcomment %}
+					
 					<div class="product_color">
 						<span>Select size:</span>
 						<ul>
@@ -243,13 +109,7 @@
 							</select>
 						</ul>
 					</div>
-					{% comment %} <div class="quantity d-flex flex-column flex-sm-row align-items-sm-center">
-						<span>Quantity:</span>
-						<div class="quantity_selector">
-							<a id="decrement" class="btn red_button">-</a>
-							<input type="text" id="quantity_value" class="form-control custom-number-input" name="quantity" value="1" min="1">
-							<a id="increment" class=" btn red_button">+</a>
-						</div>  {% endcomment %}
+					
 						<div class="quantity d-flex flex-column flex-sm-row align-items-sm-center">
 							<span>Quantity:</span>
 							<div class="quantity_selector">
@@ -311,6 +171,7 @@
         });
     });
 </script>
+
 	<script>
 		
 
@@ -499,65 +360,7 @@
 
 								<!-- User Review -->
 
-								{% comment %} <div class="user_review_container d-flex flex-column flex-sm-row">
-									<div class="user">
-										<div class="user_pic"></div>
-										<div class="user_rating">
-											<ul class="star_rating">
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star-o" aria-hidden="true"></i></li>
-											</ul>
-										</div>
-									</div>
-									<div class="review">
-										<div class="review_date">27 Aug 2016</div>
-										<div class="user_name">Brandon William</div>
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-									</div>
-								</div>
-							</div> {% endcomment %}
-
-							<!-- Add Review -->
-{% comment %} 
-							<div class="col-lg-6 add_review_col">
-
-								<div class="add_review">
-									<form id="review_form" action="post">
-										<div>
-											<h1>Add Review</h1>
-											<input id="review_name" class="form_input input_name" type="text" name="name" placeholder="Name*" required="required" data-error="Name is required.">
-											<input id="review_email" class="form_input input_email" type="email" name="email" placeholder="Email*" required="required" data-error="Valid email is required.">
-										</div>
-										<div>
-											<h1>Your Rating:</h1>
-											<ul class="user_star_rating">
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star-o" aria-hidden="true"></i></li>
-											</ul>
-											<textarea id="review_message" class="input_review" name="message"  placeholder="Your Review" rows="4" required data-error="Please, leave us a review."></textarea>
-										</div>
-										<div class="text-left text-sm-right">
-											<button id="review_submit" type="submit" class="red_button review_submit_btn trans_300" value="Submit">submit</button>
-										</div>
-									</form>
-								</div>
-
-							</div>
-
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-
-	</div> {% endcomment %}
+							
 
 	<!-- Benefit -->
 
@@ -677,3 +480,4 @@
 </body>
 
 </html>
+{% endblock content %}

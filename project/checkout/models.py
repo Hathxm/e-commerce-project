@@ -33,15 +33,6 @@ class district(models.Model):
 
     
 
-class payment_method(models.Model):
-    choice=[('Paid','Paid'),
-            ('COD','COD'),
-            ]
-    
-    payment=models.CharField( max_length=10,choices=choice)
-
-    def __str__(self):
-        return self.payment
 class address(models.Model):
     user=models.ForeignKey(customuser, on_delete=models.CASCADE) 
     full_name=models.CharField( max_length=50)
@@ -53,19 +44,7 @@ class address(models.Model):
     def __str__(self) -> str:
         return self.user.username
     
-class order_status(models.Model):
-    choice=[
-        ('Processing','Processing'),
-        ('Delivered','Delivered'),
-        ('Cancelled','Cancelled'),
-        ('Retuned','Returned'),
 
-
-            ]
-    status=models.CharField(choices=choice,max_length=20)
-
-    def __str__(self) -> str:
-        return self.status
     
 class coupon(models.Model):
     name=models.CharField(max_length=7)
@@ -89,8 +68,8 @@ class Order(models.Model):
     user = models.ForeignKey(customuser, on_delete=models.CASCADE)
     items=models.ForeignKey(ordereditems, on_delete=models.CASCADE)
     address=models.ForeignKey(address,on_delete=models.CASCADE,null=True)
-    payment=models.ForeignKey(payment_method, on_delete=models.SET_NULL,null=True)
-    order_status=models.ForeignKey(order_status, on_delete=models.CASCADE,default=1)
+    payment=models.CharField(max_length=50)
+    order_status=models.CharField(max_length=50)
     total=models.BigIntegerField(null=True)
     created_at = models.DateTimeField(default=timezone.now)
     coupon=models.ForeignKey(coupon,on_delete=models.CASCADE,null=True,default=None,blank=True)

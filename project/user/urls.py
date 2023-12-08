@@ -26,6 +26,7 @@ urlpatterns = [
     path('addtowishlist/<int:id>',views.add_to_wishlistt ,name='addtowishlist'),
     path('dltfrmwishlist/<int:id>',views.dlt_from_wishlist ,name='dltfrmwishlist'),
     path('wishlist',views.view_wishlist,name='wishlist'),
+    path('addtocart/<int:id>',views.add_to_cart ,name='addtocart'),
     path('update_qty',views.qty_update,name='update_qty'),
     path('dlt',views.delete,name='dlt_'),
     path('add',views.add,name='add_'),

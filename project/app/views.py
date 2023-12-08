@@ -11,7 +11,7 @@ from user.models import *
 from django.db.models import Count
 from django.db.models.functions import TruncMonth
 from datetime import datetime, timedelta
-from django.db.models import Sum
+from django.db.models import Count, Sum, Case, When, Value, IntegerField, F, ExpressionWrapper, fields
 from django.utils import timezone
 from .resources import OrderResource
 from xhtml2pdf import pisa
@@ -29,8 +29,8 @@ def admin_login(request):
 
         if user is not None and user.is_superuser:
             login(request,user)
-            wallet.objects.create(user=user)
-            wishlist.objects.create(user=user)
+            wallet.objects.get_or_create (user=user)
+            wishlist.objects.get_or_create(user=user)
             return redirect(admin_dashboard)
         else:
             messages.info(request,'wrong credintials this page is not available for users')
@@ -39,20 +39,59 @@ def admin_login(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=admin_login)
 def admin_dashboard(request): 
-    if request.user.is_superuser:
+     if request.user.is_superuser:
         selected_year = timezone.now().year
-        if request.method=="POST": 
+        if request.method == "POST": 
             selected_year = int(request.POST.get('year'))
-        queryset = Order.objects.filter(created_at__year=selected_year).annotate(month=TruncMonth('created_at')).values('month').annotate(order_count=Count('id'))
-        total_sales=Order.objects.filter(created_at__year=selected_year).aggregate(total_amount=Sum('total'))['total_amount']
+
+        # Filter orders based on the selected year
+        orders_query = Order.objects.filter(created_at__year=selected_year)
+
+        # Query to get monthly order counts
+        queryset = orders_query.annotate(month=TruncMonth('created_at')).values('month').annotate(order_count=Count('id'))
+
+        # Total sales for the selected year
+        total_sales = orders_query.aggregate(total_amount=Sum('total'))['total_amount']
         if total_sales is None:
-            total_sales='No orders made in this year'
+            total_sales = 'No orders made in this year'
+
+        # Calculate the percentage of online orders
+        total_orders = orders_query.aggregate(total_orders=Count('id'))['total_orders']
+        online_payment_percentage = 0.0
+        if total_orders > 0:
+            online_payment_percentage = orders_query.filter(payment="Paid").count() * 100 / total_orders
+
+        # Calculate the percentage of COD orders
+        cod_percentage = 0.0
+        if total_orders > 0:
+            cod_percentage = orders_query.filter(payment="COD").count() * 100 / total_orders
+
+        paid_transactions = orders_query.filter(Q(payment="Paid") & (Q(order_status="Delivered") | Q(order_status="Processing")))
+        cod_transactions = orders_query.filter(payment='COD',order_status="Delivered")
         labels = [entry['month'].strftime('%B %Y') for entry in queryset]
         data = [entry['order_count'] for entry in queryset]
-        orders=Order.objects.all().order_by('-created_at')
 
-        return render(request, 'adminindex.html', {'labels': labels,'data': data,'selected_year':selected_year,'total':total_sales,'recent_orders':orders})
-    return redirect(admin_login)
+        # Get recent orders (all orders for simplicity; adjust as needed)
+        recent_orders = orders_query.order_by('-created_at')
+
+        return render(request, 'adminindex.html', {
+            'labels': labels,
+            'data': data,
+            'selected_year': selected_year,
+            'total': total_sales,
+            'recent_orders': recent_orders,
+            'online_payment_percentage': online_payment_percentage,
+            'cod':cod_percentage,
+            'paid_transactions': paid_transactions,
+            'cod_transactions': cod_transactions,
+        })
+     return redirect(admin_login)
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=admin_login)
+def userreviews(request):
+    data=tocontact.objects.all()
+    return render(request,'userreviews.html',{'data':data})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=admin_login)
@@ -86,6 +125,13 @@ def admin_coupons(request):
         return render(request,'admincoupons.html',{'data':data})
     return redirect(admin_login)
 
+def admin_genders(request):
+    if request.user.is_superuser:
+     data=gender.objects.all()
+     return render(request,'admingender.html',{'sex':data})
+    return redirect(admin_login)
+    
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=admin_login)
 def admin_products(request):
@@ -115,15 +161,15 @@ def admin_products(request):
              disc_price=0
          elif len(name)>20:
              messages.warning(request,"choose a shorter name for the product")
-         else:
-             new_pro_gender_instance=gender.objects.get(id=new_pro_gender)
-             category_instance = category.objects.get(id=new_category)
-             brand_instance = brand.objects.get(id=new_brand)
-             new_product=product.objects.create(img=img,name=name,rearimg=rearimg,frontimg=frontimg,category=category_instance,brand=brand_instance,price=price,disc_price=disc_price,gender=new_pro_gender_instance,in_stock=new_stock,discription=discription)
-             for size in new_size:
-               new_product.size.add(size)
-               new_product.save()
-             return redirect(admin_products)
+        
+         new_pro_gender_instance=gender.objects.get(id=new_pro_gender)
+         category_instance = category.objects.get(id=new_category)
+         brand_instance = brand.objects.get(id=new_brand)
+         new_product=product.objects.create(img=img,name=name,rearimg=rearimg,frontimg=frontimg,category=category_instance,brand=brand_instance,price=price,disc_price=disc_price,gender=new_pro_gender_instance,in_stock=new_stock,discription=discription)
+         for size in new_size:
+           new_product.size.add(size)
+         new_product.save()
+         return redirect(admin_products)
              
         
          
@@ -149,6 +195,15 @@ def add_brand(request):
             brand.objects.create(name=newbrand)
             return redirect(admin_brands)
          return render(request,'add_brand.html')
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=admin_login)
+def add_gender(request):
+         if request.method=='POST':
+            sex=request.POST['addcategoryfield']
+            gender.objects.create(gender=sex)
+            return redirect(admin_genders)
+         return render(request,'add_gender.html')
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -324,7 +379,7 @@ def user_orders(request,id):
 def delivered(request,id):
     if request.user.is_superuser:
         order=Order.objects.get(id=id) 
-        status = order_status.objects.get(id=2)
+        status = "Delivered"
         order.order_status = status
         order.save()
         return redirect(user_orders,order.user.id)
@@ -372,7 +427,8 @@ def sales_report(request):
                 return render(request, 'salesreport.html', {'orders': orders, 'total_sales': total_sales})          
     return render(request,'salesreport.html')
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=admin_login)
 def cat_off(request,id):
     categoryy=category.objects.get(id=id)
     if request.method == 'POST':
@@ -390,29 +446,39 @@ def cat_off(request,id):
             messages.warning(request,"discount percentage cannot be greater than 100 or below 0")
     return render(request,'admin_catoff.html')
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=admin_login)
 def delete_brand(request,id):
     brands=brand.objects.get(id=id)
     brands.is_deleted=True
     brands.save()
     return redirect(admin_brands)
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=admin_login)
 def undelete_brand(request,id):
     brands=brand.objects.get(id=id)
     brands.is_deleted=False
     brands.save()
     return redirect(admin_brands)
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=admin_login)
 def delete_coupons(request,id):
     coupons=coupon.objects.get(id=id)
     coupons.is_deleted=True
     coupons.save()
     return redirect(admin_coupons)
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=admin_login)
 def undelete_coupons(request,id):
     coupons=coupon.objects.get(id=id)
     coupons.is_deleted=False
     coupons.save()
     return redirect(admin_coupons)
+
+
 
 
    

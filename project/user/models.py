@@ -3,18 +3,6 @@ from app.models import product,customuser,Size
 
 # Create your models here.
 
-class item_status(models.Model):
-     ORDER_STATUS_CHOICES = [
-        ('Cancelled','Cancelled'),
-        ('Return','Returned'),
-
-
-    ]
-     status=models.CharField(choices=ORDER_STATUS_CHOICES, max_length=10)
-     
-     def __str__(self) -> str:
-        return self.status
-    
 class cartitem(models.Model): 
     user=models.ForeignKey(customuser, on_delete=models.CASCADE,null=True)
     product=models.ForeignKey(product, on_delete=models.CASCADE)
@@ -34,6 +22,19 @@ class ordereditems(models.Model):
 
     def __str__(self) -> str:
         return self.user.username
+    
+class tocontact(models.Model):
+    first_name=models.CharField(max_length=50)
+    last_name=models.CharField(max_length=50)
+    email=models.EmailField( max_length=254)
+    message=models.TextField()
+
+    def __str__(self) -> str:
+        return self.first_name 
+    
+
+
+
     
     
 

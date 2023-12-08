@@ -77,8 +77,8 @@
 			</div>
 							<nav class="navbar">
 								<ul class="navbar_menu">
-									<li><a href="{%url 'landing-pg'%}">home</a></li>								
-									<li><a href="#">About</a></li>			
+									<li><a href="{%url 'shop'%}">home</a></li>								
+									<li><a href="{%url 'landing-pg'%}">About</a></li>			
 									<li><a href="{%url 'contact'%}">contact</a></li>
 								</ul>
 								
@@ -179,7 +179,7 @@
 
 				<div class="breadcrumbs d-flex flex-row align-items-center">
 					<ul>
-						<li><a href="{%url 'landing-pg'%}">Home</a></li>
+						<li><a href="{%url 'shop'%}">Home</a></li>
 						<li class="active"><a href="{%url 'contact'%}"><i class="fa fa-angle-right" aria-hidden="true"></i>Contact</a></li>
 					</ul>
 				</div>
@@ -191,6 +191,9 @@
 
 		<div class="row">
 			<div class="col">
+				<div class="text-center">
+				{% for message in messages  %}<p>{{message}}</p>{% endfor %}
+				<div>
 				<div id="google_map">
 					<div class="map_container">
 						<div id="map"></div>
@@ -238,15 +241,18 @@
 				<div class="get_in_touch_contents">
 					<h1>Get In Touch With Us!</h1>
 					<p>Fill out the form below to recieve a free and confidential.</p>
-					<form action="post">
+					
+					<form method="post">
+						{% csrf_token %}
 						<div>
-							<input id="input_name" class="form_input input_name input_ph" type="text" name="name" placeholder="Name" required="required" data-error="Name is required.">
+							<input id="input_name" class="form_input input_name input_ph" type="text" name="firstname" placeholder="Name" required="required" data-error="Name is required.">
+							<input id="input_name" class="form_input input_name input_ph" type="text" name="lastname" placeholder="Name" required="required" data-error="Name is required.">
 							<input id="input_email" class="form_input input_email input_ph" type="email" name="email" placeholder="Email" required="required" data-error="Valid email is required.">
-							<input id="input_website" class="form_input input_website input_ph" type="url" name="name" placeholder="Website" required="required" data-error="Name is required.">
 							<textarea id="input_message" class="input_ph input_message" name="message"  placeholder="Message" rows="3" required data-error="Please, write us a message."></textarea>
 						</div>
 						<div>
 							<button id="review_submit" type="submit" class="red_button message_submit_btn trans_300" value="Submit">send message</button>
+						</form>
 						</div>
 					</form>
 				</div>
@@ -323,10 +329,10 @@
 <script src="{% static "plugins/OwlCarousel2-2.2.1/owl.carousel.js" %}"></script>
 <script src="{% static "plugins/easing/easing.js" %}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyCIwF204lFZg1y4kPSIhKaHEXMLYxxuMhA"></script>
-{% comment %} <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script> {% endcomment %}
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
 <script src="{% static "plugins/jquery-ui-1.12.1.custom/jquery-ui.js" %}"></script>
 <script src="{% static "js/contact_custom.js" %}"></script>
-{% comment %} <script>
+ <script>
 	function initMap() {
 	  // Create a map object and specify the DOM element for the map.
 	  const map = new google.maps.Map(document.getElementById("map"), {
@@ -341,7 +347,7 @@
 		title: "Kochi, India",
 	  });
 	}
-  </script> {% endcomment %}
+  </script> 
   
 </body>
 

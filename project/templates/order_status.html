@@ -1,10 +1,9 @@
  {%extends 'checkout.html'%} 
-
-     {% load static %}
-
+ {% load static %}
 
 
-              {%block order_status%}		
+
+{%block order_status%}		
 <link rel="stylesheet" type="text/css" href="{% static "styles/order_status.css" %}">
 <div class="main_slider" style="margin-top:200px;">
                <div class="container">
@@ -45,7 +44,7 @@
                             
                         </td>
                         <td data-th="Due Date">
-                            {%if item.order_status_id == 1 %}
+                            {%if item.order_status == "Processing" %}
                             <a href="{%url 'return_order' item.id%}"class="delete-link"><button class="btn btn-primary btn-sm">Return Order</button></a>
                             <a href="{%url 'cancel_order' item.id%}"class="cancel-link"><button class="btn btn-primary btn-sm">Cancel Order</button></a>
                             {%endif%}
@@ -90,5 +89,6 @@
         });
     });
 </script>
-              {% endblock %}
+{% endblock %}
+
      

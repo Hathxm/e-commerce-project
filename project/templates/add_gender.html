@@ -1,0 +1,17 @@
+{% extends "add_category.html" %}
+{% block catoff %}
+<h2 class="text-center">Genders</h2>
+<form method="POST" action="">
+    {% csrf_token %}
+    <div class="form-group">
+        <select class="form-control" id="inputField" name="addcategoryfield">
+            <option value="men">Men</option>
+            <option value="women">Women</option>
+        </select>
+    </div>
+    <!-- Add more form fields as needed -->
+    <div class="text-center">
+        <button type="submit" class="btn btn-success mt-2">Add</button>
+    </div>
+</form>
+{% endblock %}
