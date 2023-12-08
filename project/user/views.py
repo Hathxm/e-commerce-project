@@ -14,7 +14,7 @@ from django.db.models import Sum,Count
 from django.core.mail import send_mail
 from random import randint
 from django.contrib.auth.hashers import make_password
-from django.db.models import F
+from django.db.models import  ExpressionWrapper, F, FloatField
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.http import JsonResponse
@@ -206,13 +206,13 @@ def womens(request):
        
 
     if sort_option == 'low_to_high':
-        x = x.order_by('price')
-        y = y.order_by('price')
-        z = z.order_by('price')
+     x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+     y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+     z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
     elif sort_option == 'high_to_low':
-        x = x.order_by('-price')
-        y = y.order_by('-price')
-        z = z.order_by('-price')
+     x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+     y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+     z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
 
     wishlist_obj = wishlist.objects.get(user=user)
     wish = wishlist_obj.items.all()
@@ -240,13 +240,13 @@ def mens(request):
        z = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
 
      if sort_option == 'low_to_high':
-        x = x.order_by('price')
-        y = y.order_by('price')
-        z = z.order_by('price')
+      x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+      y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+      z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
      elif sort_option == 'high_to_low':
-        x = x.order_by('-price')
-        y = y.order_by('-price')
-        z = z.order_by('-price')
+      x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+      y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+      z = z.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
 
      wishlist_obj = wishlist.objects.get(user=user)
      wish = wishlist_obj.items.all()
@@ -268,11 +268,12 @@ def accessories(request):
             y=product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
 
        if sort_option == 'low_to_high':
-            x = x.order_by('price')
-            y = y.order_by('price')
+        x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+        y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()))
+        
        elif sort_option == 'high_to_low':
-            x = x.order_by('-price')
-            y = y.order_by('-price')
+        x = x.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
+        y = y.order_by(ExpressionWrapper(F('price') - F('disc_price'), output_field=FloatField()).desc())
             
        return render(request,'accessories.html',{'mens':x,'womens':y,'now':now})
     
