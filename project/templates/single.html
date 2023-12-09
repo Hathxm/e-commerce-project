@@ -90,7 +90,7 @@
 
 					
 
-					
+					{%block notlogedinusers%}
 					<form method="post">
 						{% csrf_token %}
 					
@@ -129,6 +129,7 @@
 							</div>
 						</div>
 					</form>
+					{%endblock%}
 					</div>
 				</div>
 			</div>
@@ -275,6 +276,7 @@
 										<div class="owl-carousel owl-theme product_slider">
 				
 											<!-- Slide 1 -->
+											{% block notlogedinuserss %}
 											{%for i in similar_products%}
 				
 											<div class="owl-item product_slider_item">
@@ -303,6 +305,7 @@
 										</a>
 										{% endfor %}
 									</div> 
+									{% endblock notlogedinuserss %}
 
 									<!-- Slider Navigation -->
 			

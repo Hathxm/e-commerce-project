@@ -27,6 +27,7 @@ from django.template.loader import render_to_string
 
 # Create your views here.
 def landing_page(request):
+    products=product.objects.all().order_by('-arrival_time')[:4]
     if request.method=="POST":
         firstname=request.POST['firstname']
         lastname=request.POST['lastname']
@@ -35,7 +36,7 @@ def landing_page(request):
         tocontact.objects.create(first_name=firstname,last_name=lastname,email=email,message=message)
         messages.info(request,"You will be contacted soon ..enjoy the shopping experience !")
         return redirect (landing_page)
-    return render(request,'userindex.html')
+    return render(request,'userindex.html',{'products':products})
 
 def contact(request):
     if request.method=="POST":
@@ -156,17 +157,15 @@ def user_login(request):
         
     return render(request,'user-login.html')
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-@login_required(login_url=user_login)
+
 def details(request,id):
     data=product.objects.get(id=id)
-    size=Size.objects.all()
-    similar_products=product.objects.filter(Q(category=data.category) & ~Q(id=data.id))
+    size=data.size.all()
+    similar_products=product.objects.filter(Q(category=data.category) & ~Q(id=data.id)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
 
-    if request.method=="POST":
-         return redirect(user_login)
 
-    return render(request,'single.html',{'data':data,'size':size,'similarproducts':similar_products})
+
+    return render(request,'details.html',{'data':data,'size':size,'similar_products':similar_products})
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=user_login)

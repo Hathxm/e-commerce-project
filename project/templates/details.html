@@ -1,0 +1,61 @@
+{%extends 'single.html'%}
+{%block notlogedinusers%}
+					
+					
+					<div class="product_color">
+						<span>Select size:</span>
+						<ul>
+							<select class="form-select border border-secondary" style="height: 30px; width: 50px; border-radius: 5px;" name="size" id="size">
+								{% for i in size %}
+									<option class="sizeoption" value="{{ i.id }}">{{ i.size }}</option>
+								{% endfor %}
+							</select>
+						</ul>
+					</div>
+					
+						<div class="quantity d-flex flex-column flex-sm-row align-items-sm-center">
+							<span>Quantity:</span>
+							<div class="quantity_selector">
+								<span class="minus red_button" id="decrement"><i class="fa fa-minus" aria-hidden="true"></i></span>
+								<input type="number" id="quantity_value" class="form-control custom-number-input" name="quantity" value="1" min="1">
+								<span class="plus red_button" id="increment"><i class="fa fa-plus" aria-hidden="true"></i></span>
+							</div>
+                            <a href="{%url 'userlogin'%}">
+							<button class=" btn btn-success ml-3">Add To Cart</button>
+                            </a>
+							<div class="heart-icon d-flex flex-column align-items-center justify-content-center ml-3"> 
+								
+							</div>
+						</div>
+					
+					{%endblock%}
+                    {% block notlogedinuserss %}
+											{%for i in similar_products%}
+				
+											<div class="owl-item product_slider_item">
+												<div class="product-item">
+													<div class="product discount">
+														<div class="product_image">
+															<a href="{{i.id}}">
+															<img src="{{i.img.url}}" style="height:250px;" alt="">
+														</div>
+														
+														<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+														<div class="product_info">
+															<h6 class="product_name"><a href="{{ i.id}}">{{i.name}}</a></h6>
+															<div class="product_price">
+															{% if i.disc_price != 0 %}
+															 {{i.disc_price}}<span>{{i.price}}</span></div>
+															{% elif i.cat_off < i.price and i.category.valid_to > now %}
+															${{ i.cat_off }} <span>{{i.price}}</span></div>
+															{% else %}
+															${{ i.price}} <span></span></div>
+														{% endif %}
+														</div>
+													</div>
+												</div>
+											</div>
+										</a>
+										{% endfor %}
+									</div> 
+									{% endblock notlogedinuserss %}

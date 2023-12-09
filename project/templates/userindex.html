@@ -73,26 +73,22 @@
   
 	<section class="background pb-5 pt-5 text-white text-center" id="showcase-background-2">
 	  <div class="container">
-		<h2 class="text-uppercase display-4">Latest Ambasadors</h2>
+		<h2 class="text-uppercase display-4">Latest Products</h2>
 		<hr class="hr-red">
 		<p>Dive into the Soulful Journeys of our Latest Ambassadors ! 🌟 Join the musical odyssey as these industry trailblazers share their inspirations, triumphs, and the raw stories behind their chart-topping quests.Witness the resilience and passion that fuels their artistic brilliance, turning obstacles into symphonies.</p>
   
 		<div class="card-deck mt-5 mb-3 text-center">
-		  <div class="card mb-4 box-shadow border-0 h-500px">
-			<img class="position-absolute cover" src="{% static "images/Fashion2.jpg" %} " alt="Steven Lee">
-			<h4 class="text-red position-bottom position-absolute position-center text-uppercase font-weight-bold">Steven Lee</h4>
+			{%for product in products%}
+		  <div class="card mb-4 box-shadow border-0 h-500px ">
+		
+			<img class="position-absolute cover " src="{{product.img.url}}" alt="Steven Lee" >
+			<a href="{%url 'details' product.id%}"><h4 class="text-red position-bottom position-absolute position-center text-uppercase font-weight-bold">{{product.name}}</h4></a>
+		
 		  </div>
-		  <div class="card mb-4 box-shadow border-0  h-500px">
-			<img class="position-absolute cover" src="{% static "images/landing1.jpg" %}" alt="Wesley Francis">
-			<h4 class="text-red position-bottom position-absolute position-center text-uppercase font-weight-bold">Wesley Francis</h4>
-		  </div>
-  
-		  <div class="card mb-4 box-shadow border-0  h-500px">
-			<img class="position-absolute cover" src="{% static "images/landing2.jpg" %}" alt="Jake Lively">
-			<h4 class="text-red position-bottom position-absolute position-center text-uppercase font-weight-bold">Jake Lively</h4>
-		  </div>
+		  {%endfor%}
+		  
 		</div>
-	</section>
+	</section> 
   
 	<section class="pb-5 pt-5 text-white text-center">
 	  <h2 class="text-uppercase display-4">Latest Updates</h2>
