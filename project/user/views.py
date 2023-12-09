@@ -233,14 +233,14 @@ def mens(request):
 
      if search_term:
         # If a search term is present, filter products based on the search term
-        x = product.objects.filter(Q(gender="Men") & Q(category__wear="Tops") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
-        y = product.objects.filter(Q(gender="Men") & Q(category__wear="Lowers") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
-        z = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
+         x = product.objects.filter(Q(gender="Men") & Q(category__wear="Tops") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
+         y = product.objects.filter(Q(gender="Men") & Q(category__wear="Lowers") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
+         z = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
      else:
         # If no search term, use the original queryset
-       x = product.objects.filter(Q(gender="Men") & Q(category__wear="Tops") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
-       y = product.objects.filter(Q(gender="Men") & Q(category__wear="Lowers") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
-       z = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        x = product.objects.filter(Q(gender="Men") & Q(category__wear="Tops") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        y = product.objects.filter(Q(gender="Men") & Q(category__wear="Lowers") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        z = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
 
      if sort_option == 'low_to_high':
         x = x.order_by(F('disc_price'))
@@ -261,30 +261,30 @@ def mens(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=user_login)
 def accessories(request):
-       user = request.user
-       search_term = request.GET.get('search')
-       sort_option = request.POST.get('sortSelect')
-       now=timezone.now()
+    user = request.user
+    search_term = request.GET.get('search')
+    sort_option = request.POST.get('sortSelect')
+    now = timezone.now()
 
-       if search_term:
-             x=product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
-             y=product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
-       else:
-            x=product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
-            y=product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories")  & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price')-F('disc_price'))
+    base_query = Q(category__name="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(brand__is_deleted=False)
 
-       if sort_option == 'low_to_high':
-        x = x.order_by(F('disc_price'))
-        y = y.order_by(F('disc_price'))
-       
-       elif sort_option == 'high_to_low':
-         x = x.order_by('-disc_price')
-         y = y.order_by('-disc_price')
+    if search_term:
+        x = product.objects.filter(Q(gender="Men") & base_query & Q(name__icontains=search_term)).annotate(amt=F('price') - F('disc_price'))
+        y = product.objects.filter(Q(gender="Women") & base_query & Q(name__icontains=search_term)).annotate(amt=F('price') - F('disc_price'))
+    else:
+        x = product.objects.filter(Q(gender="Men") & base_query).annotate(amt=F('price') - F('disc_price'))
+        y = product.objects.filter(Q(gender="Women") & base_query).annotate(amt=F('price') - F('disc_price'))
 
-  
+    if sort_option == 'low_to_high':
+        x = x.order_by('disc_price')
+        y = y.order_by('disc_price')
+    elif sort_option == 'high_to_low':
+        x = x.order_by('-disc_price')
+        y = y.order_by('-disc_price')
 
-            
-       return render(request,'accessories.html',{'mens':x,'womens':y,'now':now})
+    # Rest of your code...
+
+    return render(request, 'your_template.html', {'x': x, 'y': y, 'other_context_variables': 'values'})
     
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)

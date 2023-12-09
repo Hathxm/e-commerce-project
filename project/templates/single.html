@@ -76,10 +76,10 @@
 					</div>
 
 					{%if i.disc_price != i.price %}
-    				<div class="original_price" style="font-size:20px;">${{ data.price }}</div>
-    				<div class="product_price"  style="font-size:25px;" id="price">${{ data.disc_price }}</div>
+    				<div class="original_price" style="font-size:20px;">${{ data.dsic_price }}</div>
+    				<div class="product_price"  style="font-size:25px;" id="price">${{ data.price }}</div>
 					{% else %}
-    				<div class="product_price"  style="font-size:25px;"  id="price">${{ data.price }}</div> 
+    				<div class="product_price"  style="font-size:25px;"  id="price">${{ data.disc_price }}</div> 
 					{% endif %}
 
 					{% for message in messages %}

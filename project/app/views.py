@@ -144,19 +144,21 @@ def admin_products(request):
          rearimg=request.FILES['rearimage']
          frontimg=request.FILES['frontimage']
          name=request.POST['name']
-         price=request.POST['price']
-         disc_price = request.POST.get('disc_price')
+         price=int(request.POST['price'])
+         disc_price = int(request.POST['disc_price'])
          new_category=request.POST['category']
          new_brand=request.POST['brand']
          new_pro_gender=request.POST['gender']
          new_stock=request.POST['stock']
          discription=request.POST['discription']
          new_size=request.POST.getlist('size')
+         
 
+         
          
          if not disc_price:
              disc_price=price
-         elif disc_price>price:
+         elif disc_price > price:
              messages.warning(request,"discount price must be lower than product price")
              return redirect(admin_products)
          elif len(name)>20:
@@ -200,8 +202,8 @@ def edit_product(request,id):
          sizes = [int(size_id) for size_id in selected_sizes]
          new_brand=request.POST['brand']
          gender=request.POST['gender']
-         new_price=request.POST['price']
-         new_disc_price=request.POST['disc_price']
+         new_price=int(request.POST['price'])
+         new_disc_price=int(request.POST['disc_price'])
          new_stock=request.POST['stock']
 
          if new_disc_price > new_price:

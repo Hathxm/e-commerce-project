@@ -156,7 +156,7 @@
             {% for i in size %}
                 <div class="col-3">
                     <div class="border p-3 custom-checkbox">
-                        <input type="checkbox" name="size"  value="{{ i.id }}" id="size_{{ i.id }}">
+                        <input type="checkbox" name="size"  value="{{ i.id }}" id="size_{{ i.id }} " required>
                         <label for="size_{{ i.id }}" class="form-check-label">{{ i.size }}</label>
                     </div>
                 </div>
