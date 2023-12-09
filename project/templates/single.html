@@ -67,17 +67,16 @@
 
 					</div>
 					<div class="free_delivery d-flex flex-row align-items-center justify-content-center mb-3">
-						{%if i.disc_price != i.price %}
+						{%if data.disc_price != data.price %}
 						<span class="fa fa-thumbs-up"></span><span> In Sale Item !</span>
-			
 						{%else%}
 						<span class="fa fa-thumbs-down"></span><span>Not In Sale Item !</span>
 					{%endif%}
 					</div>
 
-					{%if i.disc_price != i.price %}
-    				<div class="original_price" style="font-size:20px;">${{ data.dsic_price }}</div>
-    				<div class="product_price"  style="font-size:25px;" id="price">${{ data.price }}</div>
+					{%if data.disc_price != data.price %}
+    				<div class="original_price" style="font-size:20px;">${{ data.price }}</div>
+    				<div class="product_price"  style="font-size:25px;" id="price">${{ data.disc_price }}</div>
 					{% else %}
     				<div class="product_price"  style="font-size:25px;"  id="price">${{ data.disc_price }}</div> 
 					{% endif %}

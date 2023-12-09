@@ -114,13 +114,14 @@ def user_address(request):
 def payment_view(request,id):
     user=request.user
     addresss=request.session.get('selected_address_id')
+    now=timezone.now()
     orderitems=ordereditems.objects.get(id=id)
     items=orderitems.items.all()
     total_price = orderitems.total
     walet=wallet.objects.get(user=user)
     to_pay=total_price*100
     wallet_option=walet.money>=total_price
-    coupons=coupon.objects.filter(is_deleted=False)
+    coupons=coupon.objects.filter(is_deleted=False,valid_to__gte=now)
     usedcoupons=usercoupon.objects.filter(user=user)
      # Replace 'order_details' with your actual URL name
     success_url = request.build_absolute_uri(reverse('create_order', kwargs={'id': orderitems.id}))

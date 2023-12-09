@@ -22,9 +22,16 @@
                           <h5 class="card-title fw-semibold">{{ item }}</h5>
                           <div>
                             {%block offerandblocking%}
-                              <a href="{%url 'catoff' item.id%}">
+                            {%if item.discount_percentage == 0 %}
+                              <a href="{%url 'catoff' item.id%}" >
                                   <button class="btn btn-primary btn-sm">Apply Offer !</button>
                               </a>
+                              {%else%}
+                              <a href="{%url 'discatoff' item.id%}"  class="undelete-link">
+                                <button class="btn btn-danger btn-sm">Discard offer</button>
+                              </a>
+                            {%endif%}
+
                               {% if item.is_deleted %}
                                   <a href="{% url 'undlt_category' item.id %}" class="undelete-link">
                                       <button class="btn btn-danger btn-sm">Unavailable</button>

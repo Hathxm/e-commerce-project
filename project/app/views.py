@@ -454,6 +454,19 @@ def cat_off(request,id):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url=admin_login)
+def dis_cat_off(request,id):
+    categoryy=category.objects.get(id=id)
+    print(categoryy)
+    categoryy.discount_percentage=0
+    categoryy.save()
+    products=product.objects.filter(category=categoryy)
+    for i in products:
+        i.disc_price=i.price
+        i.save()
+    return redirect(admin_category)
+    
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+@login_required(login_url=admin_login)
 def delete_brand(request,id):
     brands=brand.objects.get(id=id)
     brands.is_deleted=True

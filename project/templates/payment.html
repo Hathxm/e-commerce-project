@@ -325,7 +325,7 @@
                 </div>
                 {% endfor %}
 
-                <div class="d-flex pb-3 "> <small class="text-muted text-center"><b>All Coupons</b></small></div>
+                <div class="d-flex pb-3 "> <small class="text-muted text-center"><b>Available Coupons</b></small></div>
                 {% for coupon in coupons %}
                 <div class="d-flex flex-column b-bottom">
                     <div class="d-flex justify-content-between py-3"> <small class="text-muted">{{ coupon.name }}</small>
@@ -336,22 +336,7 @@
             </div>
         </div>
                
-                {% comment %} <div class="d-flex  pb-3 mt-2 "> <small class="text-muted text-center" ><b>All Coupons</b></small>
-                </div>
-                <div class="d-flex justify-content-between b-bottom"> 
-                    
-                </div>
-                <div class="d-flex flex-column b-bottom">
-                    {%for coupon in coupons%}
-                    <div class="d-flex justify-content-between py-3"> <small class="text-muted">{{coupon.name}}</small>
-                        <p>{{coupon.discount_percentage}}%</p>
-                    </div>
-                    {%endfor%}
-                    
-                </div>
-               
-            </div>
-        </div> {% endcomment %}
+                
 
            
             

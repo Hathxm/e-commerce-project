@@ -1,6 +1,12 @@
 {%extends 'add_category.html'%}
 {%block catoff%}
 {% block coupons %}
+{% for message in messages %}
+										<div class="alert alert-danger d-flex align-items-center justify-content-center" role="alert" style="border: 2px solid red; width: 100%;">
+											<i class="fa fa-thumbs-down" style="color: red; margin-right: 10px;"></i>
+											<span>{{ message }}</span>
+										</div>
+									{% endfor %}
                 <h2 class="text-center">Apply Discount</h2>
                 <form method="POST" action="">
                     {% csrf_token %}
