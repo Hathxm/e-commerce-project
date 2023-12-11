@@ -98,7 +98,8 @@ def userreviews(request):
 def admin_category(request):
     if request.user.is_superuser:
         data=category.objects.all()
-        return render(request,'admincategory.html',{'data':data})
+        now=timezone.now
+        return render(request,'admincategory.html',{'data':data,'now':now})
     return redirect(admin_login)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -393,7 +394,7 @@ def order_details(request,id):
     if request.user.is_superuser:
         order=Order.objects.get(id=id)
         items=order.items.items.all()
-        return render(request,'adminorderdetails.html',{'data':items})
+        return render(request,'adminorderdetails.html',{'data':items,'total':order.total})
     return redirect(admin_login)
 
 

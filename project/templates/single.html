@@ -109,10 +109,10 @@
 							<span>Quantity:</span>
 							<div class="quantity_selector">
 								<span class="minus red_button" id="decrement"><i class="fa fa-minus" aria-hidden="true"></i></span>
-								<input type="number" id="quantity_value" class="form-control custom-number-input" name="quantity" value="1" min="1">
+								<input type="number" id="quantity_value" class="form-control custom-number-input" name="quantity" value="1" min="1" max="20" style="width:80px">
 								<span class="plus red_button" id="increment"><i class="fa fa-plus" aria-hidden="true"></i></span>
 							</div>
-							<button class=" btn btn-success ml-3">Add To Cart</button>
+							<button class=" btn btn-success ml-5">Add To Cart</button>
 							<div class="heart-icon d-flex flex-column align-items-center justify-content-center ml-3"> 
 								{%if data in wish%} 
 								<a onclick="fetchFunction('{%url 'dltfrmwishlist' data.id%}',{{data.id}})"  >
@@ -184,7 +184,9 @@
     function incrementValue() {
         var value = parseInt($("#quantity_value").val(), 10);
         value = isNaN(value) ? 1 : value;
+		if (value < 20) {
         $("#quantity_value").val(value + 1);
+		}
     }
 
     function decrementValue() {

@@ -30,7 +30,9 @@
                 <td>{{i.payment}}</td>
                 <td>{{i.total}}</td>
                 <td><a href="{%url 'orderdetails' i.id%}" class="btn btn-primary btn-sm">view details</a></td>
-                <td>{%if i.order_status == "Processing"%}<a href="{%url 'delivered' i.id%}" class="btn btn-success btn-sm">Delivered</a>{% endif %}</td>
+                <td>{%if i.order_status == "Processing"%}<a href="{%url 'delivered' i.id%}" class="btn btn-success btn-sm">Delivered</a> 
+                    {%else%}{{i.order_status}}
+                    {% endif %}
 
                
             </tr>

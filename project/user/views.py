@@ -77,7 +77,7 @@ def user_signup(request):
 
 
              send_mail(
-                'Password Reset OTP',
+                'OTP',
                 f'Your password for login is: {otp}',
                 'streetrends@gmail.com',
                 [email],
@@ -90,8 +90,7 @@ def user_signup(request):
 
 
 def OTP_login(request):
-     if request.user.is_authenticated:
-        return redirect(shop)
+     
      
      otpp=request.session.get('otp')
      username=request.session.get('username')
@@ -140,8 +139,7 @@ def resend_otp(request):
 
 
 def user_login(request):
-    if request.user.is_authenticated:
-        return redirect(shop)
+    
     
 
     if request.method=="POST":
@@ -263,16 +261,17 @@ def accessories(request):
     user = request.user
     search_term = request.GET.get('search')
     sort_option = request.POST.get('sortSelect')
-    now = timezone.now()
+    now = timezone.now
 
-    base_query = Q(category__name="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(brand__is_deleted=False)
 
     if search_term:
-        x = product.objects.filter(Q(gender="Men") & base_query & Q(name__icontains=search_term)).annotate(amt=F('price') - F('disc_price'))
-        y = product.objects.filter(Q(gender="Women") & base_query & Q(name__icontains=search_term)).annotate(amt=F('price') - F('disc_price'))
+        # If a search term is present, filter products based on the search term
+         x = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
+         y = product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) & Q(name__icontains=search_term) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'))
     else:
-        x = product.objects.filter(Q(gender="Men") & base_query).annotate(amt=F('price') - F('disc_price'))
-        y = product.objects.filter(Q(gender="Women") & base_query).annotate(amt=F('price') - F('disc_price'))
+        # If no search term, use the original queryset
+        x = product.objects.filter(Q(gender="Men") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
+        y = product.objects.filter(Q(gender="Women") & Q(category__wear="Accessories") & Q(category__is_deleted=False) & Q(is_deleted=False) &Q(brand__is_deleted=False)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100)))
 
     if sort_option == 'low_to_high':
         x = x.order_by('disc_price')
@@ -283,7 +282,7 @@ def accessories(request):
 
     # Rest of your code...
 
-    return render(request, 'your_template.html', {'x': x, 'y': y, 'other_context_variables': 'values'})
+    return render(request, 'accessories.html', {'mens':x , 'womens': y, 'other_context_variables': 'values'})
     
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)

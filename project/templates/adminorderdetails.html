@@ -26,14 +26,20 @@
                 <td>{{i.id}}</td>
                 <td>{{i.product.name}}</td>
                 <td>{{i.quantity}}</td>
-                {%if i.product.disc_price == 0%}
-                <td>{{i.product.price}}</td>
-                {%else%}
                 <td>{{i.product.disc_price}}</td>
-                {%endif%}
                 <td>{{i.price}}</td>  
+               
+
             </tr>
             {% endfor %}
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="border: 3px solid black;">Total Price :</td>
+                <td style="border: 3px solid black;">{{total}}</td>
+
+            </tr>
             <tbody>
         </table>
 {% endblock %}
