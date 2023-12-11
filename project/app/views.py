@@ -457,7 +457,6 @@ def cat_off(request,id):
 @login_required(login_url=admin_login)
 def dis_cat_off(request,id):
     categoryy=category.objects.get(id=id)
-    print(categoryy)
     categoryy.discount_percentage=0
     categoryy.save()
     products=product.objects.filter(category=categoryy)
