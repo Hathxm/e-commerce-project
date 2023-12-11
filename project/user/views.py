@@ -49,6 +49,9 @@ def contact(request):
     return render(request,'contact.html')
 
 def user_signup(request):
+    if request.user.is_authenticated:
+         messages.info(request,"Please logout to signup again")
+         return redirect(landing_page)
     if request.method=="POST":
         username=request.POST['username']
         email=request.POST['email']
@@ -90,6 +93,9 @@ def user_signup(request):
 
 
 def OTP_login(request):
+     if request.user.is_authenticated:
+         messages.info(request,"Please logout to signup again")
+         return redirect(landing_page)
      
      
      otpp=request.session.get('otp')
@@ -120,6 +126,10 @@ def OTP_login(request):
           
                
 def resend_otp(request):
+     if request.user.is_authenticated:
+         messages.info(request,"Please logout to signup again")
+         return redirect(landing_page)
+     
      if request.method=="POST":
           email=request.session.get('email')
           otp=randint(1000,9999)
@@ -139,8 +149,9 @@ def resend_otp(request):
 
 
 def user_login(request):
-    
-    
+    if request.user.is_authenticated:
+         messages.info(request,"Please logout to login again")
+         return redirect(landing_page)
 
     if request.method=="POST":
         username=request.POST['username']
