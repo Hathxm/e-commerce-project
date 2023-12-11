@@ -22,7 +22,7 @@
                           <h5 class="card-title fw-semibold">{{ item }}</h5>
                           <div>
                             {%block offerandblocking%}
-                            {%if item.discount_percentage == 0 or item.valid_to > now%}
+                            {%if item.discount_percentage != 0 or item.valid_to > now%}
                               <a href="{%url 'catoff' item.id%}" >
                                   <button class="btn btn-primary btn-sm">Apply Offer !</button>
                               </a>
