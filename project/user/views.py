@@ -171,6 +171,8 @@ def details(request,id):
     data=product.objects.get(id=id)
     size=data.size.all()
     similar_products=product.objects.filter(Q(category=data.category) & ~Q(id=data.id)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
+    
+         
 
 
 
@@ -448,16 +450,17 @@ def product_details(request,id):
      if request.method == 'POST':
               size = request.POST.get('size')
               size=Size.objects.get(id=size)
-              cart_item,created=cartitem.objects.get_or_create(product=data,user=user,size=size,is_deleted=False)
               quantity = int(request.POST.get('quantity'))
-              cart_item.quantity=quantity
+            
 
               if quantity>data.in_stock:
                  messages.warning(request,'Quantity demanded not in stock')
                  return redirect(product_details,id=data.id)
-                 
-              cart_item.price=data.disc_price*(quantity)+(cart_item.size.price_increment*quantity)
-              cart_item.save()
+              else:
+                   cart_item,created=cartitem.objects.get_or_create(product=data,user=user,size=size,is_deleted=False)
+                   cart_item.quantity=quantity
+                   cart_item.price=data.disc_price*(quantity)+(cart_item.size.price_increment*quantity)
+                   cart_item.save()
               return redirect(viewcart)
      return render(request,'single.html',{'data':data,'size':size,'similar_products':similar_products,'wish':wish,'cat_off_price':cat_off_price,'now':now})
 
@@ -605,8 +608,6 @@ def add(request):
     }
     return JsonResponse(response_data)
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)   
-@login_required(login_url=user_login)
 def size_variation(request):
     if request.method == 'POST':
         id = request.POST.get('id')

@@ -242,7 +242,7 @@ def return_order(request,id):
     user_mail=order.user.email
     send_mail(
                 'Order cancelled',
-                f' Your Order number: {order.id} from street trends has been requested to return\n Amount {order.total} has been refunded to your wallet..',
+                f' Your Order number: {order.id} from street trends has been requested to return\n Amount {order.total} has been refunded to your wallet.. the purchased items will be collected soon',
                 'streetrends@gmail.com',
                 [user_mail],
                 fail_silently=False,

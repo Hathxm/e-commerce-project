@@ -44,10 +44,18 @@
                             
                         </td>
                         <td data-th="Due Date">
-                            {%if item.order_status == "Processing" %}
+                            {%if item.order_status == "Processing"  %}
+                              {%if item.payment == "COD"%}
+                              <a href="{%url 'cancel_order' item.id%}"class="cancel-link"><button class="btn btn-primary btn-sm">Cancel Order</button></a>
+                              {% else %}
+                              <a href="{%url 'cancel_order' item.id%}"class="cancel-link"><button class="btn btn-primary btn-sm">Cancel Order</button></a>
+                              <a href="{%url 'return_order' item.id%}"class="delete-link"><button class="btn btn-primary btn-sm">Return Order</button></a>
+                              {% endif %}
+                            {% elif  item.order_status == "Delivered" %}
                             <a href="{%url 'return_order' item.id%}"class="delete-link"><button class="btn btn-primary btn-sm">Return Order</button></a>
-                            <a href="{%url 'cancel_order' item.id%}"class="cancel-link"><button class="btn btn-primary btn-sm">Cancel Order</button></a>
-                            {%endif%}
+                            {% endif %}
+                            
+                          
                         </td>
                         
                       </tr>
