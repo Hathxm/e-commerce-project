@@ -400,7 +400,7 @@
                     console.log("success", data.success);
                     if (data.success) {
                         $("#total").text(data.updated_total);
-                        $("#deductedamt").text(data.deductedamt);
+                        $("#deductedamt").text("-" + data.deductedamt);
                         Swal.fire({
                             icon: 'success',
                             title: 'success',

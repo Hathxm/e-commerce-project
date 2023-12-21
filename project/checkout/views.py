@@ -352,6 +352,7 @@ def add_to_cart(request,id):
      item.price=productt.price
      item.save()
      wishh.items.remove(productt)
+     wishh.save()
      return redirect('viewcart')
 
 
