@@ -64,6 +64,8 @@
 						<h2>{{data.name}}</h2>
 						<p>{{data.discription}}</p>
 						<p>In stock : {{data.in_stock}}</p>
+						<p>Brand : {{data.brand}}</p>
+
 
 					</div>
 					<div class="free_delivery d-flex flex-row align-items-center justify-content-center mb-3">
@@ -75,10 +77,10 @@
 					</div>
 
 					{%if data.disc_price != data.price %}
-    				<div class="original_price" style="font-size:20px;">${{ data.price }}</div>
-    				<div class="product_price"  style="font-size:25px;" id="price">${{ data.disc_price }}</div>
+    				<div class="original_price" style="font-size:20px;">Rs.{{ data.price }}</div>
+    				<div class="product_price"  style="font-size:25px;" id="price">Rs.{{ data.disc_price }}</div>
 					{% else %}
-    				<div class="product_price"  style="font-size:25px;"  id="price">${{ data.disc_price }}</div> 
+    				<div class="product_price"  style="font-size:25px;"  id="price">Rs.{{ data.disc_price }}</div> 
 					{% endif %}
 
 					{% for message in messages %}
@@ -290,16 +292,20 @@
 															<img src="{{i.img.url}}" style="height:250px;" alt="">
 														</div>
 														
-														<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-$20</span></div>
+														<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
+															{%if i.disc_price != i.price %}
+															<span>-Rs.{{i.amt}}</span>
+															{%else%}
+															<span>no sale</span>
+															{%endif%}
+														</div>
 														<div class="product_info">
 															<h6 class="product_name"><a href="{{ i.id}}">{{i.name}}</a></h6>
 															<div class="product_price">
-															{% if i.disc_price != 0 %}
-															 {{i.disc_price}}<span>{{i.price}}</span></div>
-															{% elif i.cat_off < i.price and i.category.valid_to > now %}
-															${{ i.cat_off }} <span>{{i.price}}</span></div>
+															{% if i.disc_price != i.price %}
+															 Rs.{{i.disc_price}}<span>{{i.price}}</span></div>
 															{% else %}
-															${{ i.price}} <span></span></div>
+															Rs.{{ i.price}} <span></span></div>
 														{% endif %}
 														</div>
 													</div>
@@ -312,53 +318,12 @@
 
 									<!-- Slider Navigation -->
 			
-									<div class="product_slider_nav_left product_slider_nav d-flex align-items-center justify-content-center flex-column">
-										<i class="fa fa-chevron-left" aria-hidden="true"></i>
-									</div>
-									<div class="product_slider_nav_right product_slider_nav d-flex align-items-center justify-content-center flex-column">
-										<i class="fa fa-chevron-right" aria-hidden="true"></i>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
+								
 
 				
 					<!-- Tab Reviews -->
 
-					<div id="tab_3" class="tab_container">
-						<div class="row">
-
-							<!-- User Reviews -->
-
-							<div class="col-lg-6 reviews_col">
-								<div class="tab_title reviews_title">
-									<h4>Reviews (2)</h4>
-								</div>
-
-								<!-- User Review -->
-
-								<div class="user_review_container d-flex flex-column flex-sm-row">
-									<div class="user">
-										<div class="user_pic"></div>
-										<div class="user_rating">
-											<ul class="star_rating">
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star" aria-hidden="true"></i></li>
-												<li><i class="fa fa-star-o" aria-hidden="true"></i></li>
-											</ul>
-										</div>
-									</div>
-									<div class="review">
-										<div class="review_date">27 Aug 2016</div>
-										<div class="user_name">Brandon William</div>
-										<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-									</div>
-								</div>
-
+				
 								<!-- User Review -->
 
 							

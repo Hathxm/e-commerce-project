@@ -171,10 +171,8 @@ def details(request,id):
     data=product.objects.get(id=id)
     size=data.size.all()
     similar_products=product.objects.filter(Q(category=data.category) & ~Q(id=data.id)).annotate(amt=F('price') - F('disc_price'),cat_off=F('price') - (F('price') * F('category__discount_percentage') / 100),cat_amt=F('price')-(F('price') - (F('price') * F('category__discount_percentage') / 100))).order_by('name')
-    
-         
-
-
+    if data.in_stock==0:
+                messages.warning(request,'Product not in stock')
 
     return render(request,'details.html',{'data':data,'size':size,'similar_products':similar_products})
 
@@ -563,6 +561,8 @@ def qty_update(request):
     user = request.user
     item_id = request.POST.get('item_id')
     new_quantity = int(request.POST.get('new_quantity'))
+    cart_items = cartitem.objects.all().filter(is_deleted=False, user=user)
+   
 
     cart_item = get_object_or_404(cartitem, id=item_id)
     now=timezone.now()
@@ -571,9 +571,11 @@ def qty_update(request):
     cart_item.quantity = new_quantity
     cart_item.price = (cart_item.product.disc_price * new_quantity) + (cart_item.size.price_increment * new_quantity)
     cart_item.save()
+    total_price = cart_items.aggregate(total=Sum('price'))['total']
+    
 
     # You can optionally return some data in the response
-    response_data = {'new_qty':new_quantity,'new_price':cart_item.price}
+    response_data = {'new_qty':new_quantity,'new_price':cart_item.price,'total':total_price}
     return JsonResponse(response_data)
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)   

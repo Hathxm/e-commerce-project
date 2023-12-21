@@ -434,21 +434,24 @@ def sales_report(request):
 @login_required(login_url=admin_login)
 def cat_off(request,id):
     categoryy=category.objects.get(id=id)
+    now=timezone.now()
     if request.method == 'POST':
         percentage = float(request.POST.get('percentage'))
-        datetime_str = request.POST.get('datetime')
+        # datetime_str = request.POST.get('datetime')
 
         # Convert the datetime string to a datetime object
-        valid_to = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M')
+        # valid_to = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M')
         if percentage<100 and percentage>0:
-         categoryy.discount_percentage = percentage
-         categoryy.valid_to = valid_to
-         categoryy.save()
-         products=product.objects.filter(category=categoryy)
-         for i in products:
-             i.disc_price=i.price-(i.price*categoryy.discount_percentage/100)
-             i.save()
-         return redirect(admin_category)
+   
+            categoryy.discount_percentage = percentage
+            # categoryy.valid_to = valid_to
+            categoryy.save()
+            products=product.objects.filter(category=categoryy)
+            for i in products:
+                i.disc_price=i.price-(i.price*categoryy.discount_percentage/100)
+                i.save()
+            return redirect(admin_category)
+         
         else:
             messages.warning(request,"discount percentage cannot be greater than 100 or below 0")
     return render(request,'admin_catoff.html')

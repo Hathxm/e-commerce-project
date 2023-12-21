@@ -129,6 +129,38 @@ def payment_view(request,id):
 
     return render(request, 'payment.html', {'ordereditems':orderitems,'items':items,'total':total_price,'to_pay':to_pay,'success_url':success_url,'wallet_option':wallet_option,'coupons':coupons,'usedcoupons':usedcoupons})
 
+def checkcoupon(request):
+    user=request.user
+    if request.method == 'POST':
+        gift_code = request.POST.get('gift_code')
+        orderid = request.POST.get('order_id')
+        coupons=coupon.objects.filter(name=gift_code,is_deleted=False,valid_to__gte=timezone.now()).first()
+        couponusage=usercoupon.objects.filter(user=user,coupon__name=coupons.name)
+        
+        # Your coupon processing logic here
+        if not couponusage.exists():
+            if coupons is not None:
+                orderitems=ordereditems.objects.get(id=int(orderid))
+                if orderitems.total>500:
+                    if orderitems.coupon_applied==False:
+                        request.session['coupon']=coupons.name
+                        deducted_amt=(coupons.discount_percentage/100)*orderitems.total 
+                        orderitems.total-=deducted_amt
+                        orderitems.coupon_applied=True
+                        orderitems.save() # Replace with your actual coupon code check
+                       
+                        return JsonResponse({'success': True,'message': 'Coupon applied','updated_total': orderitems.total, 'deductedamt':deducted_amt})
+                    else:
+                       return JsonResponse({'success': False, 'message': 'Only 1 coupon for an order is applicable'})
+                else:
+                     return JsonResponse({'success': False, 'message': 'Order total must be greater than $500'})    
+            else:
+                 return JsonResponse({'success': False, 'message': 'Coupon does not exist'})
+        else:    
+            return JsonResponse({'success': False, 'message': 'Coupon already applied'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 @login_required(login_url='userlogin')
 def create_order(request,id):
@@ -149,6 +181,11 @@ def create_order(request,id):
                 [user_mail],
                 fail_silently=False,
             )
+    if orderitems.coupon_applied==True:
+        coupons=coupon.objects.get(name=request.session.get('coupon'))
+        usercoupon.objects.create(user=user,coupon=coupons,used_at=timezone.now())
+        order.coupon=coupons
+
     for i in items:
         i.product.in_stock-=i.quantity
         i.product.save()
@@ -168,10 +205,12 @@ def walletpayment(request,id):
     adress=request.session.get('selected_address_id')
     deliver_address=address.objects.get(id=adress)
     
+
+    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment="Paid",items=orderitems,total=total_price,order_status="Processing")
     if orderitems.coupon_applied==True:
         coupons=coupon.objects.get(name=request.session.get('coupon'))
         usercoupon.objects.create(user=user,coupon=coupons,used_at=timezone.now())
-    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment="Paid",items=orderitems,total=total_price,order_status="Processing")
+        orderr.coupon=coupons
     for product in items:
         product.product.in_stock-=product.quantity
         product.product.save()
@@ -189,10 +228,12 @@ def cod(request,id):
     adress=request.session.get('selected_address_id')
     deliver_address=address.objects.get(id=adress)
     
+    
+    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment="COD",items=orderitems,total=total_price,order_status="Processing")
     if orderitems.coupon_applied==True:
         coupons=coupon.objects.get(name=request.session.get('coupon'))
         usercoupon.objects.create(user=user,coupon=coupons,used_at=timezone.now())
-    orderr=Order.objects.create(user=user,created_at=timezone.now(),address=deliver_address,payment="COD",items=orderitems,total=total_price,order_status="Processing")
+        orderr.coupon=coupons
     for product in items:
         product.product.in_stock-=product.quantity
         product.product.save()
@@ -313,40 +354,10 @@ def add_to_cart(request,id):
      wishh.items.remove(productt)
      return redirect('viewcart')
 
-def checkcoupon(request):
-    user=request.user
-    if request.method == 'POST':
-        gift_code = request.POST.get('gift_code')
-        orderid = request.POST.get('order_id')
-        coupons=coupon.objects.filter(name=gift_code,is_deleted=False,valid_to__gte=timezone.now()).first()
-        couponusage=usercoupon.objects.filter(user=user,coupon__name=coupons.name)
-        
-        # Your coupon processing logic here
-        if not couponusage.exists():
-            if coupons is not None:
-                orderitems=ordereditems.objects.get(id=int(orderid))
-                if orderitems.total>500:
-                    if orderitems.coupon_applied==False:
-                        request.session['coupon']=coupons.name
-                        orderitems.total-=(coupons.discount_percentage/100)*orderitems.total 
-                        orderitems.coupon_applied=True
-                        orderitems.save() # Replace with your actual coupon code check
-                        return JsonResponse({'success': True,'message': 'Coupon applied','updated_total': orderitems.total})
-                    else:
-                       return JsonResponse({'success': False, 'message': 'Only 1 coupon for an order is applicable'})
-                else:
-                     return JsonResponse({'success': False, 'message': 'Order total must be greater than $500'})    
-            else:
-                 return JsonResponse({'success': False, 'message': 'Coupon does not exist'})
-        else:    
-            return JsonResponse({'success': False, 'message': 'Coupon already applied'})
-    else:
-        return JsonResponse({'success': False, 'error': 'Invalid request method'})
 
 
 def orderinvoice(request,id):
                 orders=Order.objects.get(id=id)
-               
                 items=orders.items.items.all()
                 date=orders.created_at
                 total=orders.total

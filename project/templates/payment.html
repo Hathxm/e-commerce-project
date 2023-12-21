@@ -307,6 +307,9 @@
                     <div class="d-flex justify-content-between"> <small class="text-muted">Total Amount</small>
                         <p id="total">{{total}}</p>
                     </div>
+                    <div class="d-flex justify-content-between"> <small class="text-muted">Deducted amount</small>
+                        <p id="deductedamt">-0.00</p>
+                    </div>
                 </div>
                 <div class="sale my-3"> <span>sale<span class="px-1">expiring</span><span>in</span>:</span><span class="red">21<span class="ps-1">hours</span>,31<span class="ps-1 ">minutes</span></span> </div>
             </div>
@@ -397,7 +400,7 @@
                     console.log("success", data.success);
                     if (data.success) {
                         $("#total").text(data.updated_total);
-                        $("#totall").text(data.updated_total);
+                        $("#deductedamt").text(data.deductedamt);
                         Swal.fire({
                             icon: 'success',
                             title: 'success',

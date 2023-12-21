@@ -24,9 +24,15 @@
     </style>
 </head>
 <body>
-    <h1>Order Invoice - for {{orders.id}} </h1>
+    <h1>Order Invoice - for order number {{orders.id}} </h1>
 
     <p>Total Sales: {{ total }}</p>
+    <p>coupons: {%if orders.coupon == None%} 
+        nil 
+        {% else %}
+        {{orders.coupon}}
+        {% endif %}
+    </p>
     <p>order address: {{orders.address.district}},{{orders.address.street_address}}</p>
 
     <table>

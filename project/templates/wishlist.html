@@ -46,19 +46,19 @@
 								   </div>
 									<img src="{{i.img.url}}"  style="width:222px; height:300px;" alt="">
 								</div>
-								{%if i.disc_price != 0 %}
-								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-${{i.amt}}</span></div>
+								{%if i.disc_price != i.price %}
+								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>-Rs.{{i.amt}}</span></div>
 								{%else%}
 								<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center"><span>no sale</span></div>
 								{%endif%}
 								<div class="product_info">
 									<h6 class="product_name"><a href="{% url 'product_details' i.id %}">{{ i.name }}</a></h6>
 									<div class="product_price">
-										{% if i.disc_price != 0 %}
-											${{ i.disc_price }} <span>${{ i.price }}</span>
-										
+										{% if i.disc_price != i.price %}
+											Rs.{{ i.disc_price }} <span>${{ i.price }}</span>
+			
 										{% else %}
-											${{ i.price }} <span></span>
+											Rs.{{ i.price }} <span></span>
 										{% endif %}
 									</div>
 								</div>
@@ -251,10 +251,9 @@
 									
 									<div class="product_bubble product_bubble_right product_bubble_red d-flex flex-column align-items-center">
 										{% comment %} <span>-$20</span> {% endcomment %}
-										{%if i.product.disc_price != 0 %}
-										<span>-${{i.amt}}</span>
-										{%elif i.cat_off < i.product.price and i.product.category.valid_to > now%}
-										<span>-${{i.cat_amt}}</span>
+										{%if i.product.disc_price != i.product.price %}
+										<span>-Rs.{{i.amt}}</span>
+										
 										{%else%}
 										<span>no sale</span>
 										{%endif%}
@@ -262,12 +261,10 @@
 									<div class="product_info">
 										<h6 class="product_name"><a href="{%url 'product_details' i.product.id%}">{{i.product.name}}</a></h6>
 										<div class="product_price">
-										{% if i.product.disc_price != 0 %}
-										 {{i.product.disc_price}}<span>{{i.product.price}}</span></div>
-										{% elif i.cat_off < i.product.price and i.product.category.valid_to > now %}
-										${{ i.cat_off }} <span>{{i.price}}</span></div>
+										{% if i.product.disc_price != i.product.price %}
+										Rs. {{i.product.disc_price}}<span>{{i.product.price}}</span></div>
 										{% else %}
-										${{ i.product.price}} <span></span></div>
+										Rs.{{ i.product.price}} <span></span></div>
 									{% endif %}
 									</div>
 								</div>
